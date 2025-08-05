@@ -65,3 +65,17 @@ def save_image_grid(img, fname, drange, grid_size):
     if C == 3:
         PIL.Image.fromarray(img, 'RGB').save(fname)
 
+#----------------------------------------------------------------------------
+#------------------ W -------------#
+# Watermarking diff map function
+def save_watermark_diff_map(initial_images, final_images, run_dir, grid_size):
+    # Convert to uint8 if necessary (from [0,1] float to [0,255] integer)
+    initial_uint8 = (initial_images * 255).astype(np.uint8)
+    final_uint8 = (final_images * 255).astype(np.uint8)
+    # Compute the difference map as in the hidden notebook
+    contrast = 1  # Adjust contrast factor as needed
+    diff = np.abs(final_uint8.astype(int) - initial_uint8.astype(int)) / 255 * contrast
+    # Save the difference map as an image grid
+    save_image_grid(diff, os.path.join(run_dir, 'watermark_diff_map_hidden_style.png'), drange=[0, 1], grid_size=grid_size)
+    # Print statistics
+    print(f'Diff map (hidden style): max = {np.max(diff):.6f}, mean = {np.mean(diff):.6f}')

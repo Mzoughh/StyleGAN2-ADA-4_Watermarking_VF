@@ -26,7 +26,7 @@ from metrics import metric_main
 
 #------------------ W -------------#
 from NNWMethods.UCHI import Uchi_tools
-from training.image_utils import save_image_grid, setup_snapshot_image_grid
+from training.image_utils import save_image_grid, setup_snapshot_image_grid,save_watermark_diff_map
 #----------------------------------#
 
 
@@ -181,6 +181,11 @@ def training_loop(
     grid_size = None
     grid_z = None
     grid_c = None
+
+    #------------------ W -------------#
+    initial_images = None  # For watermarking diff map
+    #----------------------------------#
+
     if rank == 0:
         print('Exporting sample images...')
         grid_size, images, labels = setup_snapshot_image_grid(training_set=training_set)
@@ -189,6 +194,12 @@ def training_loop(
         grid_c = torch.from_numpy(labels).to(device).split(batch_gpu)
         images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
         save_image_grid(images, os.path.join(run_dir, 'fakes_init.png'), drange=[-1,1], grid_size=grid_size)
+
+        #------------------ W -------------#
+        if loss_kwargs.watermarking_dict:
+            initial_images = images.copy()
+            print('Initial images saved for watermarking diff map...')
+        #----------------------------------#
 
     # Initialize logs.
     if rank == 0:
@@ -394,6 +405,18 @@ def training_loop(
     # Done.
     if rank == 0:
         print()
+
+        #------------------ W -------------#
+        if loss_kwargs.watermarking_dict and initial_images is not None:
+            print('Generating watermark diff map...')
+            final_images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
+            save_watermark_diff_map(initial_images, final_images, run_dir, grid_size)
+        #----------------------------------#
+        
+
+
+
+
         print('Exiting...')
 
 #----------------------------------------------------------------------------
