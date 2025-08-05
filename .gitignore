@@ -1,2 +1,5 @@
 __pycache__/
 .cache/
+dataset/
+training-runs/
+training-runs-uchi_test/

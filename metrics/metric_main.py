@@ -19,6 +19,12 @@ from . import precision_recall
 from . import perceptual_path_length
 from . import inception_score
 
+#------------------ W -------------#
+# For Watermarking extraction
+from NNWMethods.UCHI import Uchi_tools
+import copy
+#----------------------------------#
+
 #----------------------------------------------------------------------------
 
 _metric_dict = dict() # name => fn
@@ -107,6 +113,28 @@ def is50k(opts):
     opts.dataset_kwargs.update(max_size=None, xflip=False)
     mean, std = inception_score.compute_is(opts, num_gen=50000, num_splits=10)
     return dict(is50k_mean=mean, is50k_std=std)
+
+#------------------ W -------------#
+@register_metric
+def uchida_extraction(opts):
+    if opts.watermarking_dict is not None:
+        model_device = next(opts.G.parameters()).device
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        tools = Uchi_tools(model_device)
+        extraction, hamming_dist = tools.detection(opts.G, watermarking_dict)
+        extraction_r = torch.round(extraction)
+        diff = (~torch.logical_xor((extraction_r).cpu()>0, watermarking_dict['watermark'].cpu()>0)) 
+        bit_acc_avg = torch.sum(diff, dim=-1) / diff.shape[-1]
+    else:
+        print("No Uchida watermarking dictionary provided, skipping extraction metrics (0 by default).")
+        extraction = 0
+        hamming_dist = 0
+        bit_acc_avg = 0
+    return dict(uchida_bit_acc=float(bit_acc_avg), uchida_hamming_dist=float(hamming_dist))
+#----------------------------------#
 
 #----------------------------------------------------------------------------
 # Legacy metrics.

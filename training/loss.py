@@ -6,6 +6,9 @@
 # distribution of this software and related documentation without an express
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
+
+# MODIFIED VERSION FOR WATERMARKING METHODS
+
 import numpy as np
 import torch
 from torch_utils import training_stats
@@ -21,7 +24,7 @@ class Loss:
 #----------------------------------------------------------------------------
 
 class StyleGAN2Loss(Loss):
-    def __init__(self, device, G_mapping, G_synthesis, D, augment_pipe=None, style_mixing_prob=0.9, r1_gamma=10, pl_batch_shrink=2, pl_decay=0.01, pl_weight=2):
+    def __init__(self, device, G_mapping, G_synthesis, D,  G=None, tools=None, watermarking_dict=None, watermark_weight=None, augment_pipe=None, style_mixing_prob=0.9, r1_gamma=10, pl_batch_shrink=2, pl_decay=0.01, pl_weight=2):
         super().__init__()
         self.device = device
         self.G_mapping = G_mapping
@@ -34,6 +37,14 @@ class StyleGAN2Loss(Loss):
         self.pl_decay = pl_decay
         self.pl_weight = pl_weight
         self.pl_mean = torch.zeros([], device=device)
+
+        #------------------ W -------------#
+        # Class attributes for W methods 
+        self.G = G                                 # Access to the full generator architecture
+        self.tools = tools                         # Class tools for each W methods (init in the training_loop.py)
+        self.watermarking_dict = watermarking_dict # Dictionary which contains the watermark information
+        self.watermark_weight = watermark_weight   # Weight of watermarking loss
+        #---------------------------------#
 
     def run_G(self, z, c, sync):
         with misc.ddp_sync(self.G_mapping, sync):
@@ -69,6 +80,22 @@ class StyleGAN2Loss(Loss):
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
                 loss_Gmain = torch.nn.functional.softplus(-gen_logits) # -log(sigmoid(gen_logits))
+               
+                #------------------ W -------------#
+                if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
+                    method = self.watermarking_dict.get('method', None)
+                    # Depending on the method, we may need to pass specific parameters to the loss function. (To be completed for BB methods)
+                    # if method == 'black_box':
+                    
+                    # Compute watermark loss 
+                    wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
+                    print(f"[WM LOSS] Mean={wm_loss.item():.6f}")
+                    training_stats.report('Loss/watermark_loss', wm_loss)
+                    
+                    # Add the W loss to the G_main loss 
+                    loss_Gmain = loss_Gmain + (self.watermark_weight * wm_loss)
+                #----------------------------------#
+
                 training_stats.report('Loss/G/loss', loss_Gmain)
             with torch.autograd.profiler.record_function('Gmain_backward'):
                 loss_Gmain.mean().mul(gain).backward()

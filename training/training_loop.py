@@ -24,66 +24,11 @@ from torch_utils.ops import grid_sample_gradfix
 import legacy
 from metrics import metric_main
 
-#----------------------------------------------------------------------------
+#------------------ W -------------#
+from NNWMethods.UCHI import Uchi_tools
+from training.image_utils import save_image_grid, setup_snapshot_image_grid
+#----------------------------------#
 
-def setup_snapshot_image_grid(training_set, random_seed=0):
-    rnd = np.random.RandomState(random_seed)
-    gw = np.clip(7680 // training_set.image_shape[2], 7, 32)
-    gh = np.clip(4320 // training_set.image_shape[1], 4, 32)
-
-    # No labels => show random subset of training samples.
-    if not training_set.has_labels:
-        all_indices = list(range(len(training_set)))
-        rnd.shuffle(all_indices)
-        grid_indices = [all_indices[i % len(all_indices)] for i in range(gw * gh)]
-
-    else:
-        # Group training samples by label.
-        label_groups = dict() # label => [idx, ...]
-        for idx in range(len(training_set)):
-            label = tuple(training_set.get_details(idx).raw_label.flat[::-1])
-            if label not in label_groups:
-                label_groups[label] = []
-            label_groups[label].append(idx)
-
-        # Reorder.
-        label_order = sorted(label_groups.keys())
-        for label in label_order:
-            rnd.shuffle(label_groups[label])
-
-        # Organize into grid.
-        grid_indices = []
-        for y in range(gh):
-            label = label_order[y % len(label_order)]
-            indices = label_groups[label]
-            grid_indices += [indices[x % len(indices)] for x in range(gw)]
-            label_groups[label] = [indices[(i + gw) % len(indices)] for i in range(len(indices))]
-
-    # Load data.
-    images, labels = zip(*[training_set[i] for i in grid_indices])
-    return (gw, gh), np.stack(images), np.stack(labels)
-
-#----------------------------------------------------------------------------
-
-def save_image_grid(img, fname, drange, grid_size):
-    lo, hi = drange
-    img = np.asarray(img, dtype=np.float32)
-    img = (img - lo) * (255 / (hi - lo))
-    img = np.rint(img).clip(0, 255).astype(np.uint8)
-
-    gw, gh = grid_size
-    _N, C, H, W = img.shape
-    img = img.reshape(gh, gw, C, H, W)
-    img = img.transpose(0, 3, 1, 4, 2)
-    img = img.reshape(gh * H, gw * W, C)
-
-    assert C in [1, 3]
-    if C == 1:
-        PIL.Image.fromarray(img[:, :, 0], 'L').save(fname)
-    if C == 3:
-        PIL.Image.fromarray(img, 'RGB').save(fname)
-
-#----------------------------------------------------------------------------
 
 def training_loop(
     run_dir                 = '.',      # Output directory.
@@ -150,6 +95,25 @@ def training_loop(
     G = dnnlib.util.construct_class_by_name(**G_kwargs, **common_kwargs).train().requires_grad_(False).to(device) # subclass of torch.nn.Module
     D = dnnlib.util.construct_class_by_name(**D_kwargs, **common_kwargs).train().requires_grad_(False).to(device) # subclass of torch.nn.Module
     G_ema = copy.deepcopy(G).eval()
+
+
+    #------------------ W -------------#
+    # Common part for each Watermarking Methods
+    loss_kwargs.watermark_weight = 3   # Watermarking weight
+    ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
+    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap
+
+    # MODIFICATION FOR EACH METHOD:
+    # -- Uchida's method -- #
+    loss_kwargs.G = G                            # Generator full network architecture
+    loss_kwargs.tools = Uchi_tools(device)       # Init the class methods for watermarking
+    weight_name = 'synthesis.b32.conv0.weight'   # Weight name layer to be watermarked
+    T = 32                                       # Watermark length (! CAPACITY !)
+    watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
+    watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark}
+    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
+    loss_kwargs.watermarking_dict = watermarking_dict
+    #----------------------------------#
 
     # Resume from existing pickle.
     if (resume_pkl is not None) and (rank == 0):
@@ -361,22 +325,36 @@ def training_loop(
                     module = copy.deepcopy(module).eval().requires_grad_(False).cpu()
                 snapshot_data[name] = module
                 del module # conserve memory
+            
+            
+            #------------------ W -------------#
+            # Save watermarking dictionary if it exists for the evaluation part
+            if loss_kwargs.watermarking_dict:
+                snapshot_data['watermarking_dict'] = loss_kwargs['watermarking_dict']
+            #----------------------------------#
+
             snapshot_pkl = os.path.join(run_dir, f'network-snapshot-{cur_nimg//1000:06d}.pkl')
             if rank == 0:
                 with open(snapshot_pkl, 'wb') as f:
                     pickle.dump(snapshot_data, f)
 
         # Evaluate metrics.
+        #------------------ W -------------#
         if (snapshot_data is not None) and (len(metrics) > 0):
             if rank == 0:
                 print('Evaluating metrics...')
             for metric in metrics:
-                result_dict = metric_main.calc_metric(metric=metric, G=snapshot_data['G_ema'],
-                    dataset_kwargs=training_set_kwargs, num_gpus=num_gpus, rank=rank, device=device)
+                if loss_kwargs.watermarking_dict:
+                    result_dict = metric_main.calc_metric(metric=metric, G=snapshot_data['G_ema'],
+                        dataset_kwargs=training_set_kwargs, num_gpus=num_gpus, rank=rank, device=device, watermarking_dict=loss_kwargs['watermarking_dict'])
+                else:
+                    result_dict = metric_main.calc_metric(metric=metric, G=snapshot_data['G_ema'],
+                        dataset_kwargs=training_set_kwargs, num_gpus=num_gpus, rank=rank, device=device)
                 if rank == 0:
                     metric_main.report_metric(result_dict, run_dir=run_dir, snapshot_pkl=snapshot_pkl)
                 stats_metrics.update(result_dict.results)
         del snapshot_data # conserve memory
+        #----------------------------------#
 
         # Collect statistics.
         for phase in phases:
