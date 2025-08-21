@@ -18,6 +18,7 @@ from . import kernel_inception_distance
 from . import precision_recall
 from . import perceptual_path_length
 from . import inception_score
+from . import brisque_score as brisque_score_module
 
 #------------------ W -------------#
 # For Watermarking extraction
@@ -134,6 +135,13 @@ def uchida_extraction(opts):
         hamming_dist = 0
         bit_acc_avg = 0
     return dict(uchida_bit_acc=float(bit_acc_avg), uchida_hamming_dist=float(hamming_dist))
+
+@register_metric
+def brisque_score(opts):
+    mean_gen,mean_real,score = brisque_score_module.compute_brisque(
+        opts, max_real=50000, num_gen=50000
+    )
+    return dict(brisque_gen=mean_gen,brisque_real=mean_real,brisque_abs=score)
 #----------------------------------#
 
 #----------------------------------------------------------------------------
