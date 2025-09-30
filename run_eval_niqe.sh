@@ -1,6 +1,6 @@
 #!/bin/bash
 
-METRICS="brisque_score"
+METRICS="niqe_score"
 NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs-uchi_test/00000-CelebA_adapted_128-watermarking1-resumecustom/network-snapshot-000006.pkl"
 # NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 

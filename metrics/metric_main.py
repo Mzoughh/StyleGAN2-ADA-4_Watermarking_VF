@@ -19,6 +19,7 @@ from . import precision_recall
 from . import perceptual_path_length
 from . import inception_score
 from . import brisque_score as brisque_score_module
+from . import niqe_score as niqe_score_module
 
 #------------------ W -------------#
 # For Watermarking extraction
@@ -142,6 +143,13 @@ def brisque_score(opts):
         opts, max_real=50000, num_gen=50000
     )
     return dict(brisque_gen=mean_gen,brisque_real=mean_real,brisque_abs=score)
+
+@register_metric
+def niqe_score(opts):
+    mean_gen,mean_real,score = niqe_score_module.compute_niqe(
+        opts, max_real=50000, num_gen=50000
+    )
+    return dict(niqe_gen=mean_gen, niqe_real=mean_real, niqe_abs=score)
 #----------------------------------#
 
 #----------------------------------------------------------------------------
