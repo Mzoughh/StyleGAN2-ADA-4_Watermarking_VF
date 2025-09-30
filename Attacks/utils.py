@@ -1,4 +1,4 @@
-# import nécessaire à tous
+# utils.py
 import torch
 import os
 import torch.nn as nn
