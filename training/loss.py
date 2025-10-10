@@ -1,4 +1,4 @@
-﻿# Copyright (c) 2021, NVIDIA CORPORATION.  All rights reserved.
+# Copyright (c) 2021, NVIDIA CORPORATION.  All rights reserved.
 #
 # NVIDIA CORPORATION and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -80,18 +80,26 @@ class StyleGAN2Loss(Loss):
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
                 loss_Gmain = torch.nn.functional.softplus(-gen_logits) # -log(sigmoid(gen_logits))
-               
                 #------------------ W -------------#
                 if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
-                    method = self.watermarking_dict.get('method', None)
+                    watermarking_type = self.watermarking_dict.get('watermarking_type', None)
                     # Depending on the method, we may need to pass specific parameters to the loss function. (To be completed for BB methods)
-                    # if method == 'black_box':
-                    
-                    # Compute watermark loss 
-                    wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
-                    print(f"[WM LOSS] Mean={wm_loss.item():.6f}")
-                    training_stats.report('Loss/watermark_loss', wm_loss)
-                    
+                    if watermarking_type == 'trigger_set' :
+                        if self.watermarking_dict.get('flag_trigger', True):
+                            # Compute watermark loss 
+                            wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
+                            print(f"[TG LOSS] Mean={wm_loss.item():.6f}")
+                            training_stats.report('Loss/watermark_loss', wm_loss)
+                        else:
+                            wm_loss = torch.tensor(0.0).to(self.device)
+                            print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")
+                        
+                    if watermarking_type == 'white-box':
+                        # Compute watermark loss 
+                        wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
+                        print(f"[WM LOSS] Mean={wm_loss.item():.6f}")
+                        training_stats.report('Loss/watermark_loss', wm_loss)
+                        
                     # Add the W loss to the G_main loss 
                     loss_Gmain = loss_Gmain + (self.watermark_weight * wm_loss)
                 #----------------------------------#

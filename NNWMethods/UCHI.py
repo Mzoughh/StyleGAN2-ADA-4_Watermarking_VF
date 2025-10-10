@@ -125,7 +125,7 @@ class Uchi_tools():
     # Common part for each Watermarking Methods
     loss_kwargs.watermark_weight = 3   # Watermarking weight
     ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
-    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap
+    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
 
     # MODIFICATION FOR EACH METHOD:
     # -- Uchida's method -- #

@@ -180,6 +180,7 @@ def setup_training_loop_kwargs(
         spec.lrate = 0.002 if res >= 1024 else 0.0025
         spec.gamma = 0.0002 * (res ** 2) / spec.mb # heuristic formula
         spec.ema = spec.mb * 10 / 32
+        print(f"Auto-configured hyperparameters: mb={spec.mb}, mbstd={spec.mbstd}, fmaps={spec.fmaps}, lrate={spec.lrate}, gamma={spec.gamma}, ema={spec.ema}")
 
     args.G_kwargs = dnnlib.EasyDict(class_name='training.networks.Generator', z_dim=512, w_dim=512, mapping_kwargs=dnnlib.EasyDict(), synthesis_kwargs=dnnlib.EasyDict())
     args.D_kwargs = dnnlib.EasyDict(class_name='training.networks.Discriminator', block_kwargs=dnnlib.EasyDict(), mapping_kwargs=dnnlib.EasyDict(), epilogue_kwargs=dnnlib.EasyDict())
@@ -203,7 +204,9 @@ def setup_training_loop_kwargs(
 
     args.total_kimg = spec.kimg
     args.batch_size = spec.mb
+    print(f"Batch size: {args.batch_size}")
     args.batch_gpu = spec.mb // spec.ref_gpus
+    print(f"Batch size per GPU: {args.batch_gpu}")
     args.ema_kimg = spec.ema
     args.ema_rampup = spec.ramp
 
