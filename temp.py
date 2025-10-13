@@ -22,12 +22,24 @@ from torchvision import transforms
 from hidden.models import HiddenEncoder, HiddenDecoder, EncoderWithJND, EncoderDecoder
 from hidden.attenuations import JND
 import torch.nn.functional as F
+### 
+def msg2str(msg):
+    return "".join([('1' if el else '0') for el in msg])
 
+def str2msg(str):
+    return [True if el=='1' else False for el in str]
+
+num_bits=48
+# For trigger set, we need to normalize the images to ImageNet stats
+NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+msg_ori = torch.Tensor(str2msg("111010110101000001010111010011010100010000100111")).unsqueeze(0)
+msg = 2 * msg_ori.type(torch.float) - 1 # b k
+msg=msg.to(device)
+keys = msg.repeat(32, 1) # Apply the same key to all images BS=32
+msg_ori=msg_ori.to(device)
 
 ################ HiDDeN ###################
-NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
-default_transform = transforms.Compose([transforms.ToTensor(), NORMALIZE_IMAGENET])
+
 
 class Params():
     def __init__(self, encoder_depth:int, encoder_channels:int, decoder_depth:int, decoder_channels:int, num_bits:int,
@@ -43,6 +55,12 @@ class Params():
         self.scale_channels = scale_channels
         self.scaling_i = scaling_i
         self.scaling_w = scaling_w
+
+NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
+default_transform = transforms.Compose([transforms.ToTensor(), NORMALIZE_IMAGENET])
+default_transform_bis = transforms.Compose([transforms.ToTensor()])
+
 
 params = Params(
     encoder_depth=4, encoder_channels=64, decoder_depth=8, decoder_channels=64, num_bits=48,
@@ -64,36 +82,25 @@ encoder_with_jnd = EncoderWithJND(
     encoder, attenuation, params.scale_channels, params.scaling_i, params.scaling_w
 )
 
+
 # Load pretrained weights whitened
-ckpt_path_whitened = "/home/mzoughebi/personal_study/Original_repository_of_3_methods/stable_signature/hidden/ckpts/hidden_replicate.pth"
+ckpt_path = "/home/mzoughebi/personal_study/SG2_Test_Repo/NNWressources_gan/FER_vanilla/hidden_replicate_whit.pth"
+state_dict = torch.load(ckpt_path, map_location='cpu')['encoder_decoder']
 
-# msg_decoder = torch.jit.load(ckpt_path).to(device)
-state_dict = torch.load(ckpt_path_whitened, map_location='cpu')['encoder_decoder']
+
+
+
+
 encoder_decoder_state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+encoder_state_dict = {k.replace('encoder.', ''): v for k, v in encoder_decoder_state_dict.items() if 'encoder' in k}
 decoder_state_dict = {k.replace('decoder.', ''): v for k, v in encoder_decoder_state_dict.items() if 'decoder' in k}
+
+encoder.load_state_dict(encoder_state_dict)
 decoder.load_state_dict(decoder_state_dict)
-msg_decoder = decoder # à regarder
-msg_decoder = msg_decoder.to(device).eval()
-nbit = msg_decoder(torch.zeros(1, 3, 128, 128).to(device)).shape[-1]
-print('>>>>> Hidden LOADED')
 
-# Freeze LDM and hidden decoder
-for param in [*msg_decoder.parameters()]:
-    param.requires_grad = False
-
-# loss 
-loss_trigger = 'bce'  # 'mse' or 'bce'
-if loss_trigger == 'mse':
-    loss_trigger = lambda decoded, keys, temp=10.0: torch.mean((decoded*temp - (2*keys-1))**2) # b k - b k
-elif loss_trigger == 'bce':
-    loss_trigger = lambda decoded, keys, temp=10.0: F.binary_cross_entropy_with_logits(decoded*temp, keys, reduction='mean')
-
-# Creating key
-print(f'\n>>> Creating key with {nbit} bits...')
-key = torch.randint(0, 2, (1, nbit), dtype=torch.float32, device=device)
-key_str = "".join([ str(int(ii)) for ii in key.tolist()[0]])
-print(f'Key: {key_str}')
-keys = key.repeat(32, 1)  # repeat for the batch size
+encoder_with_jnd = encoder_with_jnd.to(device).eval()
+decoder = decoder.to(device).eval()
+print('Hidden LOADED')
 #-------------------------------- #
 
 #----------------------------------------------------------------------------
@@ -156,36 +163,39 @@ class StyleGAN2Loss(Loss):
         # Gmain: Maximize logits for generated images.
         if do_Gmain:
             with torch.autograd.profiler.record_function('Gmain_forward'):
-
                 gen_img, _gen_ws = self.run_G(gen_z, gen_c, sync=(sync and not do_Gpl)) # May get synced by Gpl.
+                # ----------------- W------------------ #
+                print(f"[DEBUG] Gen_img min={gen_img.min().item():.4f}, max={gen_img.max().item():.4f}, mean={gen_img.mean().item():.4f}") # Debug line
+                # ------------------------------------ #
                 gen_logits = self.run_D(gen_img, gen_c, sync=False)
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
                 loss_Gmain = torch.nn.functional.softplus(-gen_logits) # -log(sigmoid(gen_logits))
-
                 #------------------ W -------------#
                 if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
                     watermarking_type = self.watermarking_dict.get('watermarking_type', None)
                     # Depending on the method, we may need to pass specific parameters to the loss function. (To be completed for BB methods)
                     if watermarking_type == 'trigger_set' :
                         if self.watermarking_dict.get('flag_trigger', True):
-                            
-                            # Normalize  to ImageNet stats
+                            # 1) Normalize  to ImageNet stats
                             # DO UNNORMALIZE if done in the dataloader
                             gen_img_imnet = NORMALIZE_IMAGENET(gen_img)  #  ImageNet normalization
                             print('gen_img_imnet.shape:', gen_img_imnet.shape)
-                            # extract watermark
-                            decoded = msg_decoder((gen_img_imnet ))
-                            # compute the loss 
-                            wm_loss = loss_trigger(decoded, keys)
+                            # Decoder use on the images generated by the G with trigger vector 
+                            ft = decoder(gen_img_imnet)
+                            decoded_msg = ft > 0
+                            decoded_msg_0 = decoded_msg[0]
+                            msg_ori_0 = msg_ori[0]
+
+                            accs = (~torch.logical_xor(decoded_msg_0, msg_ori_0))  # [num_bits]
+                            print(f"Message: {msg2str(msg_ori_0.cpu().numpy())}")
+                            print(f"Decoded: {msg2str(decoded_msg_0.cpu().numpy())}")
+                            print(f"Bit Accuracy: {accs.sum().item() / num_bits}")
+
+                            temp = 10.0 # Temperature for the loss
+                            wm_loss = F.binary_cross_entropy_with_logits(ft * temp, keys, reduction='mean')
                             print(f"[TG LOSS] Mean={wm_loss.item():.6f}")
                             training_stats.report('Loss/watermark_loss', wm_loss)
-                            # Compute bit accuracy      
-                            diff = (~torch.logical_xor(decoded>0, keys>0)) # b k -> b k
-                            bit_accs = torch.sum(diff, dim=-1) / diff.shape[-1] # b k -> b
-                            print(f"Bit Accuracy: {torch.mean(bit_accs).item()}")
-                            training_stats.report('Bit ACC', bit_accs)
-
                         else:
                             wm_loss = torch.tensor(0.0).to(self.device)
                             print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")

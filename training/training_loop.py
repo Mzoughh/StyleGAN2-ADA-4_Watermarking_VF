@@ -99,9 +99,9 @@ def training_loop(
 
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 3   # Watermarking weight
-    ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
-    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
+    loss_kwargs.watermark_weight = 1   # Watermarking weight
+    # ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
+    # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
 
     # MODIFICATION FOR EACH METHOD:
     # -- Uchida's method -- #
@@ -110,7 +110,6 @@ def training_loop(
     weight_name = 'synthesis.b32.conv0.weight'   # Weight name layer to be watermarked
     T = 32                                       # Watermark length (! CAPACITY !)
     watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
-    
     watermarking_type = 'trigger_set'             # 'trigger_set' or 'white-box'
     trigger_step = 5                              # Number of batch between each trigger set insertion during training
     # trigger_vectors = torch.randn([batch_gpu, G.z_dim], device=device) 
@@ -240,7 +239,7 @@ def training_loop(
         # Fetch training data.
         with torch.autograd.profiler.record_function('data_fetch'):
             phase_real_img, phase_real_c = next(training_set_iterator)
-            phase_real_img = (phase_real_img.to(device).to(torch.float32) / 127.5 - 1).split(batch_gpu)
+            phase_real_img = (phase_real_img.to(device).to(torch.float32) / 127.5 - 1).split(batch_gpu) # W: Normalization step image are put into the range[-1;1]
             phase_real_c = phase_real_c.to(device).split(batch_gpu)
             all_gen_z = torch.randn([len(phases) * batch_size, G.z_dim], device=device)
             all_gen_z = [phase_gen_z.split(batch_gpu) for phase_gen_z in all_gen_z.split(batch_size)]

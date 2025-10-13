@@ -1,7 +1,7 @@
 #!/bin/bash
 
 METRICS="brisque_score"
-NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs-uchi_test/00000-CelebA_adapted_128-watermarking1-resumecustom/network-snapshot-000006.pkl"
+NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_test_A/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000200.pkl"
 # NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
 
