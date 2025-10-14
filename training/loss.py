@@ -22,6 +22,9 @@ from torchvision import transforms
 from hidden.models import HiddenEncoder, HiddenDecoder, EncoderWithJND, EncoderDecoder
 from hidden.attenuations import JND
 import torch.nn.functional as F
+import os
+from torchvision.utils import save_image
+
 
 
 ################ HiDDeN ###################
@@ -112,7 +115,9 @@ class StyleGAN2Loss(Loss):
         self.G_synthesis = G_synthesis
         self.D = D
         self.augment_pipe = augment_pipe
-        self.style_mixing_prob = style_mixing_prob
+        #------------------ W-------------#
+        self.style_mixing_prob = 0 # default= style_mixing_prob
+        #---------------------------------#
         self.r1_gamma = r1_gamma
         self.pl_batch_shrink = pl_batch_shrink
         self.pl_decay = pl_decay
@@ -136,7 +141,9 @@ class StyleGAN2Loss(Loss):
                     cutoff = torch.where(torch.rand([], device=ws.device) < self.style_mixing_prob, cutoff, torch.full_like(cutoff, ws.shape[1]))
                     ws[:, cutoff:] = self.G_mapping(torch.randn_like(z), c, skip_w_avg_update=True)[:, cutoff:]
         with misc.ddp_sync(self.G_synthesis, sync):
-            img = self.G_synthesis(ws)
+            # --------------- W noise mode const --------------- #
+            img = self.G_synthesis(ws, noise_mode='const')
+            #---------------------------------------------------- #
         return img, ws
 
     def run_D(self, img, c, sync):
@@ -169,11 +176,18 @@ class StyleGAN2Loss(Loss):
                     # Depending on the method, we may need to pass specific parameters to the loss function. (To be completed for BB methods)
                     if watermarking_type == 'trigger_set' :
                         if self.watermarking_dict.get('flag_trigger', True):
+
+                            # ------------------ W -------------#
+                            os.makedirs("generated_images", exist_ok=True)
+                            save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True, value_range=(-1, 1))
+                            print('SAVE IMAGE')
+                            #----------------------------------#
                             
                             # Normalize  to ImageNet stats
                             # DO UNNORMALIZE if done in the dataloader
                             gen_img_imnet = NORMALIZE_IMAGENET(gen_img)  #  ImageNet normalization
-                            print('gen_img_imnet.shape:', gen_img_imnet.shape)
+                            # print('gen_img_imnet.shape:', gen_img_imnet.shape)
+                            # print('DEBUG IMAGE',(gen_img[0]==gen_img[1]).all())
                             # extract watermark
                             decoded = msg_decoder((gen_img_imnet ))
                             # compute the loss 

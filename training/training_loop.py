@@ -99,7 +99,7 @@ def training_loop(
 
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 1   # Watermarking weight
+    loss_kwargs.watermark_weight = 1  # Watermarking weight default 1
     # ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
 
@@ -281,7 +281,8 @@ def training_loop(
                     flag_trigger= True
                     loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
                     gen_z = trigger_vector.expand_as(gen_z)
-                    gen_c = trigger_label.expand_as(gen_c)         
+                    # print('DEBUG LATENT',(gen_z[0]== gen_z[1]).all())
+                    gen_c = trigger_label.expand_as(gen_c)
                     print("Trigger vector Loaded for watermarking 1!")
                 #----------------------------------#
                 sync = (round_idx == batch_size // (batch_gpu * num_gpus) - 1)
