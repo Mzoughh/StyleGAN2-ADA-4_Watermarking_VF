@@ -1,8 +1,8 @@
 #!/bin/bash
 
 METRICS="uchida_extraction,fid50k_full"
-NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_test_A/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000200.pkl"
-
+NETWORK_W="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_exp1_bis/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000168.pkl"
+NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
 
 # echo "==== Running pruning attacks ===="
@@ -30,7 +30,7 @@ NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/tr
 echo "==== Running no attack ===="
 python calc_metrics_after_network_attacks.py \
     --metrics="$METRICS" \
-    --network="$NETWORK" \
+    --network="$NETWORK_W" \
     --attack_name="none"
 
 

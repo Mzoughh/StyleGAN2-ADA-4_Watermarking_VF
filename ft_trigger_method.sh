@@ -6,10 +6,10 @@
 
 # --- Default parameters  ---
 SNAP=1 # Snapshot interval
-OUTDIR="./training_run_trigger_fixe_noise" # Output directory for training results
+OUTDIR="./training_run_trigger_exp1_bis" # Output directory for training results
 DATA="./dataset/CelebA_adapted_128.zip" # Path to the dataset
-# RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl" # Path to the pre-trained model
-RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_test_A/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000200.pkl"
+RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl" # Path to the pre-trained model
+# RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/Experiences/training_run_trigger_test_A/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000200.pkl"
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
 METRICS="uchida_extraction" # Metric for the evaluation of Uchida method

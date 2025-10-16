@@ -116,7 +116,7 @@ class StyleGAN2Loss(Loss):
         self.D = D
         self.augment_pipe = augment_pipe
         #------------------ W-------------#
-        self.style_mixing_prob = 0 # default= style_mixing_prob
+        self.style_mixing_prob = 0 # style_mixing_prob  #= 0 # default= style_mixing_prob 
         #---------------------------------#
         self.r1_gamma = r1_gamma
         self.pl_batch_shrink = pl_batch_shrink
@@ -169,6 +169,7 @@ class StyleGAN2Loss(Loss):
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
                 loss_Gmain = torch.nn.functional.softplus(-gen_logits) # -log(sigmoid(gen_logits))
+                            
 
                 #------------------ W -------------#
                 if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
@@ -182,7 +183,8 @@ class StyleGAN2Loss(Loss):
                             save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True, value_range=(-1, 1))
                             print('SAVE IMAGE')
                             #----------------------------------#
-                            
+
+
                             # Normalize  to ImageNet stats
                             # DO UNNORMALIZE if done in the dataloader
                             gen_img_imnet = NORMALIZE_IMAGENET(gen_img)  #  ImageNet normalization

@@ -31,10 +31,10 @@ from training.training_loop import setup_snapshot_image_grid, save_image_grid
 def generate_samples(G, args, device, name):
         # Generate a few random samples before the attack (code from training_loop.py with G_ema = G):
         # Set a fixed seed for reproducibility
-        seed = 42
-        torch.manual_seed(seed)
-        if device.type == 'cuda':
-            torch.cuda.manual_seed_all(seed)
+        # seed = 42
+        # torch.manual_seed(seed)
+        # if device.type == 'cuda':
+        #     torch.cuda.manual_seed_all(seed)
         training_set = dnnlib.util.construct_class_by_name(**args.dataset_kwargs)
         grid_size, images, labels = setup_snapshot_image_grid(training_set)
         grid_z = torch.randn([labels.shape[0], G.z_dim], device=device).split(4) # batch_gpu=4

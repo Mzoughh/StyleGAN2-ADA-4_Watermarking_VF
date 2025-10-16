@@ -6,3 +6,8 @@ training-runs-uchi_test/
 hidden/
 training_run_trigger_test_A/
 Experiences/
+generated_images/
+run_eval_10_W_and_V.sh
+temp.txt
+training_run_trigger_exp1/
+training_run_trigger_exp1_bis/
