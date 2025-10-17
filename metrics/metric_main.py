@@ -178,20 +178,22 @@ def niqe_score(opts):
 def T4G_extraction(opts):
     if opts.watermarking_dict is not None:
         model_device =  opts.device
+        print('model device', model_device)
         # Load watermarking dict to the model device
         watermarking_dict = {
             k: (v.to(model_device) if torch.is_tensor(v) else v)
             for k, v in opts.watermarking_dict.items()
         }
         
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
 
-        print('model device', model_device)
         tools = T4G_tools(model_device)  
         print('OK')
-        trigger_label=watermarking_dict['trigger_label'].to(model_device) 
-        trigger_vector=watermarking_dict['trigger_vector'].to(model_device)
+        trigger_label=watermarking_dict['trigger_label']
+        trigger_vector=watermarking_dict['trigger_vector']
 
-        gen_img, _ =run_G(opts.G.mapping, opts.G.synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+        gen_img, _ =run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
         bit_acc_avg, _ = tools.extraction(gen_img, watermarking_dict)
 
     else:

@@ -100,8 +100,8 @@ def training_loop(
 
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 1  # Watermarking weight default 1
-    # ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
+    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    ema_kimg = 4                         # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
 
     # MODIFICATION FOR EACH METHOD:
