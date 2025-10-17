@@ -24,7 +24,7 @@ def prune_model_l1_unstructured(model, percentage):
 
     for name, parameters in model.named_parameters():
         # if name == target_name:
-        if parameters.requires_grad:
+        if "synthesis" in name:
             print(f"Pruning parameter: {name}")
 
             tensor = parameters.data
@@ -44,8 +44,6 @@ def prune_model_l1_unstructured(model, percentage):
             print(f"Before pruning: {before_nonzero}/{total} non-zero weights")
             print(f"After pruning:  {after_nonzero}/{total} non-zero weights")
             print(f"Sparsity: {sparsity:.2f}%")
-            break
-
 
     return model
 #--------------------------------#
