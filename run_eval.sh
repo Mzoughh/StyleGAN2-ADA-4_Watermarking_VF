@@ -2,7 +2,7 @@
 
 # METRICS="T4G_extraction"
 METRICS="T4G_extraction,fid50k_full"
-NETWORK_W="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_A0/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000108.pkl"
+NETWORK_W="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_A1/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000200.pkl"
 NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
 
@@ -14,7 +14,7 @@ python calc_metrics_after_network_attacks.py \
 
 
 echo "==== Running pruning attacks ===="
-for PERCENT in 5 10 25 40 60 80 90
+for PERCENT in 5 7 10 15 20 25 30 35 40 50 60 80 90
 do
     echo "Running pruning with $PERCENT% sparsity..."
     python calc_metrics_after_network_attacks.py \
@@ -25,7 +25,7 @@ do
 done
 
 echo "==== Running quantization attacks ===="
-for BITS in 4 6 8 2
+for BITS in 2 3 4 5 6 7 8 9 10 11 12 
 do
     echo "Running quantization with $BITS bits..."
     python calc_metrics_after_network_attacks.py \
