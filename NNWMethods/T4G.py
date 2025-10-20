@@ -143,19 +143,20 @@ class T4G_tools():
     '''
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 1  # Watermarking weight default 1
-    # ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
+    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
-
+    print('EMA_KIMG:',ema_kimg)
+    print('KIMG_PER_TICK:',kimg_per_tick)
     # MODIFICATION FOR EACH METHOD:
-    # -- F4G's method -- #
+    # -- T4G's method -- #
     loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = F4G_tools(device)        # Init the class methods for watermarking
+    loss_kwargs.tools = T4G_tools(device)        # Init the class methods for watermarking
     
     watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
     trigger_step = 5                             # Number of batch between each trigger set insertion during training
     
-    loss_trigger= 'mse'                          # 'mse' or 'bce'  default 'bce'
+    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
     # trigger_vectors = torch.randn([batch_gpu, G.z_dim], device=device) 
     # triger_labels = torch.zeros([batch_gpu, G.c_dim], device=device)

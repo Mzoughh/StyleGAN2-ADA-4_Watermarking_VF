@@ -29,5 +29,5 @@ python train.py \
 echo " ===> Training completed successfully <=== "
 
 
-# --- Configurations uses in train.py for Uchida ---
-# 'watermarking': dict(ref_gpus=-1, kimg=6,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
+# --- Configurations uses in train.py for T4G ---
+#'watermarking': dict(ref_gpus=-1, kimg=200,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.

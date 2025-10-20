@@ -114,10 +114,10 @@ class StyleGAN2Loss(Loss):
                             wm_loss = torch.tensor(0.0).to(self.device)
                             print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")
                         
-                    if watermarking_type == 'white-box':
+                    elif watermarking_type == 'white-box':
                         # Compute watermark loss 
                         wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
-                        print(f"[WM LOSS] Mean={wm_loss.item():.6f}")
+                        print(f"[WB LOSS] Mean={wm_loss.item():.6f}")
                         training_stats.report('Loss/watermark_loss', wm_loss)
                         
                     # Add the W loss to the G_main loss 

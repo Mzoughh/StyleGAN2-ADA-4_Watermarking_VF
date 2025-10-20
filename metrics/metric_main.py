@@ -144,12 +144,16 @@ def uchida_extraction(opts):
     if opts.watermarking_dict is not None:
         # model_device = next(opts.G.parameters()).device
         model_device =  opts.device
+        print('model device', model_device)
         watermarking_dict = {
             k: (v.to(model_device) if torch.is_tensor(v) else v)
             for k, v in opts.watermarking_dict.items()
         }
+
+        Generator = opts.G.to(model_device)
+
         tools = Uchi_tools(model_device)
-        extraction, hamming_dist = tools.detection(opts.G, watermarking_dict)
+        extraction, hamming_dist = tools.detection(Generator, watermarking_dict)
         extraction_r = torch.round(extraction)
         diff = (~torch.logical_xor((extraction_r).cpu()>0, watermarking_dict['watermark'].cpu()>0)) 
         bit_acc_avg = torch.sum(diff, dim=-1) / diff.shape[-1]
