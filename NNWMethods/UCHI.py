@@ -136,11 +136,6 @@ class Uchi_tools():
     watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
 
     watermarking_type = 'white-box'            # 'trigger_set' or 'white-box'
-
-
     watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark, 'watermarking_type':watermarking_type}
-    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
-    loss_kwargs.watermarking_dict = watermarking_dict
     #----------------------------------#
-    
     '''

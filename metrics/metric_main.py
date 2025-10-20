@@ -193,6 +193,7 @@ def T4G_extraction(opts):
         G_synthesis = opts.G.synthesis.to(model_device)
 
         tools = T4G_tools(model_device)  
+
         print('OK')
         trigger_label=watermarking_dict['trigger_label']
         trigger_vector=watermarking_dict['trigger_vector']
@@ -204,8 +205,6 @@ def T4G_extraction(opts):
         print("No F4G watermarking dictionary provided, skipping extraction metrics (0 by default).")
         bit_acc_avg = 0
     return dict(f4g_bit_acc=float(bit_acc_avg))
-
-
 #----------------------------------#
 
 #----------------------------------------------------------------------------

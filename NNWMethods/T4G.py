@@ -48,7 +48,7 @@ class T4G_tools():
 
 
     def init(self, net, watermarking_dict, save=None):
-
+        print(">>>> T4G INIT <<<<<")
         ################ HiDDeN ###################
         print('>>>>> Loading HiDDen Watermarking Decoder')
         # Pretrained weight for HiDDen
@@ -98,13 +98,6 @@ class T4G_tools():
 
         return watermarking_dict
     
-    def detection(self, net, watermarking_dict):
-        """
-        :param file_watermark: file that contain our saved watermark elements
-        :return: the extracted watermark, the hamming distance compared to the original watermark
-        """
-        bit_acc_avg=0.99
-        return bit_acc_avg
     
     def extraction(self, gen_img, watermarking_dict):
         """

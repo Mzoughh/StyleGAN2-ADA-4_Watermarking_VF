@@ -113,13 +113,27 @@ def training_loop(
     watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
 
     watermarking_type = 'white-box'            # 'trigger_set' or 'white-box'
-
-
     watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark, 'watermarking_type':watermarking_type}
-    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
-    loss_kwargs.watermarking_dict = watermarking_dict
     #----------------------------------#
 
+    # ----------------- W COMMON PART TO USE THE WATERMARKING METRICS ---------------#
+    # Load watermarking_dict from resume_pkl if exists to continue training or add an other type of protection
+    if resume_pkl is not None:
+        print(f"Loading watermarking_dict from {resume_pkl}...")
+        with dnnlib.util.open_url(resume_pkl) as f:
+            resume_data = legacy.load_network_pkl(f)
+            if 'watermarking_dict' in resume_data:
+                print("Watermarking dictionary loaded successfully.")
+                resume_data['watermarking_dict'].update(watermarking_dict_tmp) # Order important to overwrite some values if needed
+                watermarking_dict_tmp= resume_data['watermarking_dict']
+            else:
+                print("No watermarking_dict found in the resume file. Using default values.")
+
+    # Initialiser le watermarking_dict avec les valeurs mises à jour
+    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
+    loss_kwargs.watermarking_dict = watermarking_dict
+    #-------------------------------------------------------------------------------# 
+    
     # Resume from existing pickle.
     if (resume_pkl is not None) and (rank == 0):
         print(f'Resuming from "{resume_pkl}"')
