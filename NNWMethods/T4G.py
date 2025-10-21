@@ -11,6 +11,11 @@ import os
 import torch.nn.functional as F
 #-----------------------------------#
 
+#------------------- Watson VGG Imperceptibility Loss -------------#
+from loss.loss_provider import LossProvider
+#-------------------------------------------------------------------#
+
+
 # CLASS FUNCTION INSPIRED FROM: CARL DE SOUSA TRIAS MPAI IMPLEMENTATION
 # ADAPTED FOR A TRIGGER-SET METHOD FOR GANs with HiDDen as a Decoder inspired of STABLE SIGNATURE
 
@@ -30,6 +35,7 @@ class Params():
         self.scaling_w = scaling_w
 
 
+
 class T4G_tools():
 
     def __init__(self,device) -> None:
@@ -37,6 +43,16 @@ class T4G_tools():
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
         self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])
+        
+        # ------------------- Watson VGG Imperceptibility Loss -------------#
+        # Parameters for the Watson VGG Imperceptibility Loss
+        provider = LossProvider()
+        # self.loss_percep = provider.get_loss_function('Watson-VGG', colorspace='RGB', pretrained=True, reduction='sum')
+        self.loss_percep = provider.get_loss_function('SSIM', colorspace='RGB', pretrained=True, reduction='sum')
+        self.loss_percep = self.loss_percep.to(self.device)
+        #-------------------------------------------------------------------#
+
+        
         super(T4G_tools, self).__init__()
 
 
@@ -117,18 +133,30 @@ class T4G_tools():
         return bit_accs_avg, decoded
     
 
+    # ------------------ Watson VGG Imperceptibility Loss -------------#
+    def vgg_loss_for_imperceptibility(self, imgs_w, imgs):
+        return self.loss_percep(imgs_w, imgs) / imgs_w.shape[0] # Modification no normalization here 
+    # -------------------------------------------------------------------# 
+    
+
     def trigger_loss_for_stylegan(self, gen_img, watermarking_dict):
-        """
-        :param net: aimed network
-        :param watermarking_dict: dictionary with all watermarking elements
-        :return: Uchida's loss for StyleGAN
-        """
+        
         # Decoded watermark and bit accuracy at each iteration
         bit_accs_avg, decoded = self.extraction(gen_img, watermarking_dict)
         print(f"Bit Accuracy: {bit_accs_avg}")
         # compute the loss 
         wm_loss = watermarking_dict['loss_trigger'](decoded, watermarking_dict['keys'])
         print(f"[TG LOSS] Mean={wm_loss.item():.6f}")
+
+        #-------------------#
+        # ############ Imperceptibility Loss ############
+        lossi = self.vgg_loss_for_imperceptibility(watermarking_dict['vanilla_trigger_image'], gen_img)
+        print(f"[IMPERCEPTIBILITY LOSS] Mean={lossi.item():.6f}")
+        wm_loss += lossi
+        ############ Imperceptibility Loss ############
+        #-------------------#
+
+
         return wm_loss, bit_accs_avg # Return Bit ACC temporary for monitoring
     
     # you can copy-paste this section into main to test Uchida's method

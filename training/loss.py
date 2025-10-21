@@ -101,6 +101,9 @@ class StyleGAN2Loss(Loss):
                             # -------------------------------#
                             os.makedirs("generated_images", exist_ok=True)
                             save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True, value_range=(-1, 1))
+                            #---------PERCEPTUAL SAVE----------#
+                            self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img.detach().clone())
+                            #---------------PS------------------#
                             print('SAVE IMAGE')
                             #----------------------------------#
 

@@ -12,7 +12,7 @@ RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00
 RESUME_W='/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_trigger_A1/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000200.pkl'
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
-METRICS="T4G_extraction" # Metric for the evaluation of Uchida method
+METRICS="uchida_extraction,fid50k_full" # Metric for the evaluation of Uchida method
 
 export TORCH_CUDA_ARCH_LIST="6.1" # Set the CUDA architecture list
 # --- RUN the command ---
@@ -20,7 +20,7 @@ python train.py \
     --snap=$SNAP \
     --outdir="$OUTDIR" \
     --data="$DATA" \
-    --resume="$RESUME_W" \
+    --resume="$RESUME" \
     --cfg="$CFG" \
     --gpus="$GPUS" \
     --metrics="$METRICS" \

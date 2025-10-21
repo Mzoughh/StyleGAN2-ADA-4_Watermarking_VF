@@ -100,20 +100,33 @@ def training_loop(
 
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 3   # Watermarking weight
-    ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
-    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
-
+    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
+    # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
+    print('EMA_KIMG:',ema_kimg)
+    print('KIMG_PER_TICK:',kimg_per_tick)
     # MODIFICATION FOR EACH METHOD:
-    # -- Uchida's method -- #
+    # -- T4G's method -- #
     loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = Uchi_tools(device)       # Init the class methods for watermarking
-    weight_name = 'synthesis.b32.conv0.weight'   # Weight name layer to be watermarked
-    T = 32                                       # Watermark length (! CAPACITY !)
-    watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
+    loss_kwargs.tools = T4G_tools(device)        # Init the class methods for watermarking
+    
+    watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
+    trigger_step = 5                             # Number of batch between each trigger set insertion during training
+    
+    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
-    watermarking_type = 'white-box'            # 'trigger_set' or 'white-box'
-    watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark, 'watermarking_type':watermarking_type}
+    # trigger_vectors = torch.randn([batch_gpu, G.z_dim], device=device) 
+    # triger_labels = torch.zeros([batch_gpu, G.c_dim], device=device)
+    trigger_vector = torch.randn([1, G.z_dim], device=device)  # Fixed trigger vector for all the batch
+    trigger_label = torch.zeros([1, G.c_dim], device=device)
+
+    ckpt_path_whitened = "/home/mzoughebi/personal_study/Original_repository_of_3_methods/stable_signature/hidden/ckpts/hidden_replicate.pth" 
+   
+    watermarking_dict_tmp = {'watermarking_type': watermarking_type,'ckpt_path_whitened': ckpt_path_whitened,
+                            'trigger_step': trigger_step, 'trigger_vector': trigger_vector, 'trigger_label':trigger_label,
+                            'loss_trigger': loss_trigger}
+    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
+    loss_kwargs.watermarking_dict = watermarking_dict
     #----------------------------------#
 
     # ----------------- W COMMON PART TO USE THE WATERMARKING METRICS ---------------#
