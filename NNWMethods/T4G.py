@@ -150,7 +150,7 @@ class T4G_tools():
 
         #-------------------#
         # ############ Imperceptibility Loss ############
-        lossi = self.vgg_loss_for_imperceptibility(watermarking_dict['vanilla_trigger_image'], gen_img)
+        lossi = 100*(self.vgg_loss_for_imperceptibility(watermarking_dict['vanilla_trigger_image'], gen_img))
         print(f"[IMPERCEPTIBILITY LOSS] Mean={lossi.item():.6f}")
         wm_loss += lossi
         ############ Imperceptibility Loss ############
