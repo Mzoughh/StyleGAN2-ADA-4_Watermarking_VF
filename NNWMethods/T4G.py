@@ -62,6 +62,8 @@ class T4G_tools():
     def bce_loss_trigger(self, decoded, keys, temp=10.0):
         return F.binary_cross_entropy_with_logits(decoded * temp, keys, reduction='mean')
 
+    def str2msg(self,str):
+        return [True if el=='1' else False for el in str]
 
     def init(self, net, watermarking_dict, save=None):
         print(">>>> T4G INIT <<<<<")
@@ -79,17 +81,49 @@ class T4G_tools():
             num_bits=params.num_bits, 
             channels=params.decoder_channels
         )
+        encoder = HiddenEncoder(
+            num_blocks=params.encoder_depth, 
+            num_bits=params.num_bits, 
+            channels=params.encoder_channels
+        )
+        attenuation = JND(preprocess=self.UNNORMALIZE_IMAGENET) if params.attenuation == "jnd" else None
+        encoder_with_jnd = EncoderWithJND(
+            encoder, attenuation, params.scale_channels, params.scaling_i, params.scaling_w
+        )
+
         # Loading the pretrained HiDDen decoder
         state_dict = torch.load(ckpt_path_whitened, map_location='cpu')['encoder_decoder']
         encoder_decoder_state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+        
         decoder_state_dict = {k.replace('decoder.', ''): v for k, v in encoder_decoder_state_dict.items() if 'decoder' in k}
         decoder.load_state_dict(decoder_state_dict)
         msg_decoder = decoder.to(self.device).eval()
         nbit = msg_decoder(torch.zeros(1, 3, 128, 128).to(self.device)).shape[-1]
+        
+        # --------------------------- PERCEPUTIBILITY LOSS --------------------------- #
+        encoder_state_dict = {k.replace('encoder.', ''): v for k, v in encoder_decoder_state_dict.items() if 'encoder' in k}
+        encoder.load_state_dict(encoder_state_dict)
+        self.encoder_with_jnd = encoder_with_jnd.to(self.device).eval()
+        # --------------------------- PERCEPUTIBILITY LOSS --------------------------- #
+
         print('>>>>> HiDDen LOADED')
         # Freezing HiDDen Decoder
-        for param in [*msg_decoder.parameters()]:
+        for param in [*msg_decoder.parameters(), *self.encoder_with_jnd.parameters()]:
             param.requires_grad = False
+
+        # --------------------------- PERCEPUTIBILITY LOSS --------------------------- #
+        # create message
+        random_msg = False
+        if random_msg:
+            msg_ori = torch.randint(0, 2, (1, params.num_bits), device=self.device).bool() # b k
+        else:
+            msg_ori = torch.Tensor(self.str2msg("111010110101000001010111010011010100010000100111")).unsqueeze(0)
+        msg = 2 * msg_ori.type(torch.float) - 1 # b k
+        #------------W----------#
+        self.msg = msg.to(self.device)
+        # ----------------------#
+        # --------------------------- PERCEPUTIBILITY LOSS --------------------------- #
+
 
         # Define the loss :
         loss_trigger = watermarking_dict['loss_trigger']
@@ -121,7 +155,8 @@ class T4G_tools():
         :return: the extracted watermark, the hamming distance compared to the original watermark
         """   
         # Normalize  to ImageNet stats (Do a step of UNNORMALIZE if done in the dataloader
-        gen_img_imnet = self.NORMALIZE_IMAGENET(gen_img) 
+        gen_img_shifted = (gen_img - torch.min(gen_img))/(torch.max(gen_img) - torch.min(gen_img)) # shift to [0,1]
+        gen_img_imnet = self.NORMALIZE_IMAGENET(gen_img_shifted) 
         # extract watermark
         decoded = watermarking_dict['msg_decoder']((gen_img_imnet ))
 
@@ -143,21 +178,17 @@ class T4G_tools():
         
         # Decoded watermark and bit accuracy at each iteration
         bit_accs_avg, decoded = self.extraction(gen_img, watermarking_dict)
-        print(f"Bit Accuracy: {bit_accs_avg}")
+        print(f"[TG BIT ACC] {bit_accs_avg}")
         # compute the loss 
         wm_loss = watermarking_dict['loss_trigger'](decoded, watermarking_dict['keys'])
-        print(f"[TG LOSS] Mean={wm_loss.item():.6f}")
-
+        print(f"[TG LOSS MARK] Mean={wm_loss.item():.6f}")
         #-------------------#
         # ############ Imperceptibility Loss ############
-        lossi = 100*(self.vgg_loss_for_imperceptibility(watermarking_dict['vanilla_trigger_image'], gen_img))
-        print(f"[IMPERCEPTIBILITY LOSS] Mean={lossi.item():.6f}")
-        wm_loss += lossi
+        loss_i = (self.vgg_loss_for_imperceptibility(watermarking_dict['vanilla_trigger_image'].expand(gen_img.shape[0], -1, -1, -1), gen_img))
+        print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
         ############ Imperceptibility Loss ############
         #-------------------#
-
-
-        return wm_loss, bit_accs_avg # Return Bit ACC temporary for monitoring
+        return wm_loss, loss_i, bit_accs_avg # Return Bit ACC temporary for monitoring
     
     # you can copy-paste this section into main to test Uchida's method
 

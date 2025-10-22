@@ -16,8 +16,22 @@ from torch_utils import misc
 from torch_utils.ops import conv2d_gradfix
 import os 
 from torchvision.utils import save_image
+from PIL import Image
 
 
+# -------------------- FUNCTION TO CONVERT TENSOR TO ENCODED IMAGE USING JND ENCODER FOR HIDEEN -------------------- #
+def tensor2encoded_image(input_tensor, tools, device,watermarking_dict):
+    min_input = torch.min(input_tensor)
+    max_input = torch.max(input_tensor)
+    input_tensor_shift = (input_tensor - min_input)/(max_input - min_input) # Shift to [0, 1]
+    input_tensor_normalize = tools.NORMALIZE_IMAGENET(input_tensor_shift) # Normalize to imagenet values
+    input_tensor_normalize_batch = input_tensor_normalize.unsqueeze(0) # B C H W
+    encoded_input_tensor = tools.encoder_with_jnd(input_tensor_normalize_batch, tools.msg)
+
+    unormalized_encoded_image = tools.UNNORMALIZE_IMAGENET(encoded_input_tensor)
+    unshifted_encoded_image = unormalized_encoded_image*(max_input - min_input) + min_input
+    watermarking_dict.setdefault('vanilla_trigger_image', unshifted_encoded_image) 
+    save_image(unormalized_encoded_image, f"generated_images/vanilla_trigger_encoded_image.png", normalize=True)
 #----------------------------------------------------------------------------
 
 class Loss:
@@ -25,7 +39,6 @@ class Loss:
         raise NotImplementedError()
 
 #----------------------------------------------------------------------------
-
 class StyleGAN2Loss(Loss):
     def __init__(self, device, G_mapping, G_synthesis, D,  G=None, tools=None, watermarking_dict=None, watermark_weight=None, augment_pipe=None, style_mixing_prob=0.9, r1_gamma=10, pl_batch_shrink=2, pl_decay=0.01, pl_weight=2):
         super().__init__()
@@ -100,18 +113,26 @@ class StyleGAN2Loss(Loss):
 
                             # -------------------------------#
                             os.makedirs("generated_images", exist_ok=True)
-                            save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True, value_range=(-1, 1))
+                            save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
                             #---------PERCEPTUAL SAVE----------#
-                            self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img.detach().clone())
+                            # ADD the ENCODED IMAGE WITH JND AS THE VANILLA TRIGGER IMAGE
+                            if 'vanilla_trigger_image' in self.watermarking_dict:
+                                pass
+                            else:
+                                tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.device, self.watermarking_dict)
                             #---------------PS------------------#
                             print('SAVE IMAGE')
                             #----------------------------------#
-
-
-                            wm_loss, bit_accs_avg = self.tools.trigger_loss_for_stylegan(gen_img, self.watermarking_dict)
-                            print(f"[TG LOSS] Mean={wm_loss.item():.6f}")
-                            training_stats.report('Loss/watermark_loss', wm_loss)
+                            wm_loss, loss_i,bit_accs_avg = self.tools.trigger_loss_for_stylegan(gen_img, self.watermarking_dict)
+                            training_stats.report('Loss/watermark/mark_insertion', wm_loss)
+                            lambda_perceptual = self.watermarking_dict.get('lambda_perceptual', 100)
+                            loss_i = lambda_perceptual * loss_i
+                            training_stats.report('Loss/watermark/perceptual', loss_i)
                             training_stats.report('Bit-ACC', bit_accs_avg)
+                            wm_loss+=loss_i
+                            print(f"[TG TOTAL LOSS] Mean={wm_loss.item():.6f}")
+                            training_stats.report('Loss/watermark/loss_total', self.watermark_weight * wm_loss)
+                            #----------------------------------#
                         
                         else:
                             wm_loss = torch.tensor(0.0).to(self.device)
