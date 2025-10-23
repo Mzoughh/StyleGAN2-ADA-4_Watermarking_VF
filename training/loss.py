@@ -20,7 +20,7 @@ from PIL import Image
 
 
 # -------------------- FUNCTION TO CONVERT TENSOR TO ENCODED IMAGE USING JND ENCODER FOR HIDEEN -------------------- #
-def tensor2encoded_image(input_tensor, tools, device,watermarking_dict):
+def tensor2encoded_image(input_tensor, tools, watermarking_dict):
     min_input = torch.min(input_tensor)
     max_input = torch.max(input_tensor)
     input_tensor_shift = (input_tensor - min_input)/(max_input - min_input) # Shift to [0, 1]
@@ -111,46 +111,61 @@ class StyleGAN2Loss(Loss):
 
                         if self.watermarking_dict.get('flag_trigger', True):
 
-                            # -------------------------------#
+                            # ------------- DEBUG ZONE ---------#
+                            ## SAVE GENERATED IMAGE WITH TRIGGER
                             os.makedirs("generated_images", exist_ok=True)
                             save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+                            #----------------------------------#
+
                             #---------PERCEPTUAL SAVE----------#
                             # ADD the ENCODED IMAGE WITH JND AS THE VANILLA TRIGGER IMAGE
                             if 'vanilla_trigger_image' in self.watermarking_dict:
                                 pass
                             else:
-                                tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.device, self.watermarking_dict)
-                            #---------------PS------------------#
-                            print('SAVE IMAGE')
+                                tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.watermarking_dict)
                             #----------------------------------#
-                            wm_loss, loss_i,bit_accs_avg = self.tools.trigger_loss_for_stylegan(gen_img, self.watermarking_dict)
-                            training_stats.report('Loss/watermark/mark_insertion', wm_loss)
-                            lambda_perceptual = self.watermarking_dict.get('lambda_perceptual', 100)
-                            loss_i = lambda_perceptual * loss_i
+
+                            #---------------PERCEPTUAL LOSS------------------#
+                            print()
+                            loss_i = self.tools.perceptual_loss_for_imperceptibility(gen_img, self.watermarking_dict)
+                            loss_i_ponderate = self.watermarking_dict.get('lambda_perceptual', 250) * loss_i
                             training_stats.report('Loss/watermark/perceptual', loss_i)
-                            training_stats.report('Bit-ACC', bit_accs_avg)
-                            wm_loss+=loss_i
-                            print(f"[TG TOTAL LOSS] Mean={wm_loss.item():.6f}")
-                            training_stats.report('Loss/watermark/loss_total', self.watermark_weight * wm_loss)
                             #----------------------------------#
-                        
+
+                            #---------------MARK LOSS------------------#
+                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(gen_img, self.watermarking_dict)
+                            wm_loss_ponderate = self.watermark_weight * wm_loss
+                            training_stats.report('Loss/watermark/mark_insertion', wm_loss)
+                            training_stats.report('Bit-ACC', bit_accs_avg) # Mean is already done in extraction function
+                            #----------------------------------#
+
+                            #---------------TOTAL WATERMARK LOSS------------------#
+                            total_wm_loss = wm_loss_ponderate + loss_i_ponderate
+                            print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
+                            training_stats.report('Loss/watermark/loss_total', total_wm_loss)
+                            #----------------------------------#
+
                         else:
                             wm_loss = torch.tensor(0.0).to(self.device)
+                            total_wm_loss = wm_loss
                             print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")
                         
                     elif watermarking_type == 'white-box':
-                        # Compute watermark loss 
                         wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
-                        print(f"[WB LOSS] Mean={wm_loss.item():.6f}")
-                        training_stats.report('Loss/watermark_loss', wm_loss)
+                        wm_loss_ponderate = self.watermark_weight * wm_loss
+                        total_wm_loss = wm_loss_ponderate
+                        print(f"[WB LOSS] Mean={total_wm_loss.item():.6f}")
+                        training_stats.report('Loss/watermark_loss', total_wm_loss)
                         
                     # Add the W loss to the G_main loss 
-                    loss_Gmain = loss_Gmain + (self.watermark_weight * wm_loss)
-                #----------------------------------#
+                    loss_Gmain = loss_Gmain.mean().mul(gain) + total_wm_loss
+                
 
                 training_stats.report('Loss/G/loss', loss_Gmain)
             with torch.autograd.profiler.record_function('Gmain_backward'):
-                loss_Gmain.mean().mul(gain).backward()
+                loss_Gmain.backward()
+            
+            #----------------------------------#
 
         # Gpl: Apply path length regularization.
         if do_Gpl:

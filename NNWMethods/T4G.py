@@ -12,7 +12,7 @@ import torch.nn.functional as F
 #-----------------------------------#
 
 #------------------- Watson VGG Imperceptibility Loss -------------#
-from loss.loss_provider import LossProvider
+import torch.nn.functional as F
 #-------------------------------------------------------------------#
 
 
@@ -42,17 +42,7 @@ class T4G_tools():
         self.device = device
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
-        self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])
-        
-        # ------------------- Watson VGG Imperceptibility Loss -------------#
-        # Parameters for the Watson VGG Imperceptibility Loss
-        provider = LossProvider()
-        # self.loss_percep = provider.get_loss_function('Watson-VGG', colorspace='RGB', pretrained=True, reduction='sum')
-        self.loss_percep = provider.get_loss_function('SSIM', colorspace='RGB', pretrained=True, reduction='sum')
-        self.loss_percep = self.loss_percep.to(self.device)
-        #-------------------------------------------------------------------#
-
-        
+        self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])  
         super(T4G_tools, self).__init__()
 
 
@@ -111,7 +101,7 @@ class T4G_tools():
         for param in [*msg_decoder.parameters(), *self.encoder_with_jnd.parameters()]:
             param.requires_grad = False
 
-        # --------------------------- PERCEPUTIBILITY LOSS --------------------------- #
+        # --------------------------- PERCEPTIBILITY LOSS --------------------------- #
         # create message
         random_msg = False
         if random_msg:
@@ -122,9 +112,8 @@ class T4G_tools():
         #------------W----------#
         self.msg = msg.to(self.device)
         # ----------------------#
-        # --------------------------- PERCEPUTIBILITY LOSS --------------------------- #
-
-
+        # --------------------------- PERCEPTIBILITY LOSS --------------------------- #
+        
         # Define the loss :
         loss_trigger = watermarking_dict['loss_trigger']
         if loss_trigger == 'mse':
@@ -167,31 +156,52 @@ class T4G_tools():
         
         return bit_accs_avg, decoded
     
-
-    # ------------------ Watson VGG Imperceptibility Loss -------------#
-    def vgg_loss_for_imperceptibility(self, imgs_w, imgs):
-        return self.loss_percep(imgs_w, imgs) / imgs_w.shape[0] # Modification no normalization here 
-    # -------------------------------------------------------------------# 
+    def ssim_loss(self, predictions, targets, C1=0.01**2, C2=0.03**2):
+        # Compute mean and variance for predictions and targets
+        mu_x = F.avg_pool2d(predictions, 3, 1)
+        mu_y = F.avg_pool2d(targets, 3, 1)
+        sigma_x = F.avg_pool2d(predictions ** 2, 3, 1) - mu_x ** 2
+        sigma_y = F.avg_pool2d(targets ** 2, 3, 1) - mu_y ** 2
+        sigma_xy = F.avg_pool2d(predictions * targets, 3, 1) - mu_x * mu_y
+        # Compute SSIM score
+        ssim_numerator = (2 * mu_x * mu_y + C1) * (2 * sigma_xy + C2)
+        ssim_denominator = (mu_x ** 2 + mu_y ** 2 + C1) * (sigma_x + sigma_y + C2)
+        ssim_score = ssim_numerator / ssim_denominator
+        return 1 - ssim_score.mean()
+ 
     
 
-    def trigger_loss_for_stylegan(self, gen_img, watermarking_dict):
+    def perceptual_loss_for_imperceptibility(self, gen_imgs, watermarking_dict):
+
+        # From trigger image to a batch of trigger images
+        trigger_imgs = watermarking_dict['vanilla_trigger_image'].expand(gen_imgs.shape[0], -1, -1, -1)
         
-        # Decoded watermark and bit accuracy at each iteration
+        # Need to shift image in O-1 range for perceptual loss as done in STABLE SIGNATURE
+        trigger_imgs = (trigger_imgs - trigger_imgs.min()) / (trigger_imgs.max() - trigger_imgs.min())
+        gen_imgs = (gen_imgs - gen_imgs.min()) / (gen_imgs.max() - gen_imgs.min())
+        
+        # Compute perceptual loss
+        # loss_i = self.loss_percep(trigger_imgs, gen_imgs)/gen_imgs.shape[0]
+        loss_i = self.ssim_loss(gen_imgs, trigger_imgs)
+        print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
+        return loss_i
+
+
+    def mark_loss_for_insertion(self, gen_img, watermarking_dict):
+        
+        # Decoded watermark and bit accuracy at each iteration 
+        # Normalization is done inside extraction function
         bit_accs_avg, decoded = self.extraction(gen_img, watermarking_dict)
         print(f"[TG BIT ACC] {bit_accs_avg}")
-        # compute the loss 
+    
+        # Compute the loss 
         wm_loss = watermarking_dict['loss_trigger'](decoded, watermarking_dict['keys'])
         print(f"[TG LOSS MARK] Mean={wm_loss.item():.6f}")
-        #-------------------#
-        # ############ Imperceptibility Loss ############
-        loss_i = (self.vgg_loss_for_imperceptibility(watermarking_dict['vanilla_trigger_image'].expand(gen_img.shape[0], -1, -1, -1), gen_img))
-        print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
-        ############ Imperceptibility Loss ############
-        #-------------------#
-        return wm_loss, loss_i, bit_accs_avg # Return Bit ACC temporary for monitoring
-    
-    # you can copy-paste this section into main to test Uchida's method
 
+        return wm_loss, bit_accs_avg 
+    
+
+    # you can copy-paste this section into main to test Uchida's method
     '''
     #------------------ W -------------#
     # Common part for each Watermarking Methods
