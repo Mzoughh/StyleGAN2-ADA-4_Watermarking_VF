@@ -160,7 +160,7 @@ def setup_training_loop_kwargs(
         'cifar':     dict(ref_gpus=2,  kimg=100000, mb=64, mbstd=32, fmaps=1,   lrate=0.0025, gamma=0.01, ema=500, ramp=0.05, map=2),
 
         #------------------ W -------------#
-        'watermarking': dict(ref_gpus=-1, kimg=6,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
+        'watermarking': dict(ref_gpus=-1, kimg=250,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
         #----------------------------------#
     
     
@@ -180,6 +180,7 @@ def setup_training_loop_kwargs(
         spec.lrate = 0.002 if res >= 1024 else 0.0025
         spec.gamma = 0.0002 * (res ** 2) / spec.mb # heuristic formula
         spec.ema = spec.mb * 10 / 32
+        print(f"Auto-configured hyperparameters: mb={spec.mb}, mbstd={spec.mbstd}, fmaps={spec.fmaps}, lrate={spec.lrate}, gamma={spec.gamma}, ema={spec.ema}")
 
     args.G_kwargs = dnnlib.EasyDict(class_name='training.networks.Generator', z_dim=512, w_dim=512, mapping_kwargs=dnnlib.EasyDict(), synthesis_kwargs=dnnlib.EasyDict())
     args.D_kwargs = dnnlib.EasyDict(class_name='training.networks.Discriminator', block_kwargs=dnnlib.EasyDict(), mapping_kwargs=dnnlib.EasyDict(), epilogue_kwargs=dnnlib.EasyDict())
@@ -203,7 +204,9 @@ def setup_training_loop_kwargs(
 
     args.total_kimg = spec.kimg
     args.batch_size = spec.mb
+    print(f"Batch size: {args.batch_size}")
     args.batch_gpu = spec.mb // spec.ref_gpus
+    print(f"Batch size per GPU: {args.batch_gpu}")
     args.ema_kimg = spec.ema
     args.ema_rampup = spec.ramp
 
@@ -248,6 +251,7 @@ def setup_training_loop_kwargs(
         args.ada_target = 0.6
 
     elif aug == 'noaug':
+        print('Disabling discriminator augmentation.')
         pass
 
     elif aug == 'fixed':

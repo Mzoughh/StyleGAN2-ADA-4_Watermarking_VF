@@ -17,12 +17,14 @@ def prune_model_l1_unstructured(model, percentage):
     if percentage <= 0.0 or percentage >= 100.0:
         print("Percentage must be between 0 and 100 (exclusive).")
         return model  
-
+    
+    
     percentage = percentage / 100.0
     target_name = "synthesis.b32.conv0.weight"
 
     for name, parameters in model.named_parameters():
-        if name == target_name:
+        # if name == target_name:
+        if "synthesis" in name:
             print(f"Pruning parameter: {name}")
 
             tensor = parameters.data
@@ -42,9 +44,6 @@ def prune_model_l1_unstructured(model, percentage):
             print(f"Before pruning: {before_nonzero}/{total} non-zero weights")
             print(f"After pruning:  {after_nonzero}/{total} non-zero weights")
             print(f"Sparsity: {sparsity:.2f}%")
-            break
-    else:
-        print(f"Parameter '{target_name}' not found in model.")
 
     return model
 #--------------------------------#

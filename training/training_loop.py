@@ -26,6 +26,7 @@ from metrics import metric_main
 
 #------------------ W -------------#
 from NNWMethods.UCHI import Uchi_tools
+from NNWMethods.T4G import T4G_tools
 from training.image_utils import save_image_grid, setup_snapshot_image_grid,save_watermark_diff_map
 #----------------------------------#
 
@@ -99,22 +100,53 @@ def training_loop(
 
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 3   # Watermarking weight
-    ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
-    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap
-
+    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
+    # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
+    print('EMA_KIMG:',ema_kimg)
+    print('KIMG_PER_TICK:',kimg_per_tick)
     # MODIFICATION FOR EACH METHOD:
-    # -- Uchida's method -- #
+    # -- T4G's method -- #
     loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = Uchi_tools(device)       # Init the class methods for watermarking
-    weight_name = 'synthesis.b32.conv0.weight'   # Weight name layer to be watermarked
-    T = 32                                       # Watermark length (! CAPACITY !)
-    watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
-    watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark}
+    loss_kwargs.tools = T4G_tools(device)        # Init the class methods for watermarking
+    
+    watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
+    trigger_step = 5                             # Number of batch between each trigger set insertion during training
+    
+    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
+
+    # trigger_vectors = torch.randn([batch_gpu, G.z_dim], device=device) 
+    # triger_labels = torch.zeros([batch_gpu, G.c_dim], device=device)
+    trigger_vector = torch.randn([1, G.z_dim], device=device)  # Fixed trigger vector for all the batch
+    trigger_label = torch.zeros([1, G.c_dim], device=device)
+
+    ckpt_path_whitened = "/home/mzoughebi/personal_study/Original_repository_of_3_methods/stable_signature/hidden/ckpts/hidden_replicate.pth" 
+   
+    watermarking_dict_tmp = {'watermarking_type': watermarking_type,'ckpt_path_whitened': ckpt_path_whitened,
+                            'trigger_step': trigger_step, 'trigger_vector': trigger_vector, 'trigger_label':trigger_label,
+                            'loss_trigger': loss_trigger}
     watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
     loss_kwargs.watermarking_dict = watermarking_dict
     #----------------------------------#
 
+    # ----------------- W COMMON PART TO USE THE WATERMARKING METRICS ---------------#
+    # Load watermarking_dict from resume_pkl if exists to continue training or add an other type of protection
+    if resume_pkl is not None:
+        print(f"Loading watermarking_dict from {resume_pkl}...")
+        with dnnlib.util.open_url(resume_pkl) as f:
+            resume_data = legacy.load_network_pkl(f)
+            if 'watermarking_dict' in resume_data:
+                print("Watermarking dictionary loaded successfully.")
+                resume_data['watermarking_dict'].update(watermarking_dict_tmp) # Order important to overwrite some values if needed
+                watermarking_dict_tmp= resume_data['watermarking_dict']
+            else:
+                print("No watermarking_dict found in the resume file. Using default values.")
+
+    # Initialiser le watermarking_dict avec les valeurs mises à jour
+    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
+    loss_kwargs.watermarking_dict = watermarking_dict
+    #-------------------------------------------------------------------------------# 
+    
     # Resume from existing pickle.
     if (resume_pkl is not None) and (rank == 0):
         print(f'Resuming from "{resume_pkl}"')
@@ -233,7 +265,7 @@ def training_loop(
         # Fetch training data.
         with torch.autograd.profiler.record_function('data_fetch'):
             phase_real_img, phase_real_c = next(training_set_iterator)
-            phase_real_img = (phase_real_img.to(device).to(torch.float32) / 127.5 - 1).split(batch_gpu)
+            phase_real_img = (phase_real_img.to(device).to(torch.float32) / 127.5 - 1).split(batch_gpu) # W: Normalization step image are put into the range[-1;1]
             phase_real_c = phase_real_c.to(device).split(batch_gpu)
             all_gen_z = torch.randn([len(phases) * batch_size, G.z_dim], device=device)
             all_gen_z = [phase_gen_z.split(batch_gpu) for phase_gen_z in all_gen_z.split(batch_size)]
@@ -241,6 +273,17 @@ def training_loop(
             all_gen_c = torch.from_numpy(np.stack(all_gen_c)).pin_memory().to(device)
             all_gen_c = [phase_gen_c.split(batch_gpu) for phase_gen_c in all_gen_c.split(batch_size)]
 
+        # ------------- W --------------#
+        # Be sure that trigger vectors are not already in the random generated gen_z
+        if watermarking_type == 'trigger_set' :
+            for phase_gen_z_list in all_gen_z:
+                for gen_z in phase_gen_z_list:
+                    # Verify if one of the random gen_z is equal to the trigger vector
+                    if torch.any(torch.all(gen_z == trigger_vector, dim=1)):
+                        # Regenerate this z
+                        gen_z = torch.randn_like(gen_z)
+            print('No Trigger Collision in the random gen_z')
+        #---------------------------------#
         # Execute training phases.
         for phase, phase_gen_z, phase_gen_c in zip(phases, all_gen_z, all_gen_c):
             if batch_idx % phase.interval != 0:
@@ -253,11 +296,28 @@ def training_loop(
             phase.module.requires_grad_(True)
 
             # Accumulate gradients over multiple rounds.
+            #------------------ W -------------#
+            flag_trigger = False # We use a FLAG in the futur watermarking dict to indicate if we are in a trigger batch or not
+            loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
+            #----------------------------------#
             for round_idx, (real_img, real_c, gen_z, gen_c) in enumerate(zip(phase_real_img, phase_real_c, phase_gen_z, phase_gen_c)):
+                #------------------ W -------------#
+                print(f"[BATCH {batch_idx}] [ROUND {round_idx} PHASE {phase.name}] ")
+                if watermarking_type == 'trigger_set' and batch_idx % trigger_step == 0 :
+                    flag_trigger= True
+                    loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
+                    gen_z = trigger_vector.expand_as(gen_z)
+                    # print('DEBUG LATENT',(gen_z[0]== gen_z[1]).all())
+                    gen_c = trigger_label.expand_as(gen_c)
+                    print("Trigger vector Loaded for watermarking 1!")
+                #----------------------------------#
                 sync = (round_idx == batch_size // (batch_gpu * num_gpus) - 1)
                 gain = phase.interval
                 loss.accumulate_gradients(phase=phase.name, real_img=real_img, real_c=real_c, gen_z=gen_z, gen_c=gen_c, sync=sync, gain=gain)
-
+            #------------------ W -------------#
+            flag_trigger = False
+            loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
+            #----------------------------------#
             # Update weights.
             phase.module.requires_grad_(False)
             with torch.autograd.profiler.record_function(phase.name + '_opt'):

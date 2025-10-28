@@ -24,7 +24,9 @@ from . import niqe_score as niqe_score_module
 #------------------ W -------------#
 # For Watermarking extraction
 from NNWMethods.UCHI import Uchi_tools
+from NNWMethods.T4G import T4G_tools
 import copy
+from torch_utils import misc
 #----------------------------------#
 
 #----------------------------------------------------------------------------
@@ -84,6 +86,26 @@ def report_metric(result_dict, run_dir=None, snapshot_pkl=None, attack_name='van
         with open(os.path.join(run_dir, f'metric-{metric}-{attack_name}-{parameter_attack_name}.jsonl'), 'at') as f:
             f.write(jsonl_line + '\n')
 #----------------------------------#
+
+# -----------------W---------------#
+# Adaptation of the run_G() function from losss.py to the metric.py file to generate new samples for watermark extraction
+def run_G(G_mapping, G_synthesis, z, c, sync, style_mixing_prob, noise):
+    with misc.ddp_sync(G_mapping, sync):
+        ws = G_mapping(z, c)
+        if style_mixing_prob > 0:
+            with torch.autograd.profiler.record_function('style_mixing'):
+                cutoff = torch.empty([], dtype=torch.int64, device=ws.device).random_(1, ws.shape[1])
+                cutoff = torch.where(torch.rand([], device=ws.device) < style_mixing_prob, cutoff, torch.full_like(cutoff, ws.shape[1]))
+                ws[:, cutoff:] = G_mapping(torch.randn_like(z), c, skip_w_avg_update=True)[:, cutoff:]
+    with misc.ddp_sync(G_synthesis, sync):
+        # --------------- W noise mode const --------------- #
+        print('OK2')
+        img = G_synthesis(ws, noise_mode=noise)
+        #---------------------------------------------------- #
+    return img, ws
+# ----------------------------------#
+
+
 #----------------------------------------------------------------------------
 # Primary metrics.
 
@@ -120,13 +142,18 @@ def is50k(opts):
 @register_metric
 def uchida_extraction(opts):
     if opts.watermarking_dict is not None:
-        model_device = next(opts.G.parameters()).device
+        # model_device = next(opts.G.parameters()).device
+        model_device =  opts.device
+        print('model device', model_device)
         watermarking_dict = {
             k: (v.to(model_device) if torch.is_tensor(v) else v)
             for k, v in opts.watermarking_dict.items()
         }
+
+        Generator = opts.G.to(model_device)
+
         tools = Uchi_tools(model_device)
-        extraction, hamming_dist = tools.detection(opts.G, watermarking_dict)
+        extraction, hamming_dist = tools.detection(Generator, watermarking_dict)
         extraction_r = torch.round(extraction)
         diff = (~torch.logical_xor((extraction_r).cpu()>0, watermarking_dict['watermark'].cpu()>0)) 
         bit_acc_avg = torch.sum(diff, dim=-1) / diff.shape[-1]
@@ -150,6 +177,34 @@ def niqe_score(opts):
         opts, max_real=50000, num_gen=50000
     )
     return dict(niqe_gen=mean_gen, niqe_real=mean_real, niqe_abs=score)
+
+@register_metric
+def T4G_extraction(opts):
+    if opts.watermarking_dict is not None:
+        model_device =  opts.device
+        print('model device', model_device)
+        # Load watermarking dict to the model device
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
+
+        tools = T4G_tools(model_device)  
+
+        print('OK')
+        trigger_label=watermarking_dict['trigger_label']
+        trigger_vector=watermarking_dict['trigger_vector']
+
+        gen_img, _ =run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+        bit_acc_avg, _ = tools.extraction(gen_img, watermarking_dict)
+
+    else:
+        print("No F4G watermarking dictionary provided, skipping extraction metrics (0 by default).")
+        bit_acc_avg = 0
+    return dict(f4g_bit_acc=float(bit_acc_avg))
 #----------------------------------#
 
 #----------------------------------------------------------------------------

@@ -14,24 +14,95 @@ import torch
 from torch_utils import training_stats
 from torch_utils import misc
 from torch_utils.ops import conv2d_gradfix
-import os 
-from torchvision.utils import save_image
-from PIL import Image
+
+# -------------W---------------- #
+### Additional packages for trigger-set watermarking methods
+device = torch.device('cuda')
+from torchvision import transforms
+from hidden.models import HiddenEncoder, HiddenDecoder, EncoderWithJND, EncoderDecoder
+from hidden.attenuations import JND
+import torch.nn.functional as F
+### 
+def msg2str(msg):
+    return "".join([('1' if el else '0') for el in msg])
+
+def str2msg(str):
+    return [True if el=='1' else False for el in str]
+
+num_bits=48
+# For trigger set, we need to normalize the images to ImageNet stats
+NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+msg_ori = torch.Tensor(str2msg("111010110101000001010111010011010100010000100111")).unsqueeze(0)
+msg = 2 * msg_ori.type(torch.float) - 1 # b k
+msg=msg.to(device)
+keys = msg.repeat(32, 1) # Apply the same key to all images BS=32
+msg_ori=msg_ori.to(device)
+
+################ HiDDeN ###################
 
 
-# -------------------- FUNCTION TO CONVERT TENSOR TO ENCODED IMAGE USING JND ENCODER FOR HIDEEN -------------------- #
-def tensor2encoded_image(input_tensor, tools, watermarking_dict):
-    min_input = torch.min(input_tensor)
-    max_input = torch.max(input_tensor)
-    input_tensor_shift = (input_tensor - min_input)/(max_input - min_input) # Shift to [0, 1]
-    input_tensor_normalize = tools.NORMALIZE_IMAGENET(input_tensor_shift) # Normalize to imagenet values
-    input_tensor_normalize_batch = input_tensor_normalize.unsqueeze(0) # B C H W
-    encoded_input_tensor = tools.encoder_with_jnd(input_tensor_normalize_batch, tools.msg)
+class Params():
+    def __init__(self, encoder_depth:int, encoder_channels:int, decoder_depth:int, decoder_channels:int, num_bits:int,
+                attenuation:str, scale_channels:bool, scaling_i:float, scaling_w:float):
+        # encoder and decoder parameters
+        self.encoder_depth = encoder_depth
+        self.encoder_channels = encoder_channels
+        self.decoder_depth = decoder_depth
+        self.decoder_channels = decoder_channels
+        self.num_bits = num_bits
+        # attenuation parameters
+        self.attenuation = attenuation
+        self.scale_channels = scale_channels
+        self.scaling_i = scaling_i
+        self.scaling_w = scaling_w
 
-    unormalized_encoded_image = tools.UNNORMALIZE_IMAGENET(encoded_input_tensor)
-    unshifted_encoded_image = unormalized_encoded_image*(max_input - min_input) + min_input
-    watermarking_dict.setdefault('vanilla_trigger_image', unshifted_encoded_image) 
-    save_image(unormalized_encoded_image, f"generated_images/vanilla_trigger_encoded_image.png", normalize=True)
+NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
+default_transform = transforms.Compose([transforms.ToTensor(), NORMALIZE_IMAGENET])
+default_transform_bis = transforms.Compose([transforms.ToTensor()])
+
+
+params = Params(
+    encoder_depth=4, encoder_channels=64, decoder_depth=8, decoder_channels=64, num_bits=48,
+    attenuation="jnd", scale_channels=False, scaling_i=1, scaling_w=1.5
+)
+
+decoder = HiddenDecoder(
+    num_blocks=params.decoder_depth, 
+    num_bits=params.num_bits, 
+    channels=params.decoder_channels
+)
+encoder = HiddenEncoder(
+    num_blocks=params.encoder_depth, 
+    num_bits=params.num_bits, 
+    channels=params.encoder_channels
+)
+attenuation = JND(preprocess=UNNORMALIZE_IMAGENET) if params.attenuation == "jnd" else None
+encoder_with_jnd = EncoderWithJND(
+    encoder, attenuation, params.scale_channels, params.scaling_i, params.scaling_w
+)
+
+
+# Load pretrained weights whitened
+ckpt_path = "/home/mzoughebi/personal_study/SG2_Test_Repo/NNWressources_gan/FER_vanilla/hidden_replicate_whit.pth"
+state_dict = torch.load(ckpt_path, map_location='cpu')['encoder_decoder']
+
+
+
+
+
+encoder_decoder_state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+encoder_state_dict = {k.replace('encoder.', ''): v for k, v in encoder_decoder_state_dict.items() if 'encoder' in k}
+decoder_state_dict = {k.replace('decoder.', ''): v for k, v in encoder_decoder_state_dict.items() if 'decoder' in k}
+
+encoder.load_state_dict(encoder_state_dict)
+decoder.load_state_dict(decoder_state_dict)
+
+encoder_with_jnd = encoder_with_jnd.to(device).eval()
+decoder = decoder.to(device).eval()
+print('Hidden LOADED')
+#-------------------------------- #
+
 #----------------------------------------------------------------------------
 
 class Loss:
@@ -39,6 +110,7 @@ class Loss:
         raise NotImplementedError()
 
 #----------------------------------------------------------------------------
+
 class StyleGAN2Loss(Loss):
     def __init__(self, device, G_mapping, G_synthesis, D,  G=None, tools=None, watermarking_dict=None, watermark_weight=None, augment_pipe=None, style_mixing_prob=0.9, r1_gamma=10, pl_batch_shrink=2, pl_decay=0.01, pl_weight=2):
         super().__init__()
@@ -47,9 +119,7 @@ class StyleGAN2Loss(Loss):
         self.G_synthesis = G_synthesis
         self.D = D
         self.augment_pipe = augment_pipe
-        #------------------ W-------------#
-        self.style_mixing_prob = 0 # style_mixing_prob  #= 0 # default= style_mixing_prob 
-        #---------------------------------#
+        self.style_mixing_prob = style_mixing_prob
         self.r1_gamma = r1_gamma
         self.pl_batch_shrink = pl_batch_shrink
         self.pl_decay = pl_decay
@@ -73,9 +143,7 @@ class StyleGAN2Loss(Loss):
                     cutoff = torch.where(torch.rand([], device=ws.device) < self.style_mixing_prob, cutoff, torch.full_like(cutoff, ws.shape[1]))
                     ws[:, cutoff:] = self.G_mapping(torch.randn_like(z), c, skip_w_avg_update=True)[:, cutoff:]
         with misc.ddp_sync(self.G_synthesis, sync):
-            # --------------- W noise mode const --------------- #
-            img = self.G_synthesis(ws, noise_mode='const')
-            #---------------------------------------------------- #
+            img = self.G_synthesis(ws)
         return img, ws
 
     def run_D(self, img, c, sync):
@@ -95,78 +163,56 @@ class StyleGAN2Loss(Loss):
         # Gmain: Maximize logits for generated images.
         if do_Gmain:
             with torch.autograd.profiler.record_function('Gmain_forward'):
-
                 gen_img, _gen_ws = self.run_G(gen_z, gen_c, sync=(sync and not do_Gpl)) # May get synced by Gpl.
+                # ----------------- W------------------ #
+                print(f"[DEBUG] Gen_img min={gen_img.min().item():.4f}, max={gen_img.max().item():.4f}, mean={gen_img.mean().item():.4f}") # Debug line
+                # ------------------------------------ #
                 gen_logits = self.run_D(gen_img, gen_c, sync=False)
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
                 loss_Gmain = torch.nn.functional.softplus(-gen_logits) # -log(sigmoid(gen_logits))
-                            
-
                 #------------------ W -------------#
                 if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
                     watermarking_type = self.watermarking_dict.get('watermarking_type', None)
                     # Depending on the method, we may need to pass specific parameters to the loss function. (To be completed for BB methods)
                     if watermarking_type == 'trigger_set' :
-
                         if self.watermarking_dict.get('flag_trigger', True):
+                            # 1) Normalize  to ImageNet stats
+                            # DO UNNORMALIZE if done in the dataloader
+                            gen_img_imnet = NORMALIZE_IMAGENET(gen_img)  #  ImageNet normalization
+                            print('gen_img_imnet.shape:', gen_img_imnet.shape)
+                            # Decoder use on the images generated by the G with trigger vector 
+                            ft = decoder(gen_img_imnet)
+                            decoded_msg = ft > 0
+                            decoded_msg_0 = decoded_msg[0]
+                            msg_ori_0 = msg_ori[0]
 
-                            # ------------- DEBUG ZONE ---------#
-                            ## SAVE GENERATED IMAGE WITH TRIGGER
-                            os.makedirs("generated_images", exist_ok=True)
-                            save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
-                            #----------------------------------#
+                            accs = (~torch.logical_xor(decoded_msg_0, msg_ori_0))  # [num_bits]
+                            print(f"Message: {msg2str(msg_ori_0.cpu().numpy())}")
+                            print(f"Decoded: {msg2str(decoded_msg_0.cpu().numpy())}")
+                            print(f"Bit Accuracy: {accs.sum().item() / num_bits}")
 
-                            #---------PERCEPTUAL SAVE----------#
-                            # ADD the ENCODED IMAGE WITH JND AS THE VANILLA TRIGGER IMAGE
-                            if 'vanilla_trigger_image' in self.watermarking_dict:
-                                pass
-                            else:
-                                tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.watermarking_dict)
-                                # self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img[0].detach().clone()) # STABLE VERSION 
-                            #----------------------------------#
-
-                            #---------------PERCEPTUAL LOSS------------------#
-                            print()
-                            loss_i = self.tools.perceptual_loss_for_imperceptibility(gen_img, self.watermarking_dict)
-                            loss_i_ponderate = self.watermarking_dict.get('lambda_perceptual', 250) * loss_i
-                            training_stats.report('Loss/watermark/perceptual', loss_i)
-                            #----------------------------------#
-
-                            #---------------MARK LOSS------------------#
-                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(gen_img, self.watermarking_dict)
-                            wm_loss_ponderate = self.watermark_weight * wm_loss
-                            training_stats.report('Loss/watermark/mark_insertion', wm_loss)
-                            training_stats.report('Bit-ACC', bit_accs_avg) # Mean is already done in extraction function
-                            #----------------------------------#
-
-                            #---------------TOTAL WATERMARK LOSS------------------#
-                            total_wm_loss = wm_loss_ponderate + loss_i_ponderate
-                            print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
-                            training_stats.report('Loss/watermark/loss_total', total_wm_loss)
-                            #----------------------------------#
-
+                            temp = 10.0 # Temperature for the loss
+                            wm_loss = F.binary_cross_entropy_with_logits(ft * temp, keys, reduction='mean')
+                            print(f"[TG LOSS] Mean={wm_loss.item():.6f}")
+                            training_stats.report('Loss/watermark_loss', wm_loss)
                         else:
                             wm_loss = torch.tensor(0.0).to(self.device)
-                            total_wm_loss = wm_loss
                             print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")
                         
-                    elif watermarking_type == 'white-box':
+                    if watermarking_type == 'white-box':
+                        # Compute watermark loss 
                         wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
-                        wm_loss_ponderate = self.watermark_weight * wm_loss
-                        total_wm_loss = wm_loss_ponderate
-                        print(f"[WB LOSS] Mean={total_wm_loss.item():.6f}")
-                        training_stats.report('Loss/watermark_loss', total_wm_loss)
+                        print(f"[WM LOSS] Mean={wm_loss.item():.6f}")
+                        training_stats.report('Loss/watermark_loss', wm_loss)
                         
                     # Add the W loss to the G_main loss 
-                    loss_Gmain = loss_Gmain.mean().mul(gain) + total_wm_loss
-                
+                    loss_Gmain = loss_Gmain + (self.watermark_weight * wm_loss)
+                #----------------------------------#
 
                 training_stats.report('Loss/G/loss', loss_Gmain)
             with torch.autograd.profiler.record_function('Gmain_backward'):
-                loss_Gmain.backward()
-            
-            #----------------------------------#
+                loss_Gmain.mean().mul(gain).backward()
 
         # Gpl: Apply path length regularization.
         if do_Gpl:

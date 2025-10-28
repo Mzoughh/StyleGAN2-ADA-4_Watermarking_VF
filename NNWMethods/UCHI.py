@@ -125,7 +125,7 @@ class Uchi_tools():
     # Common part for each Watermarking Methods
     loss_kwargs.watermark_weight = 3   # Watermarking weight
     ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
-    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap
+    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
 
     # MODIFICATION FOR EACH METHOD:
     # -- Uchida's method -- #
@@ -134,9 +134,8 @@ class Uchi_tools():
     weight_name = 'synthesis.b32.conv0.weight'   # Weight name layer to be watermarked
     T = 32                                       # Watermark length (! CAPACITY !)
     watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
-    watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark}
-    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
-    loss_kwargs.watermarking_dict = watermarking_dict
+
+    watermarking_type = 'white-box'            # 'trigger_set' or 'white-box'
+    watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark, 'watermarking_type':watermarking_type}
     #----------------------------------#
-    
     '''

@@ -67,7 +67,8 @@ def quantization(model, num_bits):
 
     with torch.no_grad():
         for name, param in model.named_parameters():
-            if name == target_name:
+            # if name == target_name:
+            if "synthesis" in name:
                 print(f"Quantizing parameter: {name}")
 
                 tensor = param.data
@@ -82,9 +83,6 @@ def quantization(model, num_bits):
 
                 print(f"Before quantization: min={before_min:.4f}, max={before_max:.4f}")
                 print(f"After quantization:  min={after_min:.4f}, max={after_max:.4f}")
-                break
-        else:
-            print(f"Parameter '{target_name}' not found in model.")
 
     return model
 #--------------------------------------- #
