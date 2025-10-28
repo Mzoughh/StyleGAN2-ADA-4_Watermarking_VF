@@ -160,7 +160,7 @@ def setup_training_loop_kwargs(
         'cifar':     dict(ref_gpus=2,  kimg=100000, mb=64, mbstd=32, fmaps=1,   lrate=0.0025, gamma=0.01, ema=500, ramp=0.05, map=2),
 
         #------------------ W -------------#
-        'watermarking': dict(ref_gpus=-1, kimg=200,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
+        'watermarking': dict(ref_gpus=-1, kimg=250,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
         #----------------------------------#
     
     

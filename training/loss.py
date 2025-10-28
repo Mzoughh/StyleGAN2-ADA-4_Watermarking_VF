@@ -123,6 +123,7 @@ class StyleGAN2Loss(Loss):
                                 pass
                             else:
                                 tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.watermarking_dict)
+                                # self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img[0].detach().clone()) # STABLE VERSION 
                             #----------------------------------#
 
                             #---------------PERCEPTUAL LOSS------------------#
