@@ -25,6 +25,7 @@ from . import niqe_score as niqe_score_module
 # For Watermarking extraction
 from NNWMethods.UCHI import Uchi_tools
 from NNWMethods.T4G import T4G_tools
+from NNWMethods.IPR import IPR_tools
 import copy
 from torch_utils import misc
 #----------------------------------#
@@ -194,7 +195,6 @@ def T4G_extraction(opts):
 
         tools = T4G_tools(model_device)  
 
-        print('OK')
         trigger_label=watermarking_dict['trigger_label']
         trigger_vector=watermarking_dict['trigger_vector']
 
@@ -205,6 +205,41 @@ def T4G_extraction(opts):
         print("No F4G watermarking dictionary provided, skipping extraction metrics (0 by default).")
         bit_acc_avg = 0
     return dict(f4g_bit_acc=float(bit_acc_avg))
+
+
+@register_metric
+def IPR_extraction(opts):
+
+    if opts.watermarking_dict is not None:
+        model_device =  opts.device
+        print('model device', model_device)
+        # Load watermarking dict to the model device
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
+
+        tools = IPR_tools(model_device)  
+        
+        batch_size = 32
+
+        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
+        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
+        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
+        print('trigger vector generated for evaluation metrics')
+        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+        gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+    
+        print('generation done')
+        SSIM, _ = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict)
+
+    else:
+        print("No IPR watermarking dictionary provided, skipping extraction metrics (0 by default).")
+        SSIM= 0
+    return dict(ipr_SSIM=float(SSIM))
 #----------------------------------#
 
 #----------------------------------------------------------------------------

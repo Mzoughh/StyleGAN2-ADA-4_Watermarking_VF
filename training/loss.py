@@ -77,7 +77,7 @@ class StyleGAN2Loss(Loss):
             img = self.G_synthesis(ws, noise_mode='const')
             #---------------------------------------------------- #
         return img, ws
-
+  
     def run_D(self, img, c, sync):
         if self.augment_pipe is not None:
             img = self.augment_pipe(img)
@@ -86,6 +86,14 @@ class StyleGAN2Loss(Loss):
         return logits
 
     def accumulate_gradients(self, phase, real_img, real_c, gen_z, gen_c, sync, gain):
+
+        # ----------------------------------
+        # if trigger vector computed in the training loop
+        if isinstance(gen_z, list):
+            gen_z = gen_z[0]
+            gen_z_trigger = gen_z[1]
+        #-----------------------------------
+
         assert phase in ['Gmain', 'Greg', 'Gboth', 'Dmain', 'Dreg', 'Dboth']
         do_Gmain = (phase in ['Gmain', 'Gboth'])
         do_Dmain = (phase in ['Dmain', 'Dboth'])
@@ -96,6 +104,7 @@ class StyleGAN2Loss(Loss):
         if do_Gmain:
             with torch.autograd.profiler.record_function('Gmain_forward'):
 
+                
                 gen_img, _gen_ws = self.run_G(gen_z, gen_c, sync=(sync and not do_Gpl)) # May get synced by Gpl.
                 gen_logits = self.run_D(gen_img, gen_c, sync=False)
                 training_stats.report('Loss/scores/fake', gen_logits)
@@ -112,9 +121,9 @@ class StyleGAN2Loss(Loss):
                         if self.watermarking_dict.get('flag_trigger', True):
 
                             # ------------- DEBUG ZONE ---------#
-                            ## SAVE GENERATED IMAGE WITH TRIGGER
-                            os.makedirs("generated_images", exist_ok=True)
-                            save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+                            # ## SAVE GENERATED IMAGE WITH TRIGGER
+                            # os.makedirs("generated_images", exist_ok=True)
+                            # save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
                             #----------------------------------#
 
                             #---------PERCEPTUAL SAVE----------#
@@ -122,20 +131,24 @@ class StyleGAN2Loss(Loss):
                             if 'vanilla_trigger_image' in self.watermarking_dict:
                                 pass
                             else:
-                                tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.watermarking_dict)
-                                # self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img[0].detach().clone()) # STABLE VERSION 
+                                # tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.watermarking_dict) # FOR HIDDEN WATERMARKING in perceptual loss
+                                self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img[0].detach().clone()) # STABLE VERSION 
                             #----------------------------------#
 
                             #---------------PERCEPTUAL LOSS------------------#
-                            print()
-                            loss_i = self.tools.perceptual_loss_for_imperceptibility(gen_img, self.watermarking_dict)
-                            loss_i_ponderate = self.watermarking_dict.get('lambda_perceptual', 250) * loss_i
+                            #------------- W -------------#
+                            trigger_vector = self.tools.trigger_vector_modification(gen_z,self.watermarking_dict)
+                            print('<<<Trigger_vector generated>>>')
+                            gen_img_from_trigger, _ = self.run_G(trigger_vector, gen_c, sync=(sync and not do_Gpl)) # May get synced by Gpl.
+                            # ------------------------------#
+                            loss_i = self.tools.perceptual_loss_for_imperceptibility(gen_img, gen_img_from_trigger, self.watermarking_dict)
+                            loss_i_ponderate = self.watermark_weight[1] * loss_i 
                             training_stats.report('Loss/watermark/perceptual', loss_i)
                             #----------------------------------#
 
                             #---------------MARK LOSS------------------#
-                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(gen_img, self.watermarking_dict)
-                            wm_loss_ponderate = self.watermark_weight * wm_loss
+                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(gen_img_from_trigger, self.watermarking_dict)
+                            wm_loss_ponderate = self.watermark_weight[0] * wm_loss
                             training_stats.report('Loss/watermark/mark_insertion', wm_loss)
                             training_stats.report('Bit-ACC', bit_accs_avg) # Mean is already done in extraction function
                             #----------------------------------#

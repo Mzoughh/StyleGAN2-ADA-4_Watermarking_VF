@@ -200,12 +200,15 @@ class T4G_tools():
 
         return wm_loss, bit_accs_avg 
     
+    def trigger_vector_modification(self,gen_z,watermarking_dict):
+        watermarking_dict['trigger_vector'].expand_as(gen_z)
+    
 
     # you can copy-paste this section into main to test Uchida's method
     '''
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    loss_kwargs.watermark_weight = [1, 250]     # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
     # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
     print('EMA_KIMG:',ema_kimg)

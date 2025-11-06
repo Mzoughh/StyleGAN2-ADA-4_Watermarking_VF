@@ -27,6 +27,7 @@ from metrics import metric_main
 #------------------ W -------------#
 from NNWMethods.UCHI import Uchi_tools
 from NNWMethods.T4G import T4G_tools
+from NNWMethods.IPR import IPR_tools
 from training.image_utils import save_image_grid, setup_snapshot_image_grid,save_watermark_diff_map
 #----------------------------------#
 
@@ -97,37 +98,43 @@ def training_loop(
     D = dnnlib.util.construct_class_by_name(**D_kwargs, **common_kwargs).train().requires_grad_(False).to(device) # subclass of torch.nn.Module
     G_ema = copy.deepcopy(G).eval()
 
-
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    loss_kwargs.watermark_weight = [0, 300] # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
     # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
     print('EMA_KIMG:',ema_kimg)
     print('KIMG_PER_TICK:',kimg_per_tick)
     # MODIFICATION FOR EACH METHOD:
-    # -- T4G's method -- #
+    # -- IPR's method -- #
     loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = T4G_tools(device)        # Init the class methods for watermarking
-    
+    loss_kwargs.tools = IPR_tools(device)        # Init the class methods for watermarking
+
     watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
     trigger_step = 5                             # Number of batch between each trigger set insertion during training
     
     loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
-    # trigger_vectors = torch.randn([batch_gpu, G.z_dim], device=device) 
-    # triger_labels = torch.zeros([batch_gpu, G.c_dim], device=device)
-    trigger_vector = torch.randn([1, G.z_dim], device=device)  # Fixed trigger vector for all the batch
-    trigger_label = torch.zeros([1, G.c_dim], device=device)
+    c = -10
+    n = 5                                       # Number of indices to set to 0 in the binary mask
+    constant_value_for_mask = c * torch.ones((batch_gpu,G.z_dim), device=device) # Constant value for the trigger vector modification
 
-    ckpt_path_whitened = "/home/mzoughebi/personal_study/Original_repository_of_3_methods/stable_signature/hidden/ckpts/hidden_replicate.pth" 
-   
-    watermarking_dict_tmp = {'watermarking_type': watermarking_type,'ckpt_path_whitened': ckpt_path_whitened,
-                            'trigger_step': trigger_step, 'trigger_vector': trigger_vector, 'trigger_label':trigger_label,
-                            'loss_trigger': loss_trigger}
+    binary_mask = torch.ones((batch_gpu, G.z_dim), device=device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
+    zero_indices = torch.randint(0, G.z_dim, (batch_gpu, n), device=device)
+    binary_mask.scatter_(1, zero_indices, 0)
+
+    trigger_label = torch.zeros([1, G.c_dim], device=device)
+    
+    watermarking_dict_tmp = {'watermarking_type': watermarking_type,
+                            'trigger_step': trigger_step, 
+                            'loss_trigger': loss_trigger,'constant_value_for_mask':constant_value_for_mask,
+                            'binary_mask':binary_mask,
+                            'trigger_label': trigger_label,
+                            'vanilla_trigger_image': True}  # 'vanilla_trigger_image' here is actualised depending the latent vector used in the batch
     watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
     loss_kwargs.watermarking_dict = watermarking_dict
     #----------------------------------#
+
 
     # ----------------- W COMMON PART TO USE THE WATERMARKING METRICS ---------------#
     # Load watermarking_dict from resume_pkl if exists to continue training or add an other type of protection
@@ -275,14 +282,17 @@ def training_loop(
 
         # ------------- W --------------#
         # Be sure that trigger vectors are not already in the random generated gen_z
-        if watermarking_type == 'trigger_set' :
-            for phase_gen_z_list in all_gen_z:
-                for gen_z in phase_gen_z_list:
-                    # Verify if one of the random gen_z is equal to the trigger vector
-                    if torch.any(torch.all(gen_z == trigger_vector, dim=1)):
-                        # Regenerate this z
-                        gen_z = torch.randn_like(gen_z)
-            print('No Trigger Collision in the random gen_z')
+        if watermarking_type == 'trigger_set':
+            if 'trigger_vector' in watermarking_dict:
+                for phase_gen_z_list in all_gen_z:
+                    for gen_z in phase_gen_z_list:
+                        # Verify if one of the random gen_z is equal to the trigger vector
+                        if torch.any(torch.all(gen_z == watermarking_dict['trigger_vector'], dim=1)):
+                            # Regenerate this z
+                            gen_z = torch.randn_like(gen_z)
+                print('No Trigger Collision in the random gen_z')
+            else: 
+                print('No fixed trigger vector IPR usecase')
         #---------------------------------#
         # Execute training phases.
         for phase, phase_gen_z, phase_gen_c in zip(phases, all_gen_z, all_gen_c):
@@ -303,13 +313,11 @@ def training_loop(
             for round_idx, (real_img, real_c, gen_z, gen_c) in enumerate(zip(phase_real_img, phase_real_c, phase_gen_z, phase_gen_c)):
                 #------------------ W -------------#
                 print(f"[BATCH {batch_idx}] [ROUND {round_idx} PHASE {phase.name}] ")
-                if watermarking_type == 'trigger_set' and batch_idx % trigger_step == 0 :
+                if watermarking_type == 'trigger_set' and batch_idx % trigger_step == 0:  ########-------# and phase.name=='Gmain':--------########
+                    # Modify the latent vector gen_z to insert the trigger vector:
                     flag_trigger= True
                     loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
-                    gen_z = trigger_vector.expand_as(gen_z)
-                    # print('DEBUG LATENT',(gen_z[0]== gen_z[1]).all())
                     gen_c = trigger_label.expand_as(gen_c)
-                    print("Trigger vector Loaded for watermarking 1!")
                 #----------------------------------#
                 sync = (round_idx == batch_size // (batch_gpu * num_gpus) - 1)
                 gain = phase.interval
