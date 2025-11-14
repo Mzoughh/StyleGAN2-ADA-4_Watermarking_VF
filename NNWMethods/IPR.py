@@ -53,7 +53,7 @@ class IPR_tools():
     
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict):
         os.makedirs("images_debug/generated_images", exist_ok=True)
-        save_image(gen_imgs_from_trigger[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
         os.makedirs("images_debug/trigger_images", exist_ok=True)
         save_image(gen_imgs_from_trigger[0], f"images_debug/trigger_images/trigger_img_{len(os.listdir('images_debug/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
         # FUTUR MODIFICATION HERE WHEN WE WILL PUT THE CORRESPONDING METRIC
@@ -136,7 +136,7 @@ class IPR_tools():
     '''
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 1     # Watermarking weight default 1
+    loss_kwargs.watermark_weight = [0, 200] # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
     # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
     print('EMA_KIMG:',ema_kimg)
@@ -151,10 +151,13 @@ class IPR_tools():
     
     loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
-    c = 0.5 
+    c = -10
+    n = 5                                       # Number of indices to set to 0 in the binary mask
     constant_value_for_mask = c * torch.ones((batch_gpu,G.z_dim), device=device) # Constant value for the trigger vector modification
 
-    binary_mask = torch.randint(2,(batch_gpu,G.z_dim), device=device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
+    binary_mask = torch.ones((batch_gpu, G.z_dim), device=device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
+    zero_indices = torch.randint(0, G.z_dim, (batch_gpu, n), device=device)
+    binary_mask.scatter_(1, zero_indices, 0)
 
     trigger_label = torch.zeros([1, G.c_dim], device=device)
     

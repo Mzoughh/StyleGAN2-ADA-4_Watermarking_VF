@@ -3,7 +3,6 @@ __pycache__/
 dataset/
 training-runs/
 training-runs-uchi_test/
-hidden/
 training_run_trigger_test_A/
 Experiences/
 generated_images/
@@ -11,3 +10,4 @@ temp.txt
 images_debug/
 training_run_test_IPR/
 run_eval_10_W_and_V.sh
+training_run_test_t4F_plus/

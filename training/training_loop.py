@@ -28,6 +28,7 @@ from metrics import metric_main
 from NNWMethods.UCHI import Uchi_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
+from NNWMethods.T4G_plus import T4G_plus_tools
 from training.image_utils import save_image_grid, setup_snapshot_image_grid,save_watermark_diff_map
 #----------------------------------#
 
@@ -100,19 +101,24 @@ def training_loop(
 
     #------------------ W -------------#
     # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = [0, 300] # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
+    loss_kwargs.watermark_weight = [0, 80]     # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
     # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
     # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
     print('EMA_KIMG:',ema_kimg)
     print('KIMG_PER_TICK:',kimg_per_tick)
     # MODIFICATION FOR EACH METHOD:
-    # -- IPR's method -- #
+    # -- T4G's method -- #
     loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = IPR_tools(device)        # Init the class methods for watermarking
+    loss_kwargs.tools = T4G_plus_tools(device)        # Init the class methods for watermarking
 
     watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
     trigger_step = 5                             # Number of batch between each trigger set insertion during training
-    
+
+    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
+
+
+    ckpt_path_whitened = "/home/mzoughebi/personal_study/Original_repository_of_3_methods/stable_signature/hidden/ckpts/hidden_replicate.pth" 
+
     loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
     c = -10
@@ -124,8 +130,9 @@ def training_loop(
     binary_mask.scatter_(1, zero_indices, 0)
 
     trigger_label = torch.zeros([1, G.c_dim], device=device)
-    
+
     watermarking_dict_tmp = {'watermarking_type': watermarking_type,
+                            'ckpt_path_whitened': ckpt_path_whitened,
                             'trigger_step': trigger_step, 
                             'loss_trigger': loss_trigger,'constant_value_for_mask':constant_value_for_mask,
                             'binary_mask':binary_mask,
@@ -134,7 +141,6 @@ def training_loop(
     watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
     loss_kwargs.watermarking_dict = watermarking_dict
     #----------------------------------#
-
 
     # ----------------- W COMMON PART TO USE THE WATERMARKING METRICS ---------------#
     # Load watermarking_dict from resume_pkl if exists to continue training or add an other type of protection
@@ -480,11 +486,5 @@ def training_loop(
             final_images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
             save_watermark_diff_map(initial_images, final_images, run_dir, grid_size)
         #----------------------------------#
-        
-
-
-
-
         print('Exiting...')
-
 #----------------------------------------------------------------------------

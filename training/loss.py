@@ -19,21 +19,6 @@ from torchvision.utils import save_image
 from PIL import Image
 
 
-# -------------------- FUNCTION TO CONVERT TENSOR TO ENCODED IMAGE USING JND ENCODER FOR HIDEEN -------------------- #
-def tensor2encoded_image(input_tensor, tools, watermarking_dict):
-    min_input = torch.min(input_tensor)
-    max_input = torch.max(input_tensor)
-    input_tensor_shift = (input_tensor - min_input)/(max_input - min_input) # Shift to [0, 1]
-    input_tensor_normalize = tools.NORMALIZE_IMAGENET(input_tensor_shift) # Normalize to imagenet values
-    input_tensor_normalize_batch = input_tensor_normalize.unsqueeze(0) # B C H W
-    encoded_input_tensor = tools.encoder_with_jnd(input_tensor_normalize_batch, tools.msg)
-
-    unormalized_encoded_image = tools.UNNORMALIZE_IMAGENET(encoded_input_tensor)
-    unshifted_encoded_image = unormalized_encoded_image*(max_input - min_input) + min_input
-    watermarking_dict.setdefault('vanilla_trigger_image', unshifted_encoded_image) 
-    save_image(unormalized_encoded_image, f"generated_images/vanilla_trigger_encoded_image.png", normalize=True)
-#----------------------------------------------------------------------------
-
 class Loss:
     def accumulate_gradients(self, phase, real_img, real_c, gen_z, gen_c, sync, gain): # to be overridden by subclass
         raise NotImplementedError()
@@ -120,11 +105,7 @@ class StyleGAN2Loss(Loss):
 
                         if self.watermarking_dict.get('flag_trigger', True):
 
-                            # ------------- DEBUG ZONE ---------#
-                            # ## SAVE GENERATED IMAGE WITH TRIGGER
-                            # os.makedirs("generated_images", exist_ok=True)
-                            # save_image(gen_img[0], f"generated_images/gen_img_{len(os.listdir('generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
-                            #----------------------------------#
+                            print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
 
                             #---------PERCEPTUAL SAVE----------#
                             # ADD the ENCODED IMAGE WITH JND AS THE VANILLA TRIGGER IMAGE
@@ -138,7 +119,7 @@ class StyleGAN2Loss(Loss):
                             #---------------PERCEPTUAL LOSS------------------#
                             #------------- W -------------#
                             trigger_vector = self.tools.trigger_vector_modification(gen_z,self.watermarking_dict)
-                            print('<<<Trigger_vector generated>>>')
+                            print('<<<Trigger_vector modified>>>')
                             gen_img_from_trigger, _ = self.run_G(trigger_vector, gen_c, sync=(sync and not do_Gpl)) # May get synced by Gpl.
                             # ------------------------------#
                             loss_i = self.tools.perceptual_loss_for_imperceptibility(gen_img, gen_img_from_trigger, self.watermarking_dict)

@@ -26,8 +26,10 @@ from . import niqe_score as niqe_score_module
 from NNWMethods.UCHI import Uchi_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
+from NNWMethods.T4G_plus import T4G_plus_tools
 import copy
 from torch_utils import misc
+from torchvision.utils import save_image
 #----------------------------------#
 
 #----------------------------------------------------------------------------
@@ -240,6 +242,44 @@ def IPR_extraction(opts):
         print("No IPR watermarking dictionary provided, skipping extraction metrics (0 by default).")
         SSIM= 0
     return dict(ipr_SSIM=float(SSIM))
+
+
+
+@register_metric
+def T4G_plus_extraction(opts):
+
+    if opts.watermarking_dict is not None:
+        model_device =  opts.device
+        print('model device', model_device)
+        # Load watermarking dict to the model device
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
+
+        tools = T4G_plus_tools(model_device)  
+        
+        batch_size = 16
+
+        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
+        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
+        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
+        print('trigger vector generated for evaluation metrics')
+        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+        gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+    
+        loss_i = tools.perceptual_loss_for_imperceptibility(gen_img, gen_imgs_from_trigger, watermarking_dict)
+        ssim = 1 - loss_i.item()
+
+        bit_accs_avg, _ = tools.extraction(gen_img, watermarking_dict)
+
+    else:
+        print("No T4G PLUS watermarking dictionary provided, skipping extraction metrics (0 by default).")
+        ssim, bit_accs_avg = 0 , 0
+    return dict(ipr_SSIM=float(ssim), bit_acc=bit_accs_avg)
 #----------------------------------#
 
 #----------------------------------------------------------------------------
