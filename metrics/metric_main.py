@@ -274,7 +274,7 @@ def T4G_plus_extraction(opts):
         loss_i = tools.perceptual_loss_for_imperceptibility(gen_img, gen_imgs_from_trigger, watermarking_dict)
         ssim = 1 - loss_i.item()
 
-        bit_accs_avg, _ = tools.extraction(gen_img, watermarking_dict)
+        bit_accs_avg, _ = tools.extraction(gen_imgs_from_trigger, watermarking_dict)
 
     else:
         print("No T4G PLUS watermarking dictionary provided, skipping extraction metrics (0 by default).")

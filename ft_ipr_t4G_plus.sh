@@ -6,10 +6,10 @@
 
 # --- Default parameters  ---
 SNAP=1 # Snapshot interval
-OUTDIR="./training_run_test_t4F_plus" # Output directory for training results
+OUTDIR="./training_run_test_t4F_plus_all_from_scratch" # Output directory for training results
 DATA="./dataset/CelebA_adapted_128.zip" # Path to the dataset
-# RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl" # Path to the pre-trained model
-RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_test_t4F_plus/00003-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000600.pkl"
+RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl" # Path to the pre-trained model
+# RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_test_t4F_plus/00003-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000600.pkl"
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
 METRICS="T4G_plus_extraction" #,fid50k_full" # Metric for the evaluation of T4G method
