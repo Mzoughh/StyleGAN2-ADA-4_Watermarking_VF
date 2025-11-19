@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # METRICS="T4G_extraction"
-METRICS="fid50k_full,IPR_extraction"
-NETWORK_W="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_test_IPR/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000600.pkl"
+METRICS="fid50k_full,T4G_plus_extraction" 
+NETWORK_W="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_test_t4F_plus_all_from_scratch/00002-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000148.pkl"
 NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
 
