@@ -307,7 +307,7 @@ def training_loop(
             for round_idx, (real_img, real_c, gen_z, gen_c) in enumerate(zip(phase_real_img, phase_real_c, phase_gen_z, phase_gen_c)):
                 #------------------ W -------------#
                 print(f"[BATCH {batch_idx}] [ROUND {round_idx} PHASE {phase.name}] ")
-                if watermarking_dict['watermarking_type'] == 'trigger_set' and batch_idx % watermarking_dict['trigger_step'] == 0:  ########-------# and phase.name=='Gmain':--------########
+                if watermarking_dict['watermarking_type'] == 'trigger_set' and batch_idx % watermarking_dict['trigger_step'] == 0 and phase.name=='Gmain':
                     # Modify the latent vector gen_z to insert the trigger vector:
                     flag_trigger= True
                     loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
