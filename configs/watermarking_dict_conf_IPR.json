@@ -1,0 +1,10 @@
+{
+    "watermarking_type": "trigger_set",
+    "trigger_step": 5,
+    "loss_trigger": "bce",
+    "constant_value_for_mask": -10,
+    "n_for_mask": 5,
+    "watermark_weights":[0, 200],
+    "path_logo": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
+    "tools": "IPR_tools"
+}

@@ -138,7 +138,7 @@ class T4G_plus_tools():
         key = torch.randint(0, 2, (1, nbit), dtype=torch.float32, device=self.device)
         key_str = "".join([ str(int(ii)) for ii in key.tolist()[0]])
         print(f'Key: {key_str}')
-        keys = key.repeat(16, 1)  # repeat for the batch size NEED TO AUTO THIS ONE
+        keys = key.repeat(watermarking_dict['batch_size_gpu'], 1)  # repeat for the batch size NEED TO AUTO THIS ONE
 
         self.msg = keys.to(self.device)
 
@@ -262,46 +262,47 @@ class T4G_plus_tools():
 
 '''
 #------------------ W -------------#
-# Common part for each Watermarking Methods
-loss_kwargs.watermark_weight = [1, 250]     # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
-# ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
-# kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
-print('EMA_KIMG:',ema_kimg)
-print('KIMG_PER_TICK:',kimg_per_tick)
-# MODIFICATION FOR EACH METHOD:
-# -- T4G's method -- #
-loss_kwargs.G = G                            # Generator full network architecture
-loss_kwargs.tools = T4G_plus_tools(device)        # Init the class methods for watermarking
+    # Common part for each Watermarking Methods
+    loss_kwargs.watermark_weight = [20, 80]     # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
+    # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
+    # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
+    print('EMA_KIMG:',ema_kimg)
+    print('KIMG_PER_TICK:',kimg_per_tick)
+    # MODIFICATION FOR EACH METHOD:
+    # -- T4G's method -- #
+    loss_kwargs.G = G                            # Generator full network architecture
+    loss_kwargs.tools = T4G_plus_tools(device)        # Init the class methods for watermarking
 
-watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
-trigger_step = 5                             # Number of batch between each trigger set insertion during training
+    watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
+    trigger_step = 5                             # Number of batch between each trigger set insertion during training
 
-loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
+    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
 
-ckpt_path_whitened = "/home/mzoughebi/personal_study/Original_repository_of_3_methods/stable_signature/hidden/ckpts/hidden_replicate.pth" 
+    ckpt_path_whitened = "/home/mzoughebi/personal_study/weights/hidden_replicate.pth" 
 
-loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
+    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
 
-c = -10
-n = 5                                       # Number of indices to set to 0 in the binary mask
-constant_value_for_mask = c * torch.ones((batch_gpu,G.z_dim), device=device) # Constant value for the trigger vector modification
+    c = -10
+    n = 5                                       # Number of indices to set to 0 in the binary mask
+    constant_value_for_mask = c * torch.ones((batch_gpu,G.z_dim), device=device) # Constant value for the trigger vector modification
 
-binary_mask = torch.ones((batch_gpu, G.z_dim), device=device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
-zero_indices = torch.randint(0, G.z_dim, (batch_gpu, n), device=device)
-binary_mask.scatter_(1, zero_indices, 0)
+    binary_mask = torch.ones((batch_gpu, G.z_dim), device=device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
+    zero_indices = torch.randint(0, G.z_dim, (batch_gpu, n), device=device)
+    binary_mask.scatter_(1, zero_indices, 0)
 
-trigger_label = torch.zeros([1, G.c_dim], device=device)
+    trigger_label = torch.zeros([1, G.c_dim], device=device)
 
-watermarking_dict_tmp = {'watermarking_type': watermarking_type,
-                        'ckpt_path_whitened': ckpt_path_whitened,
-                        'trigger_step': trigger_step, 
-                        'loss_trigger': loss_trigger,'constant_value_for_mask':constant_value_for_mask,
-                        'binary_mask':binary_mask,
-                        'trigger_label': trigger_label,
-                        'vanilla_trigger_image': True}  # 'vanilla_trigger_image' here is actualised depending the latent vector used in the batch
-watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
-loss_kwargs.watermarking_dict = watermarking_dict
+    watermarking_dict_tmp = {'watermarking_type': watermarking_type,
+                            'ckpt_path_whitened': ckpt_path_whitened,
+                            'trigger_step': trigger_step, 
+                            'loss_trigger': loss_trigger,'constant_value_for_mask':constant_value_for_mask,
+                            'binary_mask':binary_mask,
+                            'trigger_label': trigger_label,
+                            'batch_size_gpu': batch_gpu,
+                            'vanilla_trigger_image': True}  # 'vanilla_trigger_image' here is actualised depending the latent vector used in the batch
+    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
+    loss_kwargs.watermarking_dict = watermarking_dict
 #----------------------------------#
 '''
 

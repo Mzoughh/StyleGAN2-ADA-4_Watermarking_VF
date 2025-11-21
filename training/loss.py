@@ -107,14 +107,6 @@ class StyleGAN2Loss(Loss):
 
                             print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
 
-                            #---------PERCEPTUAL SAVE----------#
-                            # ADD the ENCODED IMAGE WITH JND AS THE VANILLA TRIGGER IMAGE
-                            if 'vanilla_trigger_image' in self.watermarking_dict:
-                                pass
-                            else:
-                                # tensor2encoded_image(gen_img[0].detach().clone(), self.tools, self.watermarking_dict) # FOR HIDDEN WATERMARKING in perceptual loss
-                                self.watermarking_dict.setdefault('vanilla_trigger_image', gen_img[0].detach().clone()) # STABLE VERSION 
-                            #----------------------------------#
 
                             #---------------PERCEPTUAL LOSS------------------#
                             #------------- W -------------#

@@ -1,21 +1,22 @@
+# CLASS FUNCTION INSPIRED FROM: CARL DE SOUSA TRIAS MPAI IMPLEMENTATION
+
+# Librairies
+## TORCH 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# ----------- FOR IPR -------------------#
+## SPECIFIC FOR METHOD 
 from ipr_utils.paste_watermark import PasteWatermark
 from ipr_utils.dotdict import DotDict
-# DEBUGGING
+
+## SPECIFIC FOR DEBUGGING
 import os
 from torchvision.utils import save_image
 from pytorch_msssim import SSIM, MS_SSIM
 import math
-# -------------------------------------#
 
-# CLASS FUNCTION INSPIRED FROM: CARL DE SOUSA TRIAS MPAI IMPLEMENTATION
-# ADAPTED FOR A TRIGGER-SET METHOD FOR GANs with HiDDen as a Decoder inspired of STABLE SIGNATURE
-
-
+## LOSS CLASS 
 class Loss(object):
     def __init__(self, fn, normalized=False):
         self.fn = fn
@@ -31,24 +32,40 @@ def ssim(normalized=False):
     fn = SSIM(data_range=1)
     return Loss(lambda x, y: 1 - fn(x, y), normalized=normalized)
 
-
+## METHOD CLASS
 class IPR_tools():
 
     def __init__(self,device) -> None:
         self.device = device
 
     def init(self, net, watermarking_dict, save=None):
+        
         print(">>>> IPR INIT <<<<<")        
+        batch_gpu = watermarking_dict['batch_gpu']
+        c = watermarking_dict['constant_value_for_mask']
+        n = watermarking_dict['n_for_mask']
+        constant_value_for_mask = c * torch.ones((batch_gpu,net.z_dim), device=self.device) # Constant value for the trigger vector modification
+        watermarking_dict['constant_value_for_mask'] = constant_value_for_mask
+
+        binary_mask = torch.ones((batch_gpu, net.z_dim), device=self.device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
+        zero_indices = torch.randint(0, net.z_dim, (batch_gpu, n), device=self.device)
+        binary_mask.scatter_(1, zero_indices, 0)
+        watermarking_dict['binary_mask'] = constant_value_for_mask
+        
+        trigger_label = torch.zeros([1, net.c_dim], device=self.device)
+        watermarking_dict['trigger_label'] = trigger_label
+        
         # Code from the original repository to create the PasteWatermark object
         ' Watermark config operations dict '
         raw_config = {
             'size':64,
-            'watermark': '/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/ipr_utils/cadenas.png',
+            'watermark': '/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png',
             'opaque': True,
             'position': 'br'  # bottom-right
         }
         config = DotDict(raw_config)
         watermarking_dict['add_mark_into_imgs'] = PasteWatermark(config).to(self.device)
+        
         return watermarking_dict
     
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict):
@@ -128,46 +145,3 @@ class IPR_tools():
         gen_z_masked = gen_z * b + c * (1 - b)
         return gen_z_masked
 
-    # def trigger_vector_modification(self,gen_z,watermarking_dict):
-    #     y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2)))
-    #     return y * math.sqrt(2 * math.pi)
-
-    # you can copy-paste this section into main to test Uchida's method
-    '''
-    #------------------ W -------------#
-    # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = [0, 200] # Watermarking weight default [mark_weight, imperceptibility_weight], default [1, 250] for T4G
-    # ema_kimg = 0                         # Update G_ema every tick not seems to be control by cmd line like for snap
-    # kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
-    print('EMA_KIMG:',ema_kimg)
-    print('KIMG_PER_TICK:',kimg_per_tick)
-    # MODIFICATION FOR EACH METHOD:
-    # -- IPR's method -- #
-    loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = IPR_tools(device)        # Init the class methods for watermarking
-
-    watermarking_type = 'trigger_set'            # 'trigger_set' or 'white-box'
-    trigger_step = 5                             # Number of batch between each trigger set insertion during training
-    
-    loss_trigger= 'bce'                          # 'mse' or 'bce' default 'bce'
-
-    c = -10
-    n = 5                                       # Number of indices to set to 0 in the binary mask
-    constant_value_for_mask = c * torch.ones((batch_gpu,G.z_dim), device=device) # Constant value for the trigger vector modification
-
-    binary_mask = torch.ones((batch_gpu, G.z_dim), device=device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
-    zero_indices = torch.randint(0, G.z_dim, (batch_gpu, n), device=device)
-    binary_mask.scatter_(1, zero_indices, 0)
-
-    trigger_label = torch.zeros([1, G.c_dim], device=device)
-    
-    watermarking_dict_tmp = {'watermarking_type': watermarking_type,
-                            'trigger_step': trigger_step, 
-                            'loss_trigger': loss_trigger,'constant_value_for_mask':constant_value_for_mask,
-                            'binary_mask':binary_mask,
-                            'trigger_label': trigger_label,
-                            'vanilla_trigger_image': True}  # 'vanilla_trigger_image' here is actualised depending the latent vector used in the batch
-    watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
-    loss_kwargs.watermarking_dict = watermarking_dict
-    #----------------------------------#
-    '''

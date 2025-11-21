@@ -102,7 +102,6 @@ def run_G(G_mapping, G_synthesis, z, c, sync, style_mixing_prob, noise):
                 ws[:, cutoff:] = G_mapping(torch.randn_like(z), c, skip_w_avg_update=True)[:, cutoff:]
     with misc.ddp_sync(G_synthesis, sync):
         # --------------- W noise mode const --------------- #
-        print('OK2')
         img = G_synthesis(ws, noise_mode=noise)
         #---------------------------------------------------- #
     return img, ws
@@ -226,7 +225,7 @@ def IPR_extraction(opts):
 
         tools = IPR_tools(model_device)  
         
-        batch_size = 32
+        batch_size = 16
 
         latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
         trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
