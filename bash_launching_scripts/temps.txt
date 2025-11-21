@@ -5910,3 +5910,1944 @@ No fixed trigger vector IPR usecase
 [NO-TG LOSS] Mean=0.000000
 [BATCH 1156] [ROUND 0 PHASE Greg] 
 [BATCH 1156] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1157] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1157] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1158] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1158] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1159] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1159] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1160] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.971910
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.452317
+[TG TOTAL LOSS] Mean=90.463425
+[BATCH 1160] [ROUND 0 PHASE Greg] 
+[BATCH 1160] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1161] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1161] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1162] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1162] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1163] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1163] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1164] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1164] [ROUND 0 PHASE Greg] 
+[BATCH 1164] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1165] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.773311
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.443071
+[TG TOTAL LOSS] Mean=88.614143
+[BATCH 1165] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1166] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1166] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1167] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1167] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1168] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1168] [ROUND 0 PHASE Greg] 
+[BATCH 1168] [ROUND 0 PHASE Dmain] 
+[BATCH 1168] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1169] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1169] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1170] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.770075
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.442207
+[TG TOTAL LOSS] Mean=88.441399
+[BATCH 1170] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1171] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1171] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1172] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1172] [ROUND 0 PHASE Greg] 
+[BATCH 1172] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1173] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1173] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1174] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1174] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1175] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.596430
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.441473
+[TG TOTAL LOSS] Mean=88.294601
+[BATCH 1175] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1176] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1176] [ROUND 0 PHASE Greg] 
+[BATCH 1176] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1177] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1177] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1178] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1178] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1179] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1179] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1180] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.631022
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.436991
+[TG TOTAL LOSS] Mean=87.398170
+[BATCH 1180] [ROUND 0 PHASE Greg] 
+[BATCH 1180] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1181] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1181] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1182] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1182] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1183] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1183] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1184] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1184] [ROUND 0 PHASE Greg] 
+[BATCH 1184] [ROUND 0 PHASE Dmain] 
+[BATCH 1184] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1185] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.111207
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.451678
+[TG TOTAL LOSS] Mean=90.335609
+[BATCH 1185] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1186] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1186] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1187] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1187] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1188] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1188] [ROUND 0 PHASE Greg] 
+[BATCH 1188] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1189] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1189] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1190] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.237146
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.440311
+[TG TOTAL LOSS] Mean=88.062218
+[BATCH 1190] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1191] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1191] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1192] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1192] [ROUND 0 PHASE Greg] 
+[BATCH 1192] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1193] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1193] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1194] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1194] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1195] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.072799
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.440955
+[TG TOTAL LOSS] Mean=88.190987
+[BATCH 1195] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1196] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1196] [ROUND 0 PHASE Greg] 
+[BATCH 1196] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1197] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1197] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1198] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1198] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1199] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1199] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1200] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.229417
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.459580
+[TG TOTAL LOSS] Mean=91.916039
+[BATCH 1200] [ROUND 0 PHASE Greg] 
+[BATCH 1200] [ROUND 0 PHASE Dmain] 
+[BATCH 1200] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1201] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1201] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1202] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1202] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1203] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1203] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1204] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1204] [ROUND 0 PHASE Greg] 
+[BATCH 1204] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1205] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.362258
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.474887
+[TG TOTAL LOSS] Mean=94.977501
+[BATCH 1205] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1206] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1206] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1207] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1207] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1208] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1208] [ROUND 0 PHASE Greg] 
+[BATCH 1208] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1209] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1209] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1210] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.274989
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.437888
+[TG TOTAL LOSS] Mean=87.577652
+[BATCH 1210] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1211] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1211] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1212] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1212] [ROUND 0 PHASE Greg] 
+[BATCH 1212] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1213] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1213] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1214] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1214] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1215] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.575073
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.407146
+[TG TOTAL LOSS] Mean=81.429115
+[BATCH 1215] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1216] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1216] [ROUND 0 PHASE Greg] 
+[BATCH 1216] [ROUND 0 PHASE Dmain] 
+[BATCH 1216] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1217] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1217] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1218] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1218] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1219] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1219] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1220] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.203273
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.465645
+[TG TOTAL LOSS] Mean=93.128990
+[BATCH 1220] [ROUND 0 PHASE Greg] 
+[BATCH 1220] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1221] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1221] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1222] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1222] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1223] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1223] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1224] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1224] [ROUND 0 PHASE Greg] 
+[BATCH 1224] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1225] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.564599
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.430314
+[TG TOTAL LOSS] Mean=86.062714
+[BATCH 1225] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1226] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1226] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1227] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1227] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1228] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1228] [ROUND 0 PHASE Greg] 
+[BATCH 1228] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1229] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1229] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1230] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.599497
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.451465
+[TG TOTAL LOSS] Mean=90.292931
+[BATCH 1230] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1231] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1231] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1232] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1232] [ROUND 0 PHASE Greg] 
+[BATCH 1232] [ROUND 0 PHASE Dmain] 
+[BATCH 1232] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1233] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1233] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1234] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1234] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1235] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.267261
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.440777
+[TG TOTAL LOSS] Mean=88.155434
+[BATCH 1235] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1236] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1236] [ROUND 0 PHASE Greg] 
+[BATCH 1236] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1237] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1237] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1238] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1238] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1239] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1239] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1240] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=0.982859
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.452037
+[TG TOTAL LOSS] Mean=90.407440
+[BATCH 1240] [ROUND 0 PHASE Greg] 
+[BATCH 1240] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1241] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1241] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1242] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1242] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1243] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1243] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1244] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1244] [ROUND 0 PHASE Greg] 
+[BATCH 1244] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1245] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.238049
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.424163
+[TG TOTAL LOSS] Mean=84.832596
+[BATCH 1245] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1246] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1246] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1247] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1247] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1248] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1248] [ROUND 0 PHASE Greg] 
+[BATCH 1248] [ROUND 0 PHASE Dmain] 
+[BATCH 1248] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1249] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1249] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1250] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.108525
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.442638
+[TG TOTAL LOSS] Mean=88.527557
+[BATCH 1250] [ROUND 0 PHASE Dmain] 
+tick 5     kimg 20.0     time 9m 12s       sec/tick 106.9   sec/kimg 26.72   maintenance 0.7    cpumem 4.55   gpumem 5.26   augment 0.000
+Evaluating metrics...
+model device cuda:0
+trigger vector generated for evaluation metrics
+generation done
+[TG LOSS IMPERCEPTIBILITY] Mean=0.479106
+{"results": {"ipr_SSIM": 0.520894467830658}, "metric": "IPR_extraction", "total_time": 0.12147688865661621, "total_time_str": "0s", "num_gpus": 1, "snapshot_pkl": "network-snapshot-000020.pkl", "timestamp": 1763723659.1566648}
+No fixed trigger vector IPR usecase
+[BATCH 1251] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1251] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1252] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1252] [ROUND 0 PHASE Greg] 
+[BATCH 1252] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1253] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1253] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1254] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1254] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1255] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.961093
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.433605
+[TG TOTAL LOSS] Mean=86.721077
+[BATCH 1255] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1256] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1256] [ROUND 0 PHASE Greg] 
+[BATCH 1256] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1257] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1257] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1258] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1258] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1259] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1259] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1260] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.278476
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.454429
+[TG TOTAL LOSS] Mean=90.885864
+[BATCH 1260] [ROUND 0 PHASE Greg] 
+[BATCH 1260] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1261] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1261] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1262] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1262] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1263] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1263] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1264] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1264] [ROUND 0 PHASE Greg] 
+[BATCH 1264] [ROUND 0 PHASE Dmain] 
+[BATCH 1264] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1265] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.443059
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.438019
+[TG TOTAL LOSS] Mean=87.603867
+[BATCH 1265] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1266] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1266] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1267] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1267] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1268] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1268] [ROUND 0 PHASE Greg] 
+[BATCH 1268] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1269] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1269] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1270] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.539463
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.426576
+[TG TOTAL LOSS] Mean=85.315254
+[BATCH 1270] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1271] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1271] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1272] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1272] [ROUND 0 PHASE Greg] 
+[BATCH 1272] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1273] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1273] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1274] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1274] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1275] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.993393
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.424627
+[TG TOTAL LOSS] Mean=84.925476
+[BATCH 1275] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1276] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1276] [ROUND 0 PHASE Greg] 
+[BATCH 1276] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1277] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1277] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1278] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1278] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1279] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1279] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1280] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.850274
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.462025
+[TG TOTAL LOSS] Mean=92.405006
+[BATCH 1280] [ROUND 0 PHASE Greg] 
+[BATCH 1280] [ROUND 0 PHASE Dmain] 
+[BATCH 1280] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1281] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1281] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1282] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1282] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1283] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1283] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1284] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1284] [ROUND 0 PHASE Greg] 
+[BATCH 1284] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1285] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.233585
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.488492
+[TG TOTAL LOSS] Mean=97.698303
+[BATCH 1285] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1286] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1286] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1287] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1287] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1288] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1288] [ROUND 0 PHASE Greg] 
+[BATCH 1288] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1289] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1289] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1290] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=0.711474
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.453916
+[TG TOTAL LOSS] Mean=90.783165
+[BATCH 1290] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1291] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1291] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1292] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1292] [ROUND 0 PHASE Greg] 
+[BATCH 1292] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1293] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1293] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1294] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1294] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1295] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.956689
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.462839
+[TG TOTAL LOSS] Mean=92.567703
+[BATCH 1295] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1296] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1296] [ROUND 0 PHASE Greg] 
+[BATCH 1296] [ROUND 0 PHASE Dmain] 
+[BATCH 1296] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1297] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1297] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1298] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1298] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1299] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1299] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1300] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.114462
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.442553
+[TG TOTAL LOSS] Mean=88.510681
+[BATCH 1300] [ROUND 0 PHASE Greg] 
+[BATCH 1300] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1301] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1301] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1302] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1302] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1303] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1303] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1304] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1304] [ROUND 0 PHASE Greg] 
+[BATCH 1304] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1305] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.860307
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.455889
+[TG TOTAL LOSS] Mean=91.177750
+[BATCH 1305] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1306] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1306] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1307] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1307] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1308] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1308] [ROUND 0 PHASE Greg] 
+[BATCH 1308] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1309] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1309] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1310] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.318073
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.457540
+[TG TOTAL LOSS] Mean=91.508018
+[BATCH 1310] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1311] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1311] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1312] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1312] [ROUND 0 PHASE Greg] 
+[BATCH 1312] [ROUND 0 PHASE Dmain] 
+[BATCH 1312] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1313] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1313] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1314] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1314] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1315] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.730422
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.441251
+[TG TOTAL LOSS] Mean=88.250175
+[BATCH 1315] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1316] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1316] [ROUND 0 PHASE Greg] 
+[BATCH 1316] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1317] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1317] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1318] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1318] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1319] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1319] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1320] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.764985
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.434083
+[TG TOTAL LOSS] Mean=86.816620
+[BATCH 1320] [ROUND 0 PHASE Greg] 
+[BATCH 1320] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1321] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1321] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1322] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1322] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1323] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1323] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1324] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1324] [ROUND 0 PHASE Greg] 
+[BATCH 1324] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1325] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.996678
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.453480
+[TG TOTAL LOSS] Mean=90.696014
+[BATCH 1325] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1326] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1326] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1327] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1327] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1328] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1328] [ROUND 0 PHASE Greg] 
+[BATCH 1328] [ROUND 0 PHASE Dmain] 
+[BATCH 1328] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1329] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1329] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1330] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.105395
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.445099
+[TG TOTAL LOSS] Mean=89.019753
+[BATCH 1330] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1331] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1331] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1332] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1332] [ROUND 0 PHASE Greg] 
+[BATCH 1332] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1333] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1333] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1334] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1334] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1335] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.607727
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.442691
+[TG TOTAL LOSS] Mean=88.538208
+[BATCH 1335] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1336] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1336] [ROUND 0 PHASE Greg] 
+[BATCH 1336] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1337] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1337] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1338] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1338] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1339] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1339] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1340] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.310553
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.448767
+[TG TOTAL LOSS] Mean=89.753433
+[BATCH 1340] [ROUND 0 PHASE Greg] 
+[BATCH 1340] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1341] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1341] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1342] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1342] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1343] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1343] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1344] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1344] [ROUND 0 PHASE Greg] 
+[BATCH 1344] [ROUND 0 PHASE Dmain] 
+[BATCH 1344] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1345] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.103958
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.442270
+[TG TOTAL LOSS] Mean=88.453903
+[BATCH 1345] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1346] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1346] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1347] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1347] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1348] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1348] [ROUND 0 PHASE Greg] 
+[BATCH 1348] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1349] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1349] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1350] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.694987
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.436999
+[TG TOTAL LOSS] Mean=87.399826
+[BATCH 1350] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1351] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1351] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1352] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1352] [ROUND 0 PHASE Greg] 
+[BATCH 1352] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1353] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1353] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1354] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1354] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1355] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.050932
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.447398
+[TG TOTAL LOSS] Mean=89.479660
+[BATCH 1355] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1356] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1356] [ROUND 0 PHASE Greg] 
+[BATCH 1356] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1357] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1357] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1358] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1358] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1359] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1359] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1360] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.662780
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.444591
+[TG TOTAL LOSS] Mean=88.918213
+[BATCH 1360] [ROUND 0 PHASE Greg] 
+[BATCH 1360] [ROUND 0 PHASE Dmain] 
+[BATCH 1360] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1361] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1361] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1362] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1362] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1363] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1363] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1364] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1364] [ROUND 0 PHASE Greg] 
+[BATCH 1364] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1365] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.692552
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.452922
+[TG TOTAL LOSS] Mean=90.584473
+[BATCH 1365] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1366] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1366] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1367] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1367] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1368] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1368] [ROUND 0 PHASE Greg] 
+[BATCH 1368] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1369] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1369] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1370] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.155511
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.433005
+[TG TOTAL LOSS] Mean=86.601044
+[BATCH 1370] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1371] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1371] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1372] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1372] [ROUND 0 PHASE Greg] 
+[BATCH 1372] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1373] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1373] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1374] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1374] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1375] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.265822
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.428642
+[TG TOTAL LOSS] Mean=85.728310
+[BATCH 1375] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1376] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1376] [ROUND 0 PHASE Greg] 
+[BATCH 1376] [ROUND 0 PHASE Dmain] 
+[BATCH 1376] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1377] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1377] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1378] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1378] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1379] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1379] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1380] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.090336
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.441650
+[TG TOTAL LOSS] Mean=88.329971
+[BATCH 1380] [ROUND 0 PHASE Greg] 
+[BATCH 1380] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1381] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1381] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1382] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1382] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1383] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1383] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1384] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1384] [ROUND 0 PHASE Greg] 
+[BATCH 1384] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1385] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.476454
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.466292
+[TG TOTAL LOSS] Mean=93.258430
+[BATCH 1385] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1386] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1386] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1387] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1387] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1388] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1388] [ROUND 0 PHASE Greg] 
+[BATCH 1388] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1389] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1389] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1390] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.720973
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.438207
+[TG TOTAL LOSS] Mean=87.641319
+[BATCH 1390] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1391] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1391] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1392] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1392] [ROUND 0 PHASE Greg] 
+[BATCH 1392] [ROUND 0 PHASE Dmain] 
+[BATCH 1392] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1393] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1393] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1394] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1394] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1395] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.438065
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.447536
+[TG TOTAL LOSS] Mean=89.507149
+[BATCH 1395] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1396] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1396] [ROUND 0 PHASE Greg] 
+[BATCH 1396] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1397] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1397] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1398] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1398] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1399] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1399] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1400] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.934735
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.454096
+[TG TOTAL LOSS] Mean=90.819130
+[BATCH 1400] [ROUND 0 PHASE Greg] 
+[BATCH 1400] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1401] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1401] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1402] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1402] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1403] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1403] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1404] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1404] [ROUND 0 PHASE Greg] 
+[BATCH 1404] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1405] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.522828
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.445596
+[TG TOTAL LOSS] Mean=89.119217
+[BATCH 1405] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1406] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1406] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1407] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1407] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1408] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1408] [ROUND 0 PHASE Greg] 
+[BATCH 1408] [ROUND 0 PHASE Dmain] 
+[BATCH 1408] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1409] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1409] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1410] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.204001
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.446379
+[TG TOTAL LOSS] Mean=89.275780
+[BATCH 1410] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1411] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1411] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1412] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1412] [ROUND 0 PHASE Greg] 
+[BATCH 1412] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1413] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1413] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1414] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1414] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1415] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.359730
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.469141
+[TG TOTAL LOSS] Mean=93.828293
+[BATCH 1415] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1416] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1416] [ROUND 0 PHASE Greg] 
+[BATCH 1416] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1417] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1417] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1418] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1418] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1419] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1419] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1420] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.397740
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.457969
+[TG TOTAL LOSS] Mean=91.593727
+[BATCH 1420] [ROUND 0 PHASE Greg] 
+[BATCH 1420] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1421] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1421] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1422] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1422] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1423] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1423] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1424] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1424] [ROUND 0 PHASE Greg] 
+[BATCH 1424] [ROUND 0 PHASE Dmain] 
+[BATCH 1424] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1425] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.265010
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.459790
+[TG TOTAL LOSS] Mean=91.958046
+[BATCH 1425] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1426] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1426] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1427] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1427] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1428] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1428] [ROUND 0 PHASE Greg] 
+[BATCH 1428] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1429] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1429] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1430] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.257297
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.432830
+[TG TOTAL LOSS] Mean=86.565956
+[BATCH 1430] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1431] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1431] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1432] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1432] [ROUND 0 PHASE Greg] 
+[BATCH 1432] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1433] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1433] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1434] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1434] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1435] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.068244
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.419952
+[TG TOTAL LOSS] Mean=83.990440
+[BATCH 1435] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1436] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1436] [ROUND 0 PHASE Greg] 
+[BATCH 1436] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1437] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1437] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1438] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1438] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1439] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1439] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1440] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.289078
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.449468
+[TG TOTAL LOSS] Mean=89.893555
+[BATCH 1440] [ROUND 0 PHASE Greg] 
+[BATCH 1440] [ROUND 0 PHASE Dmain] 
+[BATCH 1440] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1441] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1441] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1442] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1442] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1443] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1443] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1444] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1444] [ROUND 0 PHASE Greg] 
+[BATCH 1444] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1445] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.632590
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.463099
+[TG TOTAL LOSS] Mean=92.619797
+[BATCH 1445] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1446] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1446] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1447] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1447] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1448] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1448] [ROUND 0 PHASE Greg] 
+[BATCH 1448] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1449] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1449] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1450] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.557107
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.411148
+[TG TOTAL LOSS] Mean=82.229553
+[BATCH 1450] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1451] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1451] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1452] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1452] [ROUND 0 PHASE Greg] 
+[BATCH 1452] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1453] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1453] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1454] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1454] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1455] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.268367
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.431482
+[TG TOTAL LOSS] Mean=86.296341
+[BATCH 1455] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1456] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1456] [ROUND 0 PHASE Greg] 
+[BATCH 1456] [ROUND 0 PHASE Dmain] 
+[BATCH 1456] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1457] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1457] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1458] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1458] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1459] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1459] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1460] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.168921
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.484802
+[TG TOTAL LOSS] Mean=96.960449
+[BATCH 1460] [ROUND 0 PHASE Greg] 
+[BATCH 1460] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1461] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1461] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1462] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1462] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1463] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1463] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1464] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1464] [ROUND 0 PHASE Greg] 
+[BATCH 1464] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1465] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.645282
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.421101
+[TG TOTAL LOSS] Mean=84.220268
+[BATCH 1465] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1466] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1466] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1467] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1467] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1468] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1468] [ROUND 0 PHASE Greg] 
+[BATCH 1468] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1469] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1469] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1470] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.298541
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.462294
+[TG TOTAL LOSS] Mean=92.458725
+[BATCH 1470] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1471] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1471] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1472] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1472] [ROUND 0 PHASE Greg] 
+[BATCH 1472] [ROUND 0 PHASE Dmain] 
+[BATCH 1472] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1473] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1473] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1474] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1474] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1475] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.055264
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.454903
+[TG TOTAL LOSS] Mean=90.980652
+[BATCH 1475] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1476] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1476] [ROUND 0 PHASE Greg] 
+[BATCH 1476] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1477] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1477] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1478] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1478] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1479] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1479] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1480] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.295065
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.413055
+[TG TOTAL LOSS] Mean=82.611000
+[BATCH 1480] [ROUND 0 PHASE Greg] 
+[BATCH 1480] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1481] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1481] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1482] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1482] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1483] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1483] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1484] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1484] [ROUND 0 PHASE Greg] 
+[BATCH 1484] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1485] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.913026
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.441550
+[TG TOTAL LOSS] Mean=88.309982
+[BATCH 1485] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1486] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1486] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1487] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1487] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1488] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1488] [ROUND 0 PHASE Greg] 
+[BATCH 1488] [ROUND 0 PHASE Dmain] 
+[BATCH 1488] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1489] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1489] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1490] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=4.196521
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.417464
+[TG TOTAL LOSS] Mean=83.492722
+[BATCH 1490] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1491] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1491] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1492] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1492] [ROUND 0 PHASE Greg] 
+[BATCH 1492] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1493] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1493] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1494] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1494] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1495] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.781781
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.436529
+[TG TOTAL LOSS] Mean=87.305710
+[BATCH 1495] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1496] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1496] [ROUND 0 PHASE Greg] 
+[BATCH 1496] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1497] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1497] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1498] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1498] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1499] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1499] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1500] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.039416
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.469412
+[TG TOTAL LOSS] Mean=93.882439
+[BATCH 1500] [ROUND 0 PHASE Greg] 
+[BATCH 1500] [ROUND 0 PHASE Dmain] 
+tick 6     kimg 24.0     time 11m 00s      sec/tick 106.7   sec/kimg 26.68   maintenance 0.7    cpumem 4.56   gpumem 5.26   augment 0.000
+Evaluating metrics...
+model device cuda:0
+trigger vector generated for evaluation metrics
+generation done
+[TG LOSS IMPERCEPTIBILITY] Mean=0.456821
+{"results": {"ipr_SSIM": 0.5431791543960571}, "metric": "IPR_extraction", "total_time": 0.12625479698181152, "total_time_str": "0s", "num_gpus": 1, "snapshot_pkl": "network-snapshot-000024.pkl", "timestamp": 1763723766.5822248}
+No fixed trigger vector IPR usecase
+[BATCH 1501] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1501] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1502] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1502] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1503] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1503] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1504] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1504] [ROUND 0 PHASE Greg] 
+[BATCH 1504] [ROUND 0 PHASE Dmain] 
+[BATCH 1504] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1505] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.974253
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.439020
+[TG TOTAL LOSS] Mean=87.803986
+[BATCH 1505] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1506] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1506] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1507] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1507] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1508] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1508] [ROUND 0 PHASE Greg] 
+[BATCH 1508] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1509] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1509] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1510] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.498004
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.434395
+[TG TOTAL LOSS] Mean=86.878990
+[BATCH 1510] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1511] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1511] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1512] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1512] [ROUND 0 PHASE Greg] 
+[BATCH 1512] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1513] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1513] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1514] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1514] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1515] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.755278
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.448324
+[TG TOTAL LOSS] Mean=89.664841
+[BATCH 1515] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1516] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1516] [ROUND 0 PHASE Greg] 
+[BATCH 1516] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1517] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1517] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1518] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1518] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1519] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1519] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1520] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.549698
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.436797
+[TG TOTAL LOSS] Mean=87.359444
+[BATCH 1520] [ROUND 0 PHASE Greg] 
+[BATCH 1520] [ROUND 0 PHASE Dmain] 
+[BATCH 1520] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1521] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1521] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1522] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1522] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1523] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1523] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1524] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1524] [ROUND 0 PHASE Greg] 
+[BATCH 1524] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1525] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.210286
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.448935
+[TG TOTAL LOSS] Mean=89.786980
+[BATCH 1525] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1526] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1526] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1527] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1527] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1528] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1528] [ROUND 0 PHASE Greg] 
+[BATCH 1528] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1529] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1529] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1530] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.889411
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.436799
+[TG TOTAL LOSS] Mean=87.359825
+[BATCH 1530] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1531] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1531] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1532] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1532] [ROUND 0 PHASE Greg] 
+[BATCH 1532] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1533] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1533] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1534] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1534] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1535] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=2.829550
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.437738
+[TG TOTAL LOSS] Mean=87.547562
+[BATCH 1535] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1536] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1536] [ROUND 0 PHASE Greg] 
+[BATCH 1536] [ROUND 0 PHASE Dmain] 
+[BATCH 1536] [ROUND 0 PHASE Dreg] 
+No fixed trigger vector IPR usecase
+[BATCH 1537] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1537] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1538] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1538] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1539] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1539] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1540] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=3.463162
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.433689
+[TG TOTAL LOSS] Mean=86.737892
+[BATCH 1540] [ROUND 0 PHASE Greg] 
+[BATCH 1540] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1541] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1541] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1542] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1542] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1543] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1543] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1544] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1544] [ROUND 0 PHASE Greg] 
+[BATCH 1544] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1545] [ROUND 0 PHASE Gmain] 
+[LGMAIN FROM D] Mean=1.373644
+<<<Trigger_vector modified>>>
+[TG LOSS IMPERCEPTIBILITY] Mean=0.456119
+[TG TOTAL LOSS] Mean=91.223816
+[BATCH 1545] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1546] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1546] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1547] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1547] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1548] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
+[BATCH 1548] [ROUND 0 PHASE Greg] 
+[BATCH 1548] [ROUND 0 PHASE Dmain] 
+No fixed trigger vector IPR usecase
+[BATCH 1549] [ROUND 0 PHASE Gmain] 
+[NO-TG LOSS] Mean=0.000000
