@@ -184,6 +184,33 @@ class StyleGAN2Loss(Loss):
                             total_wm_loss = wm_loss
                             print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")
 
+
+
+                    elif watermarking_type == 'black_box':
+
+                            print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
+                            training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
+                        
+                            # Perceptual loss between clean & triggered images
+                            loss_i = self.tools.perceptual_loss_for_imperceptibility(
+                                 gen_img, self.watermarking_dict
+                             )
+                            loss_i_ponderate = self.watermark_weight[1] * loss_i
+                            training_stats.report('Loss/G/watermark/perceptual', loss_i)
+
+                            # Mark insertion loss
+                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(
+                                 gen_img, self.watermarking_dict
+                             )
+                            wm_loss_ponderate = self.watermark_weight[0] * wm_loss
+                            training_stats.report('Loss/G/watermark/mark_insertion', wm_loss)
+                            training_stats.report('Bit-ACC', bit_accs_avg)
+
+                            # Total watermark loss
+                            total_wm_loss = wm_loss_ponderate + loss_i_ponderate
+                            print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
+
+
                     elif watermarking_type == 'white-box':
                         
                         wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
@@ -206,6 +233,9 @@ class StyleGAN2Loss(Loss):
         # ----------------------------------------------------------
         # Gpl: Path Length Regularization
         # ----------------------------------------------------------
+        # ------------------------- W -----------------------------#
+        do_Gpl = False
+        # ----------------------------------------------------- #
         if do_Gpl:
             with torch.autograd.profiler.record_function('Gpl_forward'):
 
