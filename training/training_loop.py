@@ -29,7 +29,6 @@ from metrics import metric_main
 from NNWMethods.UCHI import Uchi_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
-from NNWMethods.T4G_plus import T4G_plus_tools
 import importlib
 from training.image_utils import save_image_grid, setup_snapshot_image_grid,save_watermark_diff_map
 #----------------------------------#

@@ -4,13 +4,14 @@
     "loss_trigger": "bce",
     "constant_value_for_mask": -10,
     "n_for_mask": 5,
-    "watermark_weights": [0, 1000],
+    "watermark_weights": [0, 40],
     "path_logo": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
     "tools": "IPR_tools",
     "raw_config": {
-        "size": 32,
+        "size": 64, 
         "watermark": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
         "opaque": true,
         "position": "br"
     }
 }
+

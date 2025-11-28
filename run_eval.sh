@@ -1,10 +1,17 @@
 #!/bin/bash
 
 # METRICS="T4G_extraction"
-METRICS="fid50k_full,T4G_plus_extraction" 
-NETWORK_W="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_test_t4F_plus_all_from_scratch/00002-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000148.pkl"
+METRICS="fid50k_full" 
+NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_test_IPR/00011-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-001484.pkl"
 NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
+export CUDA_HOME=/home/mzoughebi/cuda-11.8
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+export TORCH_CUDA_ARCH_LIST="7.5" # Set the CUDA architecture list
+export CC=gcc
+export CXX=g++
 
 echo "==== Running no attack ===="
 python calc_metrics_after_network_attacks.py \

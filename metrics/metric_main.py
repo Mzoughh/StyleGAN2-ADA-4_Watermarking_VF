@@ -26,7 +26,6 @@ from . import niqe_score as niqe_score_module
 from NNWMethods.UCHI import Uchi_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
-from NNWMethods.T4G_plus import T4G_plus_tools
 from NNWMethods.TONDI import TONDI_tools
 import copy
 from torch_utils import misc
@@ -197,16 +196,27 @@ def T4G_extraction(opts):
 
         tools = T4G_tools(model_device)  
 
-        trigger_label=watermarking_dict['trigger_label']
-        trigger_vector=watermarking_dict['trigger_vector']
+        batch_size = 16
 
-        gen_img, _ =run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-        bit_acc_avg, _ = tools.extraction(gen_img, watermarking_dict)
+        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
+        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
+        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
+        
+        print('trigger vector generated for evaluation metrics')
+        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+        gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+    
+        print('generation done')
+        SSIM, bit_accs_avg = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict)
+        _, bit_accs_avg_vanilla = tools.extraction(gen_img, gen_img, watermarking_dict)
 
     else:
-        print("No F4G watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        bit_acc_avg = 0
-    return dict(f4g_bit_acc=float(bit_acc_avg))
+        print("No T4G watermarking dictionary provided, skipping extraction metrics (0 by default).")
+        bit_accs_avg = 0
+        SSIM= 0
+        bit_accs_avg_vanilla = 0
+    
+    return dict(ipr_SSIM=float(SSIM), bit_acc = bit_accs_avg, bit_acc_vanilla=bit_accs_avg_vanilla)
 
 
 @register_metric
@@ -273,43 +283,6 @@ def TONDI_extraction(opts):
         bit_accs_avg, loss = 0 , 0
     
     return dict(bit_acc = bit_accs_avg)
-
-@register_metric
-def T4G_plus_extraction(opts):
-
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        # Load watermarking dict to the model device
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = T4G_plus_tools(model_device)  
-        
-        batch_size = 16
-
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
-        print('trigger vector generated for evaluation metrics')
-        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-        gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-    
-        loss_i = tools.perceptual_loss_for_imperceptibility(gen_img, gen_imgs_from_trigger, watermarking_dict)
-        ssim = 1 - loss_i.item()
-
-        bit_accs_avg_from_trigger, _ = tools.extraction(gen_imgs_from_trigger, watermarking_dict)
-        bit_accs_avg_from_vanilla, _ = tools.extraction(gen_img, watermarking_dict)
-
-    else:
-        print("No T4G PLUS watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        ssim, bit_accs_avg = 0 , 0
-    return dict(ipr_SSIM=float(ssim), bit_acc=bit_accs_avg_from_trigger, bit_acc_vanilla=bit_accs_avg_from_vanilla)
 #----------------------------------#
 
 #----------------------------------------------------------------------------

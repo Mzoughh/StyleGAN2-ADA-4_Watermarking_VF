@@ -95,6 +95,7 @@ class IPR_tools():
 
         # Generate trigger images by adding watermark to generated images from vanilla generator
         trigger_imgs = watermarking_dict['add_mark_into_imgs'](gen_imgs)
+        # trigger_imgs = gen_imgs
         
         # Normalization MIN_MAX (LayerNorm-style): -> [0,1]
         epsilon = 1e-8  # numerical stabilization
@@ -110,19 +111,27 @@ class IPR_tools():
     # ----------------------------------------------------------
     # MARK LOSS (NOT IMPLEMENTED)
     # ----------------------------------------------------------
-    def mark_loss_for_insertion(self, gen_img, watermarking_dict):
+    def mark_loss_for_insertion(self, gen_img_from_trigger, watermarking_dict):
         # NO MARK INSERTION HERE    
         return 0, 0 
     
     # ----------------------------------------------------------
     # TRIGGER VECTOR MODIFICATION
     # ----------------------------------------------------------
+    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+        
+    #     c = watermarking_dict['constant_value_for_mask'].to(self.device)
+    #     b = watermarking_dict['binary_mask'].to(self.device)
+        
+    #     gen_z_masked = gen_z * b + c * (1 - b)
+        
+    #     return gen_z_masked
+    
     def trigger_vector_modification(self,gen_z,watermarking_dict):
+
+        y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
         
-        c = watermarking_dict['constant_value_for_mask'].to(self.device)
-        b = watermarking_dict['binary_mask'].to(self.device)
-        
-        gen_z_masked = gen_z * b + c * (1 - b)
-        
-        return gen_z_masked
+        return y * math.sqrt(2 * math.pi) 
+
+
 
