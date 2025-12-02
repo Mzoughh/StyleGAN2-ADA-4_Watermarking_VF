@@ -2,7 +2,7 @@
 
 # METRICS="T4G_extraction"
 METRICS="fid50k_full" 
-NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_test_IPR/00011-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-001484.pkl"
+NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_test_IPR/00012-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-001500.pkl"
 NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
 export CUDA_HOME=/home/mzoughebi/cuda-11.8

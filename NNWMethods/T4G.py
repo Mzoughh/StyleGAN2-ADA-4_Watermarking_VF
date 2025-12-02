@@ -63,6 +63,20 @@ class T4G_tools():
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
         self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])  
 
+
+
+    # ----------------------------------------------------------
+    # UTILS FUNCTIONS
+    # ----------------------------------------------------------
+    def mse_loss_trigger(self,decoded, keys, temp=10.0):
+        return torch.mean((decoded * temp - (2 * keys - 1))**2)
+
+    def bce_loss_trigger(self, decoded, keys, temp=10.0):
+        return F.binary_cross_entropy_with_logits(decoded * temp, keys, reduction='mean')
+
+    def str2msg(self,str):
+        return [True if el=='1' else False for el in str]
+
     # ----------------------------------------------------------
     # INITIALIZATION
     # ----------------------------------------------------------
@@ -101,7 +115,7 @@ class T4G_tools():
         nbit = msg_decoder(torch.zeros(1, 3, 128, 128).to(self.device)).shape[-1]
         
         # Freezing HiDDen Decoder
-        for param in [*msg_decoder.parameters(), *self.encoder_with_jnd.parameters()]:
+        for param in [*msg_decoder.parameters()]:
             param.requires_grad = False
         print('HIDDEN DECODER LOADED <<<<< \n')
 
@@ -162,8 +176,8 @@ class T4G_tools():
             gen_imgs_from_trigger = torch.stack(gen_imgs_from_trigger)
 
         # Generate trigger images by adding watermark to generated images from vanilla generator
-        trigger_imgs = watermarking_dict['add_mark_into_imgs'](gen_imgs)
-        # trigger_imgs = gen_imgs
+        # trigger_imgs = watermarking_dict['add_mark_into_imgs'](gen_imgs)
+        trigger_imgs = gen_imgs
         
         # Normalization MIN_MAX (LayerNorm-style): -> [0,1]
         epsilon = 1e-8  # numerical stabilization

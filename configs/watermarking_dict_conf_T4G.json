@@ -2,7 +2,7 @@
     "watermarking_type": "trigger_set",
     "trigger_step": 1,
     "loss_trigger": "bce",
-    "watermark_weights": [1, 40],
+    "watermark_weights": [1, 10],
     "tools": "T4G_tools",
     "ckpt_path_whitened": "/home/mzoughebi/personal_study/weights/hidden_replicate.pth" 
 }

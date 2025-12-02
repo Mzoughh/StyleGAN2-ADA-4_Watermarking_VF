@@ -6,13 +6,13 @@
 
 # --- Default parameters  ---
 SNAP=1 # Snapshot interval
-OUTDIR="./training_run_test_t4F_plus_20_80" # Output directory for training results
+OUTDIR="./training_run_test_T4G" # Output directory for training results
 DATA="/home/mzoughebi/personal_study/CelebA_adapted_128.zip" # Path to the dataset
 RESUME="/home/mzoughebi/personal_study/weights/trained_16000.pkl" # Path to the pre-trained model
 # RESUME="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF_test_trigger/training_run_test_t4F_plus/00003-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000600.pkl"
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
-METRICS="T4G_plus_extraction" #,fid50k_full" # Metric for the evaluation of T4G method
+METRICS="T4G_extraction" #,fid50k_full" # Metric for the evaluation of T4G method
 
 
 export CUDA_HOME=/home/mzoughebi/cuda-11.8
@@ -23,7 +23,7 @@ export TORCH_CUDA_ARCH_LIST="7.5" # Set the CUDA architecture list
 export CC=gcc
 export CXX=g++
 # --- RUN the command ---
-python train.py \
+python /home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/train.py \
     --snap=$SNAP \
     --outdir="$OUTDIR" \
     --data="$DATA" \
