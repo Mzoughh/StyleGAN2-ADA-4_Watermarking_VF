@@ -52,7 +52,6 @@ class Params():
 # ──────────────────────────────────────────────────────────────
 # METHOD CLASS
 # ──────────────────────────────────────────────────────────────
-
 class T4G_tools():
     def __init__(self,device) -> None:
         self.device = device
@@ -140,26 +139,46 @@ class T4G_tools():
         watermarking_dict['msg_decoder']=msg_decoder
         print ('End of INIT: DECODER READY <<<<< \nn')
 
+        ### TEST ###
+        seed = 42
+        g = torch.Generator(device=self.device)
+        g.manual_seed(seed)
+        A = torch.randn(512, 512, generator=g, device=self.device, dtype=torch.float32)
+        Q, R = torch.linalg.qr(A)
+        diag_R = torch.diagonal(R)
+        # Fixer le signe des colonnes pour avoir une "vraie" rotation
+        diag_R = torch.diagonal(R)
+        # signe de la diagonale de R
+        ph = diag_R.sign()
+        # si certains éléments sont 0, on met 1 pour éviter des colonnes nulles
+        ph[ph == 0] = 1.0
+
+        # Broadcasting: Q est (dim, dim), ph est (dim,)
+        # → chaque colonne j de Q est multipliée par ph[j]
+        watermarking_dict['Q'] = Q * ph
+        #####
+
         return watermarking_dict
     
 
     # ----------------------------------------------------------
     # EXTRACTION
     # ----------------------------------------------------------
-    def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict):
+    def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict, save=False):
         
-        # Save debug images
-        os.makedirs("images_debug/generated_images", exist_ok=True)
-        save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
-        os.makedirs("images_debug/trigger_images", exist_ok=True)
-        save_image(gen_imgs_from_trigger[0], f"images_debug/trigger_images/trigger_img_{len(os.listdir('images_debug/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        if save : 
+            # Save debug images
+            os.makedirs("images_debug/generated_images", exist_ok=True)
+            save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+            os.makedirs("images_debug/trigger_images", exist_ok=True)
+            save_image(gen_imgs_from_trigger[0], f"images_debug/trigger_images/trigger_img_{len(os.listdir('images_debug/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
         
         # Compute perceptual loss
         loss_i = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
         SSIM = 1 - loss_i.item()
 
         # Compute Mark Loss
-        _, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs, watermarking_dict)
+        _, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs_from_trigger, watermarking_dict)
         
         return SSIM, bit_accs_avg
     
@@ -221,9 +240,41 @@ class T4G_tools():
 
     # ----------------------------------------------------------
     # TRIGGER VECTOR MODIFICATION
-    # ----------------------------------------------------------
-    def trigger_vector_modification(self,gen_z,watermarking_dict):
+    # ----------------------------------------------------------    
 
-        y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
+    def trigger_vector_modification(self,gen_z,watermarking_dict):
+        y = gen_z @ watermarking_dict['Q']
+        return y
         
-        return y * math.sqrt(2 * math.pi) 
+
+    
+    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+
+    #     y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
+        
+    #     return y * math.sqrt(2 * math.pi) 
+
+
+
+    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+        
+    #     # c = watermarking_dict['constant_value_for_mask'].to(self.device)
+    #     # b = watermarking_dict['binary_mask'].to(self.device)
+
+    #     c_value = -10
+    #     b_value = 5
+
+    #     batch_gpu =16
+    #     z_dim = 512
+
+    #     c = c_value * torch.ones((batch_gpu,z_dim), device=self.device) # batch gpu = 16 ; G.zdim = 512
+        
+    #     binary_mask = torch.ones((batch_gpu, z_dim), device=self.device)
+    #     zero_indices = torch.randint(0, z_dim, (batch_gpu, b_value), device=self.device)     
+    #     binary_mask.scatter_(1, zero_indices, 0)
+
+    #     b = binary_mask 
+
+    #     gen_z_masked = gen_z * b + c * (1 - b)
+        
+    #     return gen_z_masked

@@ -13,3 +13,7 @@ run_eval_10_W_and_V.sh
 training_run_test_t4F_plus/
 training_run_test_t4F_plus_all_from_scratch/
 bash_launching_scripts/training_run_test_T4G/
+bash_launching_scripts/training_run_test_T4G_WARMUP_V1_PT1/
+bash_launching_scripts/training_run_test_T4G_WARMUP_V1_PT2/
+bash_launching_scripts/training_run_test_T4G_WARMUP_V2_PT1/
+bash_launching_scripts/tmp.txt

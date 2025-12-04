@@ -207,7 +207,7 @@ def T4G_extraction(opts):
         gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
     
         print('generation done')
-        SSIM, bit_accs_avg = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict)
+        SSIM, bit_accs_avg = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict, save=True)
         _, bit_accs_avg_vanilla = tools.extraction(gen_img, gen_img, watermarking_dict)
 
     else:
