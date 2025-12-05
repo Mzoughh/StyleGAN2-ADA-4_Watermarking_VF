@@ -49,6 +49,8 @@ class Params():
         self.scaling_w = scaling_w
 
 
+
+
 # ──────────────────────────────────────────────────────────────
 # METHOD CLASS
 # ──────────────────────────────────────────────────────────────
@@ -61,8 +63,13 @@ class T4G_tools():
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
         self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])  
-
-
+        
+        ## TEST ##
+        g = torch.Generator(device=self.device)
+        g.manual_seed(42)
+        key = torch.rand(1, 512, generator=g, device=self.device, dtype=torch.float32)
+        self.key =  key
+        ### 
 
     # ----------------------------------------------------------
     # UTILS FUNCTIONS
@@ -139,24 +146,7 @@ class T4G_tools():
         watermarking_dict['msg_decoder']=msg_decoder
         print ('End of INIT: DECODER READY <<<<< \nn')
 
-        ### TEST ###
-        seed = 42
-        g = torch.Generator(device=self.device)
-        g.manual_seed(seed)
-        A = torch.randn(512, 512, generator=g, device=self.device, dtype=torch.float32)
-        Q, R = torch.linalg.qr(A)
-        diag_R = torch.diagonal(R)
-        # Fixer le signe des colonnes pour avoir une "vraie" rotation
-        diag_R = torch.diagonal(R)
-        # signe de la diagonale de R
-        ph = diag_R.sign()
-        # si certains éléments sont 0, on met 1 pour éviter des colonnes nulles
-        ph[ph == 0] = 1.0
-
-        # Broadcasting: Q est (dim, dim), ph est (dim,)
-        # → chaque colonne j de Q est multipliée par ph[j]
-        watermarking_dict['Q'] = Q * ph
-        #####
+       
 
         return watermarking_dict
     
@@ -242,9 +232,45 @@ class T4G_tools():
     # TRIGGER VECTOR MODIFICATION
     # ----------------------------------------------------------    
 
+
     def trigger_vector_modification(self,gen_z,watermarking_dict):
-        y = gen_z @ watermarking_dict['Q']
-        return y
+        key = self.key.to(gen_z.dtype)
+
+        # Normal -> Uniforme
+        u = 0.5 * (1.0 + torch.erf(gen_z / math.sqrt(2.0)))  # gaussian_cdf
+
+        # Transfo non linéaire sur [0,1] (mais measure-preserving)
+        u_shift = (u + key) % 1.0
+
+        # Uniforme -> Normal (inverse CDF)
+        # clamp pour éviter les inf
+        eps = 1e-6
+        u_clamped = u_shift.clamp(eps, 1.0 - eps)
+        gen_z_trigger = math.sqrt(2.0) * torch.erfinv(2.0 * u_clamped - 1.0)
+
+        return gen_z_trigger
+
+    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+    #      # ### TEST ###
+    #     # seed = 42
+    #     # g = torch.Generator(device=self.device)
+    #     # g.manual_seed(seed)
+    #     # A = torch.randn(512, 512, generator=g, device=self.device, dtype=torch.float32)
+    #     # Q, R = torch.linalg.qr(A)
+    #     # diag_R = torch.diagonal(R)
+    #     # # Fixer le signe des colonnes pour avoir une "vraie" rotation
+    #     # diag_R = torch.diagonal(R)
+    #     # # signe de la diagonale de R
+    #     # ph = diag_R.sign()
+    #     # # si certains éléments sont 0, on met 1 pour éviter des colonnes nulles
+    #     # ph[ph == 0] = 1.0
+
+    #     # # Broadcasting: Q est (dim, dim), ph est (dim,)
+    #     # # → chaque colonne j de Q est multipliée par ph[j]
+    #     # watermarking_dict['Q'] = Q * ph
+    #     # #####
+    #     y = gen_z @ watermarking_dict['Q']
+    #     return y
         
 
     

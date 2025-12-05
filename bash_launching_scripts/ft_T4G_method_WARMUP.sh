@@ -6,7 +6,7 @@
 
 # --- Default parameters  ---
 SNAP=1 # Snapshot interval
-OUTDIR="./training_run_test_T4G_WARMUP_V1_PT1" # Output directory for training results
+OUTDIR="./training_run_test_T4G_WARMUP_V1_PT1_test_G_U_G" # Output directory for training results
 DATA="/home/mzoughebi/personal_study/CelebA_adapted_128.zip" # Path to the dataset
 RESUME="/home/mzoughebi/personal_study/weights/trained_16000.pkl" # Path to the pre-trained model
 # RESUME="/home/mzoughebi/personal_study/weights/warmup_800_0_10.pkl"
