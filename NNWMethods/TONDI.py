@@ -98,7 +98,7 @@ class TONDI_tools():
         nbit = msg_decoder(torch.zeros(1, 3, 128, 128).to(self.device)).shape[-1]
         
         # Freezing HiDDen Decoder
-        for param in [*msg_decoder.parameters(), *self.encoder_with_jnd.parameters()]:
+        for param in [*msg_decoder.parameters()]:
             param.requires_grad = False
         print('HIDDEN DECODER LOADED <<<<< \n')
 

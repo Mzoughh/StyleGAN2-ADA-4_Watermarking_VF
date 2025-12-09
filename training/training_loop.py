@@ -103,7 +103,7 @@ def training_loop(
     #------------------------------------------------------------------------------------#
     # INIT THE WATERMARKING DICTIONNARY FOR EACH METHOD FROM A JSON FILE
     # Load configuration from JSON
-    with open('/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_T4G.json', 'r') as f:
+    with open('/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/configs_JZ/watermarking_dict_conf_TONDI.json', 'r') as f:
         watermarking_dict_tmp = json.load(f)
 
     if watermarking_dict_tmp.get('ema_kimg'):

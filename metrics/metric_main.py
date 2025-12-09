@@ -272,7 +272,6 @@ def TONDI_extraction(opts):
 
         latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
         trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
         print('trigger vector generated for evaluation metrics')
         gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
 
