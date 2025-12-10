@@ -23,7 +23,7 @@ from . import niqe_score as niqe_score_module
 
 #------------------ W -------------#
 # For Watermarking extraction
-from NNWMethods.UCHI import Uchi_tools
+from NNWMethods.UCHI import UCHI_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
 from NNWMethods.TONDI import TONDI_tools
@@ -154,7 +154,7 @@ def uchida_extraction(opts):
 
         Generator = opts.G.to(model_device)
 
-        tools = Uchi_tools(model_device)
+        tools = UCHI_tools(model_device)
         extraction, hamming_dist = tools.detection(Generator, watermarking_dict)
         extraction_r = torch.round(extraction)
         diff = (~torch.logical_xor((extraction_r).cpu()>0, watermarking_dict['watermark'].cpu()>0)) 

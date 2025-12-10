@@ -1,6 +1,6 @@
 Auto-configured hyperparameters: mb=32, mbstd=4, fmaps=0.5, lrate=0.0025, gamma=0.1024, ema=10.0
-Batch size: 16
-Batch size per GPU: 16
+Batch size: 32
+Batch size per GPU: 32
 Disabling discriminator augmentation.
 
 Training options:
@@ -9,7 +9,8 @@ Training options:
   "image_snapshot_ticks": 1,
   "network_snapshot_ticks": 1,
   "metrics": [
-    "T4G_extraction"
+    "uchida_extraction",
+    "fid50k_full"
   ],
   "random_seed": 0,
   "training_set_kwargs": {
@@ -74,19 +75,19 @@ Training options:
     "r1_gamma": 0.1024,
     "watermarking_dict": true
   },
-  "water_config_path": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_T4G.json",
+  "water_config_path": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_UCHI.json",
   "total_kimg": 1,
-  "batch_size": 16,
-  "batch_gpu": 16,
+  "batch_size": 32,
+  "batch_gpu": 32,
   "ema_kimg": 10.0,
   "ema_rampup": null,
   "resume_pkl": "/home/mzoughebi/personal_study/weights/trained_16000.pkl",
   "ada_kimg": 100,
-  "run_dir": "./training_run_test_T4G/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom"
+  "run_dir": "./training_run_test_UCHIDA/00007-CelebA_adapted_128-watermarking1-noaug-resumecustom"
 }
 
-Watermarking Configuration Method Path:  /home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_T4G.json
-Output directory:   ./training_run_test_T4G/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom
+Watermarking Configuration Method Path:  /home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_UCHI.json
+Output directory:   ./training_run_test_UCHIDA/00007-CelebA_adapted_128-watermarking1-noaug-resumecustom
 Training data:      /home/mzoughebi/personal_study/CelebA_adapted_128.zip
 Training duration:  1 kimg
 Number of GPUs:     1
@@ -104,102 +105,90 @@ Image shape: [3, 128, 128]
 Label shape: [0]
 
 Constructing networks...
-/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_T4G.json
-EMA_KIMG: 10.0
-KIMG_PER_TICK: 4
->>>> T4G INIT <<<<<
->>>>> 1) HIDDEN DECODER LOADING 
-
-HIDDEN DECODER LOADED <<<<< 
-
-
->>>>> 2) Creating key with 48 bits...
-Key: 111010110101000001010111010011010100010000100111
-Loss for insertion: <bound method T4G_tools.bce_loss_trigger of <NNWMethods.T4G.T4G_tools object at 0x7f701b8970d0>>
-End of INIT: DECODER READY <<<<< 
-n
+/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_UCHI.json
+EMA_KIMG: 1
+KIMG_PER_TICK: 1
+>>>> UCHIDA INIT <<<<<
+Weight name: synthesis.b32.conv0.weight, size: torch.Size([512, 512, 3, 3])
+WATERMARK FOR INSERTION:   tensor([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1,
+        0, 1, 0, 1, 1, 1, 0, 1])
+min X:  tensor(-0.0756, device='cuda:0') max X:  tensor(0.0642, device='cuda:0')
 Loading watermarking_dict from /home/mzoughebi/personal_study/weights/trained_16000.pkl...
 No watermarking_dict found in the resume file. Using default values.
->>>> T4G INIT <<<<<
->>>>> 1) HIDDEN DECODER LOADING 
-
-HIDDEN DECODER LOADED <<<<< 
-
-
->>>>> 2) Creating key with 48 bits...
-Key: 001000111110110110110100100100110001101100101000
-Loss for insertion: <bound method T4G_tools.bce_loss_trigger of <NNWMethods.T4G.T4G_tools object at 0x7f701b8970d0>>
-End of INIT: DECODER READY <<<<< 
-n
+>>>> UCHIDA INIT <<<<<
+Weight name: synthesis.b32.conv0.weight, size: torch.Size([512, 512, 3, 3])
+WATERMARK FOR INSERTION:   tensor([1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
+        1, 0, 1, 0, 0, 0, 1, 0])
+min X:  tensor(-0.0602, device='cuda:0') max X:  tensor(0.0614, device='cuda:0')
 Resuming from "/home/mzoughebi/personal_study/weights/trained_16000.pkl"
 Setting up PyTorch plugin "bias_act_plugin"... Done.
 Setting up PyTorch plugin "upfirdn2d_plugin"... Done.
 
 Generator             Parameters  Buffers  Output shape         Datatype
 ---                   ---         ---      ---                  ---     
-mapping.fc0           262656      -        [16, 512]            float32 
-mapping.fc1           262656      -        [16, 512]            float32 
-mapping               -           512      [16, 12, 512]        float32 
-synthesis.b4.conv1    2622465     32       [16, 512, 4, 4]      float32 
-synthesis.b4.torgb    264195      -        [16, 3, 4, 4]        float32 
-synthesis.b4:0        8192        16       [16, 512, 4, 4]      float32 
-synthesis.b4:1        -           -        [16, 512, 4, 4]      float32 
-synthesis.b8.conv0    2622465     80       [16, 512, 8, 8]      float32 
-synthesis.b8.conv1    2622465     80       [16, 512, 8, 8]      float32 
-synthesis.b8.torgb    264195      -        [16, 3, 8, 8]        float32 
-synthesis.b8:0        -           16       [16, 512, 8, 8]      float32 
-synthesis.b8:1        -           -        [16, 512, 8, 8]      float32 
-synthesis.b16.conv0   2622465     272      [16, 512, 16, 16]    float16 
-synthesis.b16.conv1   2622465     272      [16, 512, 16, 16]    float16 
-synthesis.b16.torgb   264195      -        [16, 3, 16, 16]      float16 
-synthesis.b16:0       -           16       [16, 512, 16, 16]    float16 
-synthesis.b16:1       -           -        [16, 512, 16, 16]    float32 
-synthesis.b32.conv0   2622465     1040     [16, 512, 32, 32]    float16 
-synthesis.b32.conv1   2622465     1040     [16, 512, 32, 32]    float16 
-synthesis.b32.torgb   264195      -        [16, 3, 32, 32]      float16 
-synthesis.b32:0       -           16       [16, 512, 32, 32]    float16 
-synthesis.b32:1       -           -        [16, 512, 32, 32]    float32 
-synthesis.b64.conv0   1442561     4112     [16, 256, 64, 64]    float16 
-synthesis.b64.conv1   721409      4112     [16, 256, 64, 64]    float16 
-synthesis.b64.torgb   132099      -        [16, 3, 64, 64]      float16 
-synthesis.b64:0       -           16       [16, 256, 64, 64]    float16 
-synthesis.b64:1       -           -        [16, 256, 64, 64]    float32 
-synthesis.b128.conv0  426369      16400    [16, 128, 128, 128]  float16 
-synthesis.b128.conv1  213249      16400    [16, 128, 128, 128]  float16 
-synthesis.b128.torgb  66051       -        [16, 3, 128, 128]    float16 
-synthesis.b128:0      -           16       [16, 128, 128, 128]  float16 
-synthesis.b128:1      -           -        [16, 128, 128, 128]  float32 
+mapping.fc0           262656      -        [32, 512]            float32 
+mapping.fc1           262656      -        [32, 512]            float32 
+mapping               -           512      [32, 12, 512]        float32 
+synthesis.b4.conv1    2622465     32       [32, 512, 4, 4]      float32 
+synthesis.b4.torgb    264195      -        [32, 3, 4, 4]        float32 
+synthesis.b4:0        8192        16       [32, 512, 4, 4]      float32 
+synthesis.b4:1        -           -        [32, 512, 4, 4]      float32 
+synthesis.b8.conv0    2622465     80       [32, 512, 8, 8]      float32 
+synthesis.b8.conv1    2622465     80       [32, 512, 8, 8]      float32 
+synthesis.b8.torgb    264195      -        [32, 3, 8, 8]        float32 
+synthesis.b8:0        -           16       [32, 512, 8, 8]      float32 
+synthesis.b8:1        -           -        [32, 512, 8, 8]      float32 
+synthesis.b16.conv0   2622465     272      [32, 512, 16, 16]    float16 
+synthesis.b16.conv1   2622465     272      [32, 512, 16, 16]    float16 
+synthesis.b16.torgb   264195      -        [32, 3, 16, 16]      float16 
+synthesis.b16:0       -           16       [32, 512, 16, 16]    float16 
+synthesis.b16:1       -           -        [32, 512, 16, 16]    float32 
+synthesis.b32.conv0   2622465     1040     [32, 512, 32, 32]    float16 
+synthesis.b32.conv1   2622465     1040     [32, 512, 32, 32]    float16 
+synthesis.b32.torgb   264195      -        [32, 3, 32, 32]      float16 
+synthesis.b32:0       -           16       [32, 512, 32, 32]    float16 
+synthesis.b32:1       -           -        [32, 512, 32, 32]    float32 
+synthesis.b64.conv0   1442561     4112     [32, 256, 64, 64]    float16 
+synthesis.b64.conv1   721409      4112     [32, 256, 64, 64]    float16 
+synthesis.b64.torgb   132099      -        [32, 3, 64, 64]      float16 
+synthesis.b64:0       -           16       [32, 256, 64, 64]    float16 
+synthesis.b64:1       -           -        [32, 256, 64, 64]    float32 
+synthesis.b128.conv0  426369      16400    [32, 128, 128, 128]  float16 
+synthesis.b128.conv1  213249      16400    [32, 128, 128, 128]  float16 
+synthesis.b128.torgb  66051       -        [32, 3, 128, 128]    float16 
+synthesis.b128:0      -           16       [32, 128, 128, 128]  float16 
+synthesis.b128:1      -           -        [32, 128, 128, 128]  float32 
 ---                   ---         ---      ---                  ---     
 Total                 22949277    44448    -                    -       
 
 
 Discriminator  Parameters  Buffers  Output shape         Datatype
 ---            ---         ---      ---                  ---     
-b128.fromrgb   512         16       [16, 128, 128, 128]  float16 
-b128.skip      32768       16       [16, 256, 64, 64]    float16 
-b128.conv0     147584      16       [16, 128, 128, 128]  float16 
-b128.conv1     295168      16       [16, 256, 64, 64]    float16 
-b128           -           16       [16, 256, 64, 64]    float16 
-b64.skip       131072      16       [16, 512, 32, 32]    float16 
-b64.conv0      590080      16       [16, 256, 64, 64]    float16 
-b64.conv1      1180160     16       [16, 512, 32, 32]    float16 
-b64            -           16       [16, 512, 32, 32]    float16 
-b32.skip       262144      16       [16, 512, 16, 16]    float16 
-b32.conv0      2359808     16       [16, 512, 32, 32]    float16 
-b32.conv1      2359808     16       [16, 512, 16, 16]    float16 
-b32            -           16       [16, 512, 16, 16]    float16 
-b16.skip       262144      16       [16, 512, 8, 8]      float16 
-b16.conv0      2359808     16       [16, 512, 16, 16]    float16 
-b16.conv1      2359808     16       [16, 512, 8, 8]      float16 
-b16            -           16       [16, 512, 8, 8]      float16 
-b8.skip        262144      16       [16, 512, 4, 4]      float32 
-b8.conv0       2359808     16       [16, 512, 8, 8]      float32 
-b8.conv1       2359808     16       [16, 512, 4, 4]      float32 
-b8             -           16       [16, 512, 4, 4]      float32 
-b4.mbstd       -           -        [16, 513, 4, 4]      float32 
-b4.conv        2364416     16       [16, 512, 4, 4]      float32 
-b4.fc          4194816     -        [16, 512]            float32 
-b4.out         513         -        [16, 1]              float32 
+b128.fromrgb   512         16       [32, 128, 128, 128]  float16 
+b128.skip      32768       16       [32, 256, 64, 64]    float16 
+b128.conv0     147584      16       [32, 128, 128, 128]  float16 
+b128.conv1     295168      16       [32, 256, 64, 64]    float16 
+b128           -           16       [32, 256, 64, 64]    float16 
+b64.skip       131072      16       [32, 512, 32, 32]    float16 
+b64.conv0      590080      16       [32, 256, 64, 64]    float16 
+b64.conv1      1180160     16       [32, 512, 32, 32]    float16 
+b64            -           16       [32, 512, 32, 32]    float16 
+b32.skip       262144      16       [32, 512, 16, 16]    float16 
+b32.conv0      2359808     16       [32, 512, 32, 32]    float16 
+b32.conv1      2359808     16       [32, 512, 16, 16]    float16 
+b32            -           16       [32, 512, 16, 16]    float16 
+b16.skip       262144      16       [32, 512, 8, 8]      float16 
+b16.conv0      2359808     16       [32, 512, 16, 16]    float16 
+b16.conv1      2359808     16       [32, 512, 8, 8]      float16 
+b16            -           16       [32, 512, 8, 8]      float16 
+b8.skip        262144      16       [32, 512, 4, 4]      float32 
+b8.conv0       2359808     16       [32, 512, 8, 8]      float32 
+b8.conv1       2359808     16       [32, 512, 4, 4]      float32 
+b8             -           16       [32, 512, 4, 4]      float32 
+b4.mbstd       -           -        [32, 513, 4, 4]      float32 
+b4.conv        2364416     16       [32, 512, 4, 4]      float32 
+b4.fc          4194816     -        [32, 512]            float32 
+b4.out         513         -        [32, 1]              float32 
 ---            ---         ---      ---                  ---     
 Total          23882369    352      -                    -       
 
@@ -211,47 +200,95 @@ Initial images saved for watermarking diff map...
 Initializing logs...
 Training for 1 kimg...
 
-No fixed trigger vector IPR usecase
 [BATCH 0] [ROUND 0 PHASE Gmain] 
-[LGMAIN FROM D] Mean=1.601841
-<<<Trigger_vector modified>>>
-[TG LOSS IMPERCEPTIBILITY] Mean=0.719756
-[TG TOTAL LOSS] Mean=19.098087
+[WB LOSS] Mean=0.702112
 [BATCH 0] [ROUND 0 PHASE Greg] 
 [BATCH 0] [ROUND 0 PHASE Dmain] 
 [BATCH 0] [ROUND 0 PHASE Dreg] 
-tick 0     kimg 0.0      time 15s          sec/tick 1.3     sec/kimg 83.85   maintenance 13.3   cpumem 4.92   gpumem 9.08   augment 0.000
+tick 0     kimg 0.0      time 16s          sec/tick 1.8     sec/kimg 57.60   maintenance 14.2   cpumem 4.54   gpumem 9.09   augment 0.000
 Evaluating metrics...
 model device cuda:0
-trigger vector generated for evaluation metrics
-generation done
-[TG LOSS IMPERCEPTIBILITY] Mean=0.755527
+{"results": {"uchida_bit_acc": 0.5, "uchida_hamming_dist": 50.0}, "metric": "uchida_extraction", "total_time": 0.022526264190673828, "total_time_str": "0s", "num_gpus": 1, "snapshot_pkl": "network-snapshot-000000.pkl", "timestamp": 1765383964.9635725}
+[metrics] Loading feature detector from local file: /home/mzoughebi/personal_study/weights/inception-2015-12-05.pt
+{"results": {"fid50k_full": 3.3506423236466865}, "metric": "fid50k_full", "total_time": 292.2347402572632, "total_time_str": "4m 52s", "num_gpus": 1, "snapshot_pkl": "network-snapshot-000000.pkl", "timestamp": 1765384257.1986945}
+[BATCH 1] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.696615
+[BATCH 1] [ROUND 0 PHASE Dmain] 
+[BATCH 2] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.690651
+[BATCH 2] [ROUND 0 PHASE Dmain] 
+[BATCH 3] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.685167
+[BATCH 3] [ROUND 0 PHASE Dmain] 
+[BATCH 4] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.679444
+[BATCH 4] [ROUND 0 PHASE Greg] 
+[BATCH 4] [ROUND 0 PHASE Dmain] 
+[BATCH 5] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.674378
+[BATCH 5] [ROUND 0 PHASE Dmain] 
+[BATCH 6] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.669187
+[BATCH 6] [ROUND 0 PHASE Dmain] 
+[BATCH 7] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.664080
+[BATCH 7] [ROUND 0 PHASE Dmain] 
+[BATCH 8] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.658956
+[BATCH 8] [ROUND 0 PHASE Greg] 
+[BATCH 8] [ROUND 0 PHASE Dmain] 
+[BATCH 9] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.654145
+[BATCH 9] [ROUND 0 PHASE Dmain] 
+[BATCH 10] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.649075
+[BATCH 10] [ROUND 0 PHASE Dmain] 
+[BATCH 11] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.644286
+[BATCH 11] [ROUND 0 PHASE Dmain] 
+[BATCH 12] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.639378
+[BATCH 12] [ROUND 0 PHASE Greg] 
+[BATCH 12] [ROUND 0 PHASE Dmain] 
+[BATCH 13] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.634711
+[BATCH 13] [ROUND 0 PHASE Dmain] 
+[BATCH 14] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.629974
+[BATCH 14] [ROUND 0 PHASE Dmain] 
+[BATCH 15] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.625404
+[BATCH 15] [ROUND 0 PHASE Dmain] 
+[BATCH 16] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.620799
+[BATCH 16] [ROUND 0 PHASE Greg] 
+[BATCH 16] [ROUND 0 PHASE Dmain] 
+[BATCH 16] [ROUND 0 PHASE Dreg] 
+[BATCH 17] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.616370
+[BATCH 17] [ROUND 0 PHASE Dmain] 
+[BATCH 18] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.611903
+[BATCH 18] [ROUND 0 PHASE Dmain] 
+[BATCH 19] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.607571
+[BATCH 19] [ROUND 0 PHASE Dmain] 
+[BATCH 20] [ROUND 0 PHASE Gmain] 
+[WB LOSS] Mean=0.603144
+
+Aborted!
+Exception ignored in: <function _MultiProcessingDataLoaderIter.__del__ at 0x7f4e23aad430>
 Traceback (most recent call last):
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/train.py", line 572, in <module>
-    main() # pylint: disable=no-value-for-parameter
-  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/click/core.py", line 1161, in __call__
-    return self.main(*args, **kwargs)
-  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/click/core.py", line 1082, in main
-    rv = self.invoke(ctx)
-  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/click/core.py", line 1443, in invoke
-    return ctx.invoke(self.callback, **ctx.params)
-  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/click/core.py", line 788, in invoke
-    return __callback(*args, **kwargs)
-  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/click/decorators.py", line 33, in new_func
-    return f(get_current_context(), *args, **kwargs)
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/train.py", line 565, in main
-    subprocess_fn(rank=0, args=args, temp_dir=temp_dir)
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/train.py", line 410, in subprocess_fn
-    training_loop.training_loop(rank=rank, **args)
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/training/training_loop.py", line 427, in training_loop
-    result_dict = metric_main.calc_metric(metric=metric, G=snapshot_data['G_ema'],
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/metrics/metric_main.py", line 58, in calc_metric
-    results = _metric_dict[metric](opts)
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/metrics/metric_main.py", line 210, in T4G_extraction
-    SSIM, bit_accs_avg = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict, save=True)
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/NNWMethods/T4G.py", line 171, in extraction
-    _, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs_from_trigger, watermarking_dict)
-  File "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/NNWMethods/T4G.py", line 222, in mark_loss_for_insertion
-    diff = (~torch.logical_xor(decoded>0, watermarking_dict['keys']>0)) # b k -> b k
-RuntimeError: The size of tensor a (32) must match the size of tensor b (16) at non-singleton dimension 0
- ===> Training completed successfully <=== 
+  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1324, in __del__
+    self._shutdown_workers()
+  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1297, in _shutdown_workers
+    w.join(timeout=_utils.MP_STATUS_CHECK_INTERVAL)
+  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/multiprocessing/process.py", line 149, in join
+    res = self._popen.wait(timeout)
+  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/multiprocessing/popen_fork.py", line 44, in wait
+    if not wait([self.sentinel], timeout):
+  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/home/mzoughebi/miniconda3/envs/SG2-ada-2080ti/lib/python3.8/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt: 

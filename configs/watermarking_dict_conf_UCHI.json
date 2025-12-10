@@ -1,0 +1,15 @@
+{   
+    "ema_kimg" : 1,
+    "kimg_per_tick" : 1,
+    "watermarking_type": "white-box",
+    "watermark_weights": [3],
+    "tools": "UCHI_tools",
+    "weight_name": "synthesis.b32.conv0.weight",
+    "T" : 32
+
+}
+
+
+
+
+

@@ -213,12 +213,12 @@ class StyleGAN2Loss(Loss):
 
                     elif watermarking_type == 'white-box':
                         
-                        wm_loss = self.tools.loss_for_stylegan(self.G, self.watermarking_dict)
-                        wm_loss_ponderate = self.watermark_weight * wm_loss
+                        wm_loss = self.tools.mark_loss_for_insertion(self.G, self.watermarking_dict)
+                        wm_loss_ponderate = self.watermark_weight[0] * wm_loss
                         total_wm_loss = wm_loss_ponderate
                         
-                        print(f"[WB LOSS] Mean={total_wm_loss.item():.6f}")
-                        training_stats.report('Loss/G/watermark_loss', total_wm_loss)
+                        print(f"[WB LOSS] Mean={wm_loss.item():.6f}")
+                        training_stats.report('Loss/G/mark_insertion', wm_loss)
 
                     # Add watermarking loss
                     loss_Gmain = loss_Gmain.mean().mul(gain) + total_wm_loss

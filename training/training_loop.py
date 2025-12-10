@@ -26,7 +26,7 @@ from metrics import metric_main
 
 #-----------------------------------#
 ### WATERMARKING ###
-from NNWMethods.UCHI import Uchi_tools
+from NNWMethods.UCHI import UCHI_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
 import importlib
