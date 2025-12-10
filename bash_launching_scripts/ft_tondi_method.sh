@@ -8,11 +8,14 @@
 SNAP=1 # Snapshot interval
 OUTDIR="./training_run_test_TONDI" # Output directory for training results
 DATA="/home/mzoughebi/personal_study/CelebA_adapted_128.zip" # Path to the dataset
-# RESUME="/home/mzoughebi/personal_study/weights/trained_16000.pkl" # Path to the pre-trained model
-RESUME="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_test_IPR/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000250.pkl"
+RESUME="/home/mzoughebi/personal_study/weights/trained_16000.pkl" # Path to the pre-trained model
+# RESUME="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_test_IPR/00005-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-001000.pkl"
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
-METRICS="IPR_extraction" #,fid50k_full" # Metric for the evaluation of T4G method
+METRICS="TONDI_extraction" #,fid50k_full" # Metric for the evaluation of T4G method
+
+# Path configuration
+PATH_CONF="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_TONDI.json"
 
 export CUDA_HOME=/home/mzoughebi/cuda-11.8
 export PATH=$CUDA_HOME/bin:$PATH
@@ -30,8 +33,9 @@ python /home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/train.py \
     --cfg="$CFG" \
     --gpus="$GPUS" \
     --metrics="$METRICS" \
-    --aug=noaug 
-
+    --aug=noaug \
+    --water_config_path="$PATH_CONF"
+    
 echo " ===> Training completed successfully <=== "
 
 
