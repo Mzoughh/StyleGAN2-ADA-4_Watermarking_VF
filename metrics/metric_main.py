@@ -196,8 +196,8 @@ def T4G_extraction(opts):
 
         tools = T4G_tools(model_device)  
 
-        batch_size = 16
-
+        batch_size = 32
+        
         latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
         trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
         trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
@@ -236,7 +236,7 @@ def IPR_extraction(opts):
 
         tools = IPR_tools(model_device)  
         
-        batch_size = 16
+        batch_size = 32
 
         latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
         trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
@@ -268,7 +268,7 @@ def TONDI_extraction(opts):
 
         tools = TONDI_tools(model_device)  
         
-        batch_size = 16
+        batch_size = 32
 
         latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
         trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)

@@ -233,22 +233,22 @@ class T4G_tools():
     # ----------------------------------------------------------    
 
 
-    def trigger_vector_modification(self,gen_z,watermarking_dict):
-        key = self.key.to(gen_z.dtype)
+    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+    #     key = self.key.to(gen_z.dtype)
 
-        # Normal -> Uniforme
-        u = 0.5 * (1.0 + torch.erf(gen_z / math.sqrt(2.0)))  # gaussian_cdf
+    #     # Normal -> Uniforme
+    #     u = 0.5 * (1.0 + torch.erf(gen_z / math.sqrt(2.0)))  # gaussian_cdf
 
-        # Transfo non linéaire sur [0,1] (mais measure-preserving)
-        u_shift = (u + key) % 1.0
+    #     # Transfo non linéaire sur [0,1] (mais measure-preserving)
+    #     u_shift = (u + key) % 1.0
 
-        # Uniforme -> Normal (inverse CDF)
-        # clamp pour éviter les inf
-        eps = 1e-6
-        u_clamped = u_shift.clamp(eps, 1.0 - eps)
-        gen_z_trigger = math.sqrt(2.0) * torch.erfinv(2.0 * u_clamped - 1.0)
+    #     # Uniforme -> Normal (inverse CDF)
+    #     # clamp pour éviter les inf
+    #     eps = 1e-6
+    #     u_clamped = u_shift.clamp(eps, 1.0 - eps)
+    #     gen_z_trigger = math.sqrt(2.0) * torch.erfinv(2.0 * u_clamped - 1.0)
 
-        return gen_z_trigger
+    #     return gen_z_trigger
 
     # def trigger_vector_modification(self,gen_z,watermarking_dict):
     #      # ### TEST ###
@@ -274,11 +274,11 @@ class T4G_tools():
         
 
     
-    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+    def trigger_vector_modification(self,gen_z,watermarking_dict):
 
-    #     y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
+        y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
         
-    #     return y * math.sqrt(2 * math.pi) 
+        return y * math.sqrt(2 * math.pi) 
 
 
 
