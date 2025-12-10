@@ -110,6 +110,8 @@ def training_loop(
     if water_config_path != None :
         with open(water_config_path, 'r') as f:
             watermarking_dict_tmp = json.load(f)
+    else :
+        watermarking_dict_tmp = {}
 
     if watermarking_dict_tmp.get('ema_kimg'):
         ema_kimg = watermarking_dict_tmp['ema_kimg'] # Update G_ema every tick not seems to be control by cmd line like for snap : 0
