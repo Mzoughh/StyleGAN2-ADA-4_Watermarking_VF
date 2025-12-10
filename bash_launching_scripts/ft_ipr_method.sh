@@ -14,6 +14,9 @@ CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
 METRICS="IPR_extraction" #,fid50k_full" # Metric for the evaluation of T4G method
 
+# Path configuration
+PATH_CONF="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/configs/watermarking_dict_conf_T4G.json"
+
 export CUDA_HOME=/home/mzoughebi/cuda-11.8
 export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
@@ -30,7 +33,8 @@ python /home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/train.py \
     --cfg="$CFG" \
     --gpus="$GPUS" \
     --metrics="$METRICS" \
-    --aug=noaug 
+    --aug=noaug \
+    --water_config_path="$PATH_CONF"
 
 echo " ===> Training completed successfully <=== "
 
