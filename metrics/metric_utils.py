@@ -37,6 +37,8 @@ class MetricOptions:
 
 _feature_detector_cache = dict()
 
+LOCAL_DETECTOR_PATH = '/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/weights/inception-2015-12-05.pt'
+
 def get_feature_detector_name(url):
     return os.path.splitext(url.split('/')[-1])[0]
 
@@ -47,8 +49,21 @@ def get_feature_detector(url, device=torch.device('cpu'), num_gpus=1, rank=0, ve
         is_leader = (rank == 0)
         if not is_leader and num_gpus > 1:
             torch.distributed.barrier() # leader goes first
-        with dnnlib.util.open_url(url, verbose=(verbose and is_leader)) as f:
-            _feature_detector_cache[key] = torch.jit.load(f).eval().to(device)
+
+        # --------------- W -------------- # FOR OFFLINE USAGE
+        if os.path.isfile(LOCAL_DETECTOR_PATH):
+            local_path = LOCAL_DETECTOR_PATH
+            if verbose and is_leader:
+                print(f"[metrics] Loading feature detector from local file: {local_path}")
+            _feature_detector_cache[key] = torch.jit.load(local_path).eval().to(device)
+        else:
+            if verbose and is_leader:
+                    print(f"[metrics] Local file {LOCAL_DETECTOR_PATH} not found, trying URL: {url}")
+            with dnnlib.util.open_url(url, verbose=(verbose and is_leader)) as f:
+                print(f"[metrics] Loading feature detector from url: {url}")
+                _feature_detector_cache[key] = torch.jit.load(f).eval().to(device)
+        #---------------------------------#
+
         if is_leader and num_gpus > 1:
             torch.distributed.barrier() # others follow
     return _feature_detector_cache[key]

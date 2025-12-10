@@ -64,6 +64,9 @@ def setup_training_loop_kwargs(
     allow_tf32 = None, # Allow PyTorch to use TF32 for matmul and convolutions: <bool>, default = False
     nobench    = None, # Disable cuDNN benchmarking: <bool>, default = False
     workers    = None, # Override number of DataLoader workers: <int>, default = 3
+    # ----------------------------------- #
+    water_config_path = None
+    # ----------------------------------- #
 ):
     args = dnnlib.EasyDict()
 
@@ -160,7 +163,7 @@ def setup_training_loop_kwargs(
         'cifar':     dict(ref_gpus=2,  kimg=100000, mb=64, mbstd=32, fmaps=1,   lrate=0.0025, gamma=0.01, ema=500, ramp=0.05, map=2),
 
         #------------------ W -------------#
-        'watermarking': dict(ref_gpus=-1, kimg=200,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
+        'watermarking': dict(ref_gpus=-1, kimg=1,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1, gamma=-1,   ema=1,  ramp=0.05, map=2),       # Based on 'auto' but for watermarking finetunning.
         #----------------------------------#
     
     
@@ -198,6 +201,7 @@ def setup_training_loop_kwargs(
     #------------------ W -------------#
     if cfg == 'watermarking':
         args.loss_kwargs.watermarking_dict = True
+        args.water_config_path = water_config_path
     else :
         args.loss_kwargs.watermarking_dict = False
     #----------------------------------#
@@ -457,6 +461,10 @@ class CommaSeparatedList(click.ParamType):
 @click.option('--nobench', help='Disable cuDNN benchmarking', type=bool, metavar='BOOL')
 @click.option('--allow-tf32', help='Allow PyTorch to use TF32 internally', type=bool, metavar='BOOL')
 @click.option('--workers', help='Override number of DataLoader workers', type=int, metavar='INT')
+# ------------------------------------------------ #
+@click.option('--water_config_path', help='path_to_watermarking_method_config', type=str)
+# ------------------------------------------------ #
+
 
 def main(ctx, outdir, dry_run, **config_kwargs):
     """Train a GAN using the techniques described in the paper
@@ -525,6 +533,9 @@ def main(ctx, outdir, dry_run, **config_kwargs):
     print('Training options:')
     print(json.dumps(args, indent=2))
     print()
+    # ------------------------------------------- #
+    print(f'Watermarking Configuration Method Path:  {args.water_config_path}')
+    # ------------------------------------------- #
     print(f'Output directory:   {args.run_dir}')
     print(f'Training data:      {args.training_set_kwargs.path}')
     print(f'Training duration:  {args.total_kimg} kimg')

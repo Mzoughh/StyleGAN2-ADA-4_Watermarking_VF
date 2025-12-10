@@ -49,6 +49,9 @@ RESUMEW="$OUTDIR/WARMUP_PT_1_SSIM_L20_E800/network-snapshot-000764.pkl"
 # Watermarking configuration
 CFG="watermarking"
 
+# Path configuration
+PATH_CONF="$CODEDIR/configs_JZ/watermarking_dict_conf_T4G.json"
+
 # Number of GPUs to use
 GPUS=1
 
@@ -73,6 +76,7 @@ python train.py \
     --cfg="$CFG" \
     --gpus="$GPUS" \
     --metrics="$METRICS" \
-    --aug=noaug
+    --aug=noaug \
+    --water_config_path="$PATH_CONF"
 
 echo " ===> Training completed successfully on V100 <=== "

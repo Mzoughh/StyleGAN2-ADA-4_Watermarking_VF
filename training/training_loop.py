@@ -67,6 +67,9 @@ def training_loop(
     allow_tf32              = False,    # Enable torch.backends.cuda.matmul.allow_tf32 and torch.backends.cudnn.allow_tf32?
     abort_fn                = None,     # Callback function for determining whether to abort training. Must return consistent results across ranks.
     progress_fn             = None,     # Callback function for updating training progress. Called for all ranks.
+    # ------------------------------- #
+    water_config_path       = None,
+    # ------------------------------- #
 ):
     # Initialize.
     start_time = time.time()
@@ -103,8 +106,10 @@ def training_loop(
     #------------------------------------------------------------------------------------#
     # INIT THE WATERMARKING DICTIONNARY FOR EACH METHOD FROM A JSON FILE
     # Load configuration from JSON
-    with open(watermarking_config, 'r') as f:
-        watermarking_dict_tmp = json.load(f)
+    print(water_config_path)
+    if water_config_path != None :
+        with open(water_config_path, 'r') as f:
+            watermarking_dict_tmp = json.load(f)
 
     if watermarking_dict_tmp.get('ema_kimg'):
         ema_kimg = watermarking_dict_tmp['ema_kimg'] # Update G_ema every tick not seems to be control by cmd line like for snap : 0
