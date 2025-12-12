@@ -4,12 +4,12 @@
     "loss_trigger": "bce",
     "constant_value_for_mask": -10,
     "n_for_mask": 5,
-    "watermark_weights": [0, 40],
-    "path_logo": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
+    "watermark_weights": [0, 10],
+    "path_logo": "/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
     "tools": "IPR_tools",
     "raw_config": {
         "size": 64, 
-        "watermark": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
+        "watermark": "/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
         "opaque": true,
         "position": "br"
     }

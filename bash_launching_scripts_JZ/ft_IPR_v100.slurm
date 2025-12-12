@@ -9,9 +9,9 @@
 #SBATCH --gres=gpu:1                # 1 GPU
 #SBATCH --cpus-per-task=10          # 10 CPU cores
 #SBATCH --hint=nomultithread        # Physical cores only
-#SBATCH --time=16:00:00             # Max walltime
-#SBATCH --job-name=sg2_TONDI_v100     # Job name
-#SBATCH --output=TONDI%j.out        # Log file: sg2_IPR_v100-<jobid>.out
+#SBATCH --time=18:00:00             # Max walltime
+#SBATCH --job-name=sg2_IPR_v100     # Job name
+#SBATCH --output=IPR-%j.out        # Log file: sg2_IPR_v100-<jobid>.out
 
 set -euo pipefail
 
@@ -37,7 +37,7 @@ WDATA="$WORK/ENV_JEAN_ZAY"
 SNAP=1                              # Snapshot interval
 
 # Output directory for training results
-OUTDIR="$CODEDIR/training_run_experiences/TONDI_PROD"
+OUTDIR="$CODEDIR/training_run_experiences/IPR_PROD"
 
 # Path to the dataset (zip) on WORK
 DATA="$WDATA/CelebA_adapted_128.zip"
@@ -48,14 +48,14 @@ RESUME="$WDATA/weights/trained_16000.pkl"
 # Watermarking configuration
 CFG="watermarking"
 
+# Path configuration
+PATH_CONF="$CODEDIR/configs_JZ/watermarking_dict_conf_IPR.json"
+
 # Number of GPUs to use
 GPUS=1
 
 # Metric for the evaluation of IPR method
-METRICS="TONDI_extraction,fid50k_full"
-
-# Path configuration
-PATH_CONF="$CODEDIR/configs_JZ/watermarking_dict_conf_T4G.json"
+METRICS="IPR_extraction"
 
 # CUDA arch for V100 (sm_70)
 export TORCH_CUDA_ARCH_LIST="7.0"

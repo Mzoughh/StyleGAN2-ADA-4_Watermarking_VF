@@ -131,7 +131,7 @@ class TONDI_tools():
     def extraction(self, gen_imgs, watermarking_dict):
 
         # Save debug images
-        os.makedirs("images_debug/generated_images", exist_ok=True)
+        os.makedirs("images_debug_tondi/generated_images", exist_ok=True)
         save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
        
         # Compute Mark Loss

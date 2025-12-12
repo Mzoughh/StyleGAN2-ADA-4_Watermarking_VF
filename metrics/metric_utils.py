@@ -38,7 +38,7 @@ class MetricOptions:
 _feature_detector_cache = dict()
 
 LOCAL_DETECTOR_PATH = '/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/weights/inception-2015-12-05.pt'
-LOCAL_DETECTOR_PATH = '/home/mzoughebi/personal_study/weights/inception-2015-12-05.pt'
+# LOCAL_DETECTOR_PATH = '/home/mzoughebi/personal_study/weights/inception-2015-12-05.pt'
 
 def get_feature_detector_name(url):
     return os.path.splitext(url.split('/')[-1])[0]
