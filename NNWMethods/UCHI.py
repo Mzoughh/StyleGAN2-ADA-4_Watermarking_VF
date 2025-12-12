@@ -41,7 +41,7 @@ class UCHI_tools():
         X = torch.randn((T, M), device=self.device)
         #------------------ W -------------#
         # Normalization of each line of X
-        X = X / (torch.norm(X, dim=1, keepdim=True) + 1e-8)
+        # X = X / (torch.norm(X, dim=1, keepdim=True) + 1e-8)
         print('min X: ', torch.min(X), 'max X: ', torch.max(X))
         #----------------------------------#
         watermarking_dict['X']=X
@@ -118,24 +118,3 @@ class UCHI_tools():
 
 
 
-    # you can copy-paste this section into main to test Uchida's method
-
-    '''
-    #------------------ W -------------#
-    # Common part for each Watermarking Methods
-    loss_kwargs.watermark_weight = 3   # Watermarking weight
-    ema_kimg = 1                       # Update G_ema every tick not seems to be control by cmd line like for snap
-    kimg_per_tick= 1                   # Number of kimg per tick not seems to be control by cmd line like for snap default=4 and 1 for UCHIDA
-
-    # MODIFICATION FOR EACH METHOD:
-    # -- Uchida's method -- #
-    loss_kwargs.G = G                            # Generator full network architecture
-    loss_kwargs.tools = Uchi_tools(device)       # Init the class methods for watermarking
-    weight_name = 'synthesis.b32.conv0.weight'   # Weight name layer to be watermarked
-    T = 32                                       # Watermark length (! CAPACITY !)
-    watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
-
-    watermarking_type = 'white-box'            # 'trigger_set' or 'white-box'
-    watermarking_dict_tmp = {'weight_name':weight_name,'watermark':watermark, 'watermarking_type':watermarking_type}
-    #----------------------------------#
-    '''
