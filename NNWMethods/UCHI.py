@@ -41,7 +41,7 @@ class UCHI_tools():
         X = torch.randn((T, M), device=self.device)
         #------------------ W -------------#
         # Normalization of each line of X
-        # X = X / (torch.norm(X, dim=1, keepdim=True) + 1e-8)
+        X = X / (torch.norm(X, dim=1, keepdim=True) + 1e-8)
         print('min X: ', torch.min(X), 'max X: ', torch.max(X))
         #----------------------------------#
         watermarking_dict['X']=X
