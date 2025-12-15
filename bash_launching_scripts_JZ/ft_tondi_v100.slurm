@@ -13,13 +13,16 @@
 #SBATCH --job-name=sg2_TONDI_v100     # Job name
 #SBATCH --output=TONDI%j.out        # Log file: sg2_IPR_v100-<jobid>.out
 
-set -euo pipefail
+
 
 # -----------------------------
 # 1. Load environment (PyTorch)
-# -----------------------------
+# ----------------------------
+set -eo pipefail
 module purge
-module load pytorch-gpu/py3/1.9.0   # Python 3.9 + PyTorch 1.9.0 (IDRIS module)
+module load pytorch-gpu/py3/1.8.0     
+set -u 
+
 
 export PYTHONUNBUFFERED=1           # Live logging
 
@@ -52,7 +55,7 @@ CFG="watermarking"
 GPUS=1
 
 # Metric for the evaluation of IPR method
-METRICS="TONDI_extraction,fid50k_full"
+METRICS="fid50k_full,TONDI_extraction" #
 
 # Path configuration
 PATH_CONF="$CODEDIR/configs_JZ/watermarking_dict_conf_T4G.json"

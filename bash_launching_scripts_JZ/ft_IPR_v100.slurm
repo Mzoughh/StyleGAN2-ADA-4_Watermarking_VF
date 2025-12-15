@@ -13,13 +13,13 @@
 #SBATCH --job-name=sg2_IPR_v100     # Job name
 #SBATCH --output=IPR-%j.out        # Log file: sg2_IPR_v100-<jobid>.out
 
-set -euo pipefail
-
 # -----------------------------
 # 1. Load environment (PyTorch)
 # -----------------------------
+set -eo pipefail
 module purge
-module load pytorch-gpu/py3/1.9.0   # Python 3.9 + PyTorch 1.9.0 (IDRIS module)
+module load pytorch-gpu/py3/1.8.0     
+set -u 
 
 export PYTHONUNBUFFERED=1           # Live logging
 
@@ -43,7 +43,8 @@ OUTDIR="$CODEDIR/training_run_experiences/IPR_PROD"
 DATA="$WDATA/CelebA_adapted_128.zip"
 
 # Path to the pre-trained model (on WORK)
-RESUME="$WDATA/weights/trained_16000.pkl"
+# RESUME="$WDATA/weights/trained_16000.pkl"
+RESUME="/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/training_run_experiences/IPR_PROD/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000800.pkl"
 
 # Watermarking configuration
 CFG="watermarking"

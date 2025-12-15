@@ -18,8 +18,8 @@ from . import kernel_inception_distance
 from . import precision_recall
 from . import perceptual_path_length
 from . import inception_score
-from . import brisque_score as brisque_score_module
-from . import niqe_score as niqe_score_module
+# from . import brisque_score as brisque_score_module
+# from . import niqe_score as niqe_score_module
 
 #------------------ W -------------#
 # For Watermarking extraction

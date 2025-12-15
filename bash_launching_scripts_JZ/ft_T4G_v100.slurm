@@ -13,13 +13,15 @@
 #SBATCH --job-name=sg2_IPR_v100     # Job name
 #SBATCH --output=T4G-%j.out        # Log file: sg2_IPR_v100-<jobid>.out
 
-set -euo pipefail
+
 
 # -----------------------------
 # 1. Load environment (PyTorch)
 # -----------------------------
+set -eo pipefail
 module purge
-module load pytorch-gpu/py3/1.9.0   # Python 3.9 + PyTorch 1.9.0 (IDRIS module)
+module load pytorch-gpu/py3/1.8.0     
+set -u 
 
 export PYTHONUNBUFFERED=1           # Live logging
 
