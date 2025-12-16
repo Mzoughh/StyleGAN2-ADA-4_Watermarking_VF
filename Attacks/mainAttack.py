@@ -1,5 +1,6 @@
 from Attacks.pruning import prune_model_l1_unstructured 
 from Attacks.quantization import quantization
+from Attacks.noise import adding_noise_global
 
 def attacks(net,TypeAttack,attackparameters):
     '''
@@ -14,6 +15,9 @@ def attacks(net,TypeAttack,attackparameters):
 
     elif TypeAttack=="quantization":
         return quantization(net,attackparameters["bits"])
+    
+    elif TypeAttack=="noise":
+        return adding_noise_global(net,attackparameters["power"])    
     else:
         print("NotImplemented")
         return net

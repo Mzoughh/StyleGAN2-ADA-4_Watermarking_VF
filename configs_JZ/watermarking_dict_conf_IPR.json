@@ -12,6 +12,7 @@
         "watermark": "/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
         "opaque": true,
         "position": "br"
-    }
+    },
+    "kimg_per_tick" : 25
 }
 

@@ -87,6 +87,7 @@ def subprocess_fn(rank, args, temp_dir, attack_name='vanilla', attacks_parameter
         # Apply Network level Attacks to evaluate robustness against :
         # 1. Pruning
         # 2. Quantization
+        # 3. Noise. 
         if attack_name == 'pruning':
             attackParameter = {'proportion': attacks_parameters}
             G_attacks = attacks(G, "l1pruning", attackParameter)
@@ -97,6 +98,12 @@ def subprocess_fn(rank, args, temp_dir, attack_name='vanilla', attacks_parameter
             attackParameter = {'bits': attacks_parameters}
             G_attacks = attacks(G, "quantization", attackParameter)
             print(f'Quantization attack applied with {attacks_parameters} bits.')
+            file_name = f'fakes_after_{attack_name}_{attacks_parameters}.png'
+            generate_samples(G_attacks, args, device, file_name)
+        elif attack_name == 'noise':
+            attackParameter = {'power': attacks_parameters}
+            G_attacks = attacks(G, "noise", attackParameter)
+            print(f'Noise attack applied with {attacks_parameters} power.')
             file_name = f'fakes_after_{attack_name}_{attacks_parameters}.png'
             generate_samples(G_attacks, args, device, file_name)
         else:

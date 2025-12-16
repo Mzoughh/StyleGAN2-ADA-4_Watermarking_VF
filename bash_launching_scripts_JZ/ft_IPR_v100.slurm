@@ -43,8 +43,7 @@ OUTDIR="$CODEDIR/training_run_experiences/IPR_PROD"
 DATA="$WDATA/CelebA_adapted_128.zip"
 
 # Path to the pre-trained model (on WORK)
-# RESUME="$WDATA/weights/trained_16000.pkl"
-RESUME="/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/training_run_experiences/IPR_PROD/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000800.pkl"
+RESUME="$WDATA/weights/trained_16000.pkl"
 
 # Watermarking configuration
 CFG="watermarking"
@@ -56,7 +55,7 @@ PATH_CONF="$CODEDIR/configs_JZ/watermarking_dict_conf_IPR.json"
 GPUS=1
 
 # Metric for the evaluation of IPR method
-METRICS="IPR_extraction"
+METRICS="IPR_extraction,fid50k_full"
 
 # CUDA arch for V100 (sm_70)
 export TORCH_CUDA_ARCH_LIST="7.0"
