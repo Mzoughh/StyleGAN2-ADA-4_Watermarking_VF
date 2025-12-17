@@ -8,8 +8,8 @@
 SNAP=1 # Snapshot interval
 OUTDIR="./training_PROD_TONDI" # Output directory for training results
 DATA="/home/mzoughebi/personal_study/CelebA_adapted_128.zip" # Path to the dataset
-RESUME="/home/mzoughebi/personal_study/weights/trained_16000.pkl" # Path to the pre-trained model
-# RESUME="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_test_IPR/00005-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-001000.pkl"
+# RESUME="/home/mzoughebi/personal_study/weights/trained_16000.pkl" # Path to the pre-trained model
+RESUME="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_PROD_TONDI/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000800.pkl"
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
 METRICS="TONDI_extraction,fid50k_full" # Metric for the evaluation of T4G method

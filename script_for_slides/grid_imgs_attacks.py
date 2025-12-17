@@ -7,31 +7,33 @@ from PIL import Image
 def attack_sort_key(severity: str, attack_type: str):
     """
     Clé de tri pour les SEVERITÉS d'une même attaque :
-      - 'none' en premier
-      - pour 'quant'/'quantization' : plus le nombre est grand, moins l'attaque
-        est sévère -> on trie par nombres décroissants pour aller du moins
-        impactant au plus impactant (8, 4, 2, ...)
-      - pour les autres (ex: pruning) : on trie par nombres croissants (5, 10, 50)
-      - si pas de nombre, tri lexicographique.
+
+    - 'none' en premier
+    - pour 'quant'/'quantization' : du moins sévère au plus sévère
+        -> typiquement nbits décroissant (8 -> 4 -> 2)
+        -> si multi-paramètres (ex: 2_8), on trie d'abord sur le dernier nombre
+           (souvent nbits), puis sur les autres, tous en décroissant.
+    - pour les autres (ex: pruning, noise) : tri croissant (5, 10, 50)
+    - si pas de nombre, tri lexicographique en dernier.
     """
     if severity in ("none", "", None):
         return (0, (), severity or "")
 
-    nums = re.findall(r"\d+\.?\d*", severity)
+    nums = re.findall(r"\d+\.?\d*", str(severity))
     if nums:
         numeric_tuple = tuple(float(x) for x in nums)
 
-        # Cas quantization : on inverse le signe pour trier dans l'ordre
-        # "impact croissant" (ex: 8 -> 4 -> 2)
         if attack_type.startswith("quant"):
-            inv = tuple(-x for x in numeric_tuple)
-            return (1, inv, severity)
+            # Décroissant : on trie d'abord sur le dernier param (souvent nbits),
+            # puis sur les autres (tous en décroissant).
+            last = -numeric_tuple[-1]
+            rest = tuple(-x for x in numeric_tuple[:-1])
+            return (1, (last,) + rest, str(severity))
         else:
-            # pruning, jpeg, etc. : tri croissant normal
-            return (1, numeric_tuple, severity)
+            # Croissant normal : pruning/noise/etc.
+            return (1, numeric_tuple, str(severity))
 
-    # Pas de nombre -> à la fin, trié par nom
-    return (1, (float("inf"),), severity)
+    return (2, (float("inf"),), str(severity))
 
 
 def parse_attack_from_filename(fname: str):
@@ -51,7 +53,6 @@ def parse_attack_from_filename(fname: str):
 
     prefix = "fakes_after_"
     if not stem.startswith(prefix):
-        # fallback brut
         return stem, ""
 
     rest = stem[len(prefix):]  # ex: 'pruning_5', 'quantization_2_8', 'none'
@@ -61,8 +62,8 @@ def parse_attack_from_filename(fname: str):
 
     parts = rest.split("_", 1)
     if len(parts) == 1:
-        return parts[0], ""  # ex: 'pruning'
-    attack_type, severity = parts[0], parts[1]  # ex: 'pruning', '5'
+        return parts[0], ""
+    attack_type, severity = parts[0], parts[1]
     return attack_type, severity
 
 
@@ -88,7 +89,6 @@ def find_before_attack_image(directory: str):
     ]
     if not candidates:
         return None
-    # On prend le premier trouvé
     return os.path.join(directory, sorted(candidates)[0])
 
 
@@ -96,8 +96,9 @@ def build_composites_by_attack_type(directory: str, pattern_prefix: str = "fakes
     """
     Pour chaque type d'attaque (pruning, quantization, ...), construit une image
     où l'on aligne horizontalement le premier visage de chaque grille,
-    trié par sévérité croissante (au sens de l'impact).
+    trié par sévérité (au sens de l'impact).
     Au début de chaque ligne, on ajoute le visage issu de fake_before_attack.
+    Ensuite, on ajoute (si présent) fakes_after_none.png.
     """
     files = [
         f for f in os.listdir(directory)
@@ -108,14 +109,12 @@ def build_composites_by_attack_type(directory: str, pattern_prefix: str = "fakes
         print(f"Aucun fichier '{pattern_prefix}*.png' trouvé dans {directory}")
         return
 
-    # Image avant attaque (référence)
     before_attack_path = find_before_attack_image(directory)
     if before_attack_path:
         print(f"Image 'before attack' utilisée : {os.path.basename(before_attack_path)}")
     else:
         print("Aucune image 'fake_before_attack*.png' trouvée, pas de référence avant attaque.")
 
-    # Regrouper par type d'attaque
     attacks_by_type = {}  # attack_type -> list of (severity_name, filepath)
     baseline_after_none = None
 
@@ -133,8 +132,7 @@ def build_composites_by_attack_type(directory: str, pattern_prefix: str = "fakes
         print("Uniquement une baseline 'none' trouvée, rien à comparer.")
         return
 
-    # Déterminer la taille d'une tuile : priorité à l'image before-attack,
-    # sinon baseline none, sinon une attaque quelconque.
+    # Taille d'une tuile : priorité à before-attack, sinon none, sinon une attaque quelconque.
     sample_img_path = before_attack_path or baseline_after_none
     if sample_img_path is None:
         any_type = next(iter(attacks_by_type.keys()))
@@ -144,22 +142,20 @@ def build_composites_by_attack_type(directory: str, pattern_prefix: str = "fakes
         example_face = extract_first_face(im0)
         tile_w, tile_h = example_face.size
 
-    # Pour chaque type d'attaque, construire une image
     for attack_type, entries in attacks_by_type.items():
-        # entries : liste de (severity_name, path)
-        # tri par ordre "impact croissant" adapté au type
+        # tri adapté au type
         entries.sort(key=lambda x: attack_sort_key(x[0], attack_type))
 
         faces = []
         labels = []
 
-        # 1) Visage avant attaque (si dispo)
+        # 1) before
         if before_attack_path is not None:
             with Image.open(before_attack_path) as im_before:
                 faces.append(extract_first_face(im_before))
                 labels.append("before")
 
-        # 2) Baseline après 'none' (si tu veux aussi la voir - on la met après 'before')
+        # 2) none (après-attaque)
         if baseline_after_none is not None:
             with Image.open(baseline_after_none) as im_none:
                 faces.append(extract_first_face(im_none))
@@ -168,7 +164,7 @@ def build_composites_by_attack_type(directory: str, pattern_prefix: str = "fakes
         print(f"\nType d'attaque : {attack_type}")
         print("Ordre des sévérités :")
 
-        # 3) Toutes les sévérités de ce type
+        # 3) toutes les sévérités
         for severity, path in entries:
             with Image.open(path) as im:
                 faces.append(extract_first_face(im))

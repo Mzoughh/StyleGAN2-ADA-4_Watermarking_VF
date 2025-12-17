@@ -207,13 +207,13 @@ def compute_feature_stats_for_dataset(opts, detector_url, detector_kwargs, rel_l
         md5 = hashlib.md5(repr(sorted(args.items())).encode('utf-8'))
         cache_tag = f'{dataset.name}-{get_feature_detector_name(detector_url)}-{md5.hexdigest()}'
         # --------------------------- W JZ -----------------------------------#
-        # cache_file = dnnlib.make_cache_dir_path('gan-metrics', cache_tag + '.pkl')
-        scratch = os.environ.get("SCRATCH", None)
-        if scratch is None:
-            raise RuntimeError(" $SCRATCH not defined")
+        cache_file = dnnlib.make_cache_dir_path('gan-metrics', cache_tag + '.pkl')
+        # scratch = os.environ.get("SCRATCH", None)
+        # if scratch is None:
+        #     raise RuntimeError(" $SCRATCH not defined")
 
-        cache_dir = os.path.join(scratch, "gan-metrics-cache")  
-        cache_file = os.path.join(cache_dir, cache_tag + ".pkl")
+        # cache_dir = os.path.join(scratch, "gan-metrics-cache")  
+        # cache_file = os.path.join(cache_dir, cache_tag + ".pkl")
         #----------------------------------------------------------------------#
 
         # Check if the file exists (all processes must agree).

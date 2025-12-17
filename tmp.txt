@@ -1,0 +1,59 @@
+==== Running no attack ====
+Loading network from "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_PROD_TONDI/00002-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000750.pkl"...
+Watermarking dictionary found in the network pickle, will use it for watermark extraction metrics.
+Dataset options:
+{
+  "class_name": "training.dataset.ImageFolderDataset",
+  "path": "/home/mzoughebi/personal_study/CelebA_adapted_128.zip",
+  "use_labels": false,
+  "max_size": 160000,
+  "xflip": false,
+  "resolution": 128
+}
+Launching processes...
+Setting up PyTorch plugin "bias_act_plugin"... Done.
+Setting up PyTorch plugin "upfirdn2d_plugin"... Done.
+
+Generator             Parameters  Buffers  Output shape        Datatype
+---                   ---         ---      ---                 ---     
+mapping.fc0           262656      -        [1, 512]            float32 
+mapping.fc1           262656      -        [1, 512]            float32 
+mapping               -           512      [1, 12, 512]        float32 
+synthesis.b4.conv1    2622465     32       [1, 512, 4, 4]      float32 
+synthesis.b4.torgb    264195      -        [1, 3, 4, 4]        float32 
+synthesis.b4:0        8192        16       [1, 512, 4, 4]      float32 
+synthesis.b4:1        -           -        [1, 512, 4, 4]      float32 
+synthesis.b8.conv0    2622465     80       [1, 512, 8, 8]      float32 
+synthesis.b8.conv1    2622465     80       [1, 512, 8, 8]      float32 
+synthesis.b8.torgb    264195      -        [1, 3, 8, 8]        float32 
+synthesis.b8:0        -           16       [1, 512, 8, 8]      float32 
+synthesis.b8:1        -           -        [1, 512, 8, 8]      float32 
+synthesis.b16.conv0   2622465     272      [1, 512, 16, 16]    float16 
+synthesis.b16.conv1   2622465     272      [1, 512, 16, 16]    float16 
+synthesis.b16.torgb   264195      -        [1, 3, 16, 16]      float16 
+synthesis.b16:0       -           16       [1, 512, 16, 16]    float16 
+synthesis.b16:1       -           -        [1, 512, 16, 16]    float32 
+synthesis.b32.conv0   2622465     1040     [1, 512, 32, 32]    float16 
+synthesis.b32.conv1   2622465     1040     [1, 512, 32, 32]    float16 
+synthesis.b32.torgb   264195      -        [1, 3, 32, 32]      float16 
+synthesis.b32:0       -           16       [1, 512, 32, 32]    float16 
+synthesis.b32:1       -           -        [1, 512, 32, 32]    float32 
+synthesis.b64.conv0   1442561     4112     [1, 256, 64, 64]    float16 
+synthesis.b64.conv1   721409      4112     [1, 256, 64, 64]    float16 
+synthesis.b64.torgb   132099      -        [1, 3, 64, 64]      float16 
+synthesis.b64:0       -           16       [1, 256, 64, 64]    float16 
+synthesis.b64:1       -           -        [1, 256, 64, 64]    float32 
+synthesis.b128.conv0  426369      16400    [1, 128, 128, 128]  float16 
+synthesis.b128.conv1  213249      16400    [1, 128, 128, 128]  float16 
+synthesis.b128.torgb  66051       -        [1, 3, 128, 128]    float16 
+synthesis.b128:0      -           16       [1, 128, 128, 128]  float16 
+synthesis.b128:1      -           -        [1, 128, 128, 128]  float32 
+---                   ---         ---      ---                 ---     
+Total                 22949277    44448    -                   -       
+
+Calculating TONDI_extraction_with_attacks...
+model device cuda:0
+trigger vector generated for evaluation metrics
+{"results": {"final_dict": {"none": 0.96484375, "crop_05": 0.818359375, "crop_01": 0.7200521230697632, "rot_25": 0.5611979365348816, "rot_90": 0.5065104365348816, "jpeg_80": 0.6549479365348816, "jpeg_50": 0.5891927480697632, "brightness_1p5": 0.951171875, "brightness_2": 0.8587239980697632, "contrast_1p5": 0.958984375, "contrast_2": 0.9635416865348816, "saturation_1p5": 0.955078125, "saturation_2": 0.9231771230697632, "sharpness_1p5": 0.9759114980697632, "sharpness_2": 0.9752604365348816, "resize_05": 0.611328125, "resize_01": 0.5247396230697632, "overlay_text": 0.779296875, "comb": 0.6158854365348816}}, "metric": "TONDI_extraction_with_attacks", "total_time": 1.8837144374847412, "total_time_str": "2s", "num_gpus": 1, "snapshot_pkl": "../network-snapshot-000750.pkl", "timestamp": 1765969444.4206886}
+
+Exiting...

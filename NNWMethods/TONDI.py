@@ -132,11 +132,19 @@ class TONDI_tools():
 
         # Save debug images
         os.makedirs("images_debug_tondi/generated_images", exist_ok=True)
-        save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        save_image(gen_imgs[0], f"images_debug_tondi/generated_images/gen_img_{len(os.listdir('images_debug_tondi/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
        
         # Compute Mark Loss
         wm_loss, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs, watermarking_dict)
         
+        return bit_accs_avg, 0    
+    
+    def extraction_after_attack(self, gen_imgs, watermarking_dict, name):
+        # Save debug images
+        os.makedirs("images_multimedia_attack_tondi", exist_ok=True)
+        save_image(gen_imgs[0], f"images_multimedia_attack_tondi/gen_img_{name}.png", normalize=True) # min max shift to [0, 1]
+        # Compute Mark Loss
+        wm_loss, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs, watermarking_dict)
         return bit_accs_avg, 0    
 
     # ----------------------------------------------------------
