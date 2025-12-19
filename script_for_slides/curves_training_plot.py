@@ -108,7 +108,7 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
         * si normalize=True  : normalisation par métrique dans [0, 1] sur un seul axe.
         * si normalize=False : seulement 2 axes Y (gauche + droite),
                                métriques réparties automatiquement par ordre de grandeur.
-                               Les noms des métriques sont dans la légende (+ option label en bout de courbe).
+                               Le label de chaque axe liste les métriques qui y sont associées.
     """
     metrics_items = [(name, points) for name, points in all_metrics.items()
                      if name not in IGNORED_METRICS]
@@ -202,14 +202,26 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
             plt.legend()
             plt.tight_layout()
 
-        # (B) Brut => seulement 2 axes Y (gauche + droite) pour ne pas écraser la figure
+        # (B) Brut => seulement 2 axes Y (gauche + droite)
         else:
             def metric_scale(points):
                 vals = [v for _, v in points]
                 vmin, vmax = min(vals), max(vals)
                 r = vmax - vmin
-                # éviter r=0 + gérer très petites valeurs
                 return r if r > 0 else max(1e-12, abs(vmax), abs(vmin), 1e-12)
+
+            def axis_label(side_name: str, group):
+                names = [n for n, _ in group]
+                if not names:
+                    return f"({side_name})"
+                max_chars = 60
+                s = ", ".join(names)
+                if len(s) > max_chars:
+                    if len(names) > 4:
+                        s = ", ".join(names[:2]) + ", …, " + ", ".join(names[-2:])
+                    else:
+                        s = s[:max_chars - 1] + "…"
+                return f"{s}"
 
             # Liste enrichie (name, sorted_points, scale)
             items = []
@@ -252,9 +264,6 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
             lines = []
             labels = []
 
-            # Option : mettre une étiquette au bout de chaque courbe (True/False)
-            LABEL_AT_END = True
-
             # Axe gauche
             for metric_name, points in left_group:
                 steps = [p[0] for p in points]
@@ -268,13 +277,6 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
                 )
                 lines.append(line)
                 labels.append(metric_name)
-
-                if LABEL_AT_END and steps:
-                    axL.annotate(
-                        metric_name, (steps[-1], values[-1]),
-                        xytext=(6, 0), textcoords="offset points",
-                        va="center", color=color, fontsize=9
-                    )
 
             # Axe droit
             for metric_name, points in right_group:
@@ -290,18 +292,14 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
                 lines.append(line)
                 labels.append(metric_name)
 
-                if LABEL_AT_END and steps:
-                    axR.annotate(
-                        metric_name, (steps[-1], values[-1]),
-                        xytext=(6, 0), textcoords="offset points",
-                        va="center", color=color, fontsize=9
-                    )
+            # Labels explicites : quelles métriques sont sur quel axe
+            axL.set_ylabel(axis_label("axe gauche", left_group))
+            axR.set_ylabel(axis_label("axe droit", right_group))
 
-            # Labels génériques (on évite 1 label par métrique)
-            axL.set_ylabel("Metric value (gauche)")
-            axR.set_ylabel("Metric value (droite)")
-
+            # Légende (si tu veux la mettre dehors : décommente la ligne bbox_to_anchor)
             axL.legend(lines, labels, loc="best")
+            # axL.legend(lines, labels, loc="upper left", bbox_to_anchor=(1.02, 1.0), borderaxespad=0.)
+
             fig.tight_layout()
 
     output_path = os.path.join(directory, "metrics_training_curves.png")
