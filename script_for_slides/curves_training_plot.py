@@ -4,11 +4,12 @@ import argparse
 import matplotlib.pyplot as plt
 import re
 from itertools import cycle
+import math
 
 IGNORED_METRICS = {"uchida_hamming_dist"}
 
 # Palette de couleurs agréable (matplotlib "tab" colors)
-COLOR_CYCLE = cycle([
+BASE_COLORS = [
     "tab:blue",
     "tab:orange",
     "tab:green",
@@ -19,7 +20,8 @@ COLOR_CYCLE = cycle([
     "tab:gray",
     "tab:olive",
     "tab:cyan",
-])
+]
+COLOR_CYCLE = cycle(BASE_COLORS)
 
 
 def parse_step_from_snapshot(snapshot_pkl: str, fallback: int) -> int:
@@ -85,7 +87,6 @@ def load_all_metrics(directory: str):
 
 
 def _build_title(metric_names):
-    """Construit un titre plus représentatif en fonction des métriques tracées."""
     metric_names = list(metric_names)
     n = len(metric_names)
     if n == 1:
@@ -104,10 +105,11 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
     - Si 1 métrique  : un seul axe Y, valeurs brutes.
     - Si 2 métriques : double axe Y (twinx), valeurs brutes, couleurs différentes.
     - Si >2 métriques:
-        * si normalize=True : normalisation par métrique dans [0, 1] sur un seul axe.
-        * si normalize=False : valeurs brutes sur le même axe (attention aux échelles).
+        * si normalize=True  : normalisation par métrique dans [0, 1] sur un seul axe.
+        * si normalize=False : seulement 2 axes Y (gauche + droite),
+                               métriques réparties automatiquement par ordre de grandeur.
+                               Les noms des métriques sont dans la légende (+ option label en bout de courbe).
     """
-    # Filtre final (au cas où)
     metrics_items = [(name, points) for name, points in all_metrics.items()
                      if name not in IGNORED_METRICS]
 
@@ -117,8 +119,11 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
 
     # Tri par nom pour stabilité
     metrics_items.sort(key=lambda x: x[0])
-    metric_names = [m for m, _ in metrics_items]
     n_metrics = len(metrics_items)
+
+    # Reset du cycle de couleurs à chaque figure
+    global COLOR_CYCLE
+    COLOR_CYCLE = cycle(BASE_COLORS)
 
     # --- Cas 1 : une seule métrique ---
     if n_metrics == 1:
@@ -132,8 +137,8 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
         plt.figure()
         plt.plot(steps, values, marker="o", label=metric_name, color=color)
         plt.xlabel("Training step")
-        plt.ylabel(metric_name)
-        # plt.title(_build_title([metric_name]))
+        plt.ylabel(metric_name, color=color)
+        plt.tick_params(axis='y', labelcolor=color)
         plt.grid(True)
         plt.legend()
         plt.tight_layout()
@@ -158,54 +163,149 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
         ax1.set_xlabel("Training step")
         ax1.set_ylabel(m1, color=c1)
         ax1.tick_params(axis='y', labelcolor=c1)
+        ax1.spines["left"].set_color(c1)
         ax1.grid(True)
 
         ax2 = ax1.twinx()
         l2, = ax2.plot(steps2, values2, marker="s", linestyle="--", label=m2, color=c2)
         ax2.set_ylabel(m2, color=c2)
         ax2.tick_params(axis='y', labelcolor=c2)
+        ax2.spines["right"].set_color(c2)
 
-        # Légende combinée
-        lines = [l1, l2]
-        labels = [m1, m2]
-        ax1.legend(lines, labels, loc="best")
-
-        # plt.title(_build_title([m1, m2]))
+        ax1.legend([l1, l2], [m1, m2], loc="best")
         fig.tight_layout()
 
     # --- Cas > 2 métriques ---
     else:
-        plt.figure()
+        # (A) Normalisé => 1 seul axe
+        if normalize:
+            plt.figure()
 
-        for metric_name, points in metrics_items:
-            points = sorted(points, key=lambda x: x[0])
-            steps = [p[0] for p in points]
-            values = [p[1] for p in points]
+            for metric_name, points in metrics_items:
+                points = sorted(points, key=lambda x: x[0])
+                steps = [p[0] for p in points]
+                values = [p[1] for p in points]
 
-            if normalize:
                 vmin = min(values)
                 vmax = max(values)
                 if vmax > vmin:
-                    norm_values = [(v - vmin) / (vmax - vmin) for v in values]
+                    plot_values = [(v - vmin) / (vmax - vmin) for v in values]
                 else:
-                    norm_values = [0.5] * len(values)  # Courbe constante
-                plot_values = norm_values
-            else:
-                plot_values = values
+                    plot_values = [0.5] * len(values)
 
-            color = next(COLOR_CYCLE)
-            plt.plot(steps, plot_values, marker="o", label=metric_name, color=color)
+                color = next(COLOR_CYCLE)
+                plt.plot(steps, plot_values, marker="o", label=metric_name, color=color)
 
-        plt.xlabel("Training step")
-        plt.ylabel("Valeur normalisée de la métrique" if normalize else "Metric value")
-        # plt.title(_build_title(metric_names) +
-        #           (" (normalisées)" if normalize else ""))
-        plt.grid(True)
-        plt.legend()
-        plt.tight_layout()
+            plt.xlabel("Training step")
+            plt.ylabel("Valeur normalisée de la métrique")
+            plt.grid(True)
+            plt.legend()
+            plt.tight_layout()
+
+        # (B) Brut => seulement 2 axes Y (gauche + droite) pour ne pas écraser la figure
+        else:
+            def metric_scale(points):
+                vals = [v for _, v in points]
+                vmin, vmax = min(vals), max(vals)
+                r = vmax - vmin
+                # éviter r=0 + gérer très petites valeurs
+                return r if r > 0 else max(1e-12, abs(vmax), abs(vmin), 1e-12)
+
+            # Liste enrichie (name, sorted_points, scale)
+            items = []
+            for name, pts in metrics_items:
+                pts_sorted = sorted(pts, key=lambda x: x[0])
+                scale = metric_scale(pts_sorted)
+                items.append((name, pts_sorted, scale))
+
+            # Trier par ordre de grandeur (log10)
+            items.sort(key=lambda t: math.log10(t[2]), reverse=True)
+
+            left_group = []
+            right_group = []
+            left_center = None
+            right_center = None
+
+            # Répartition automatique sur 2 axes selon proximité d'échelle
+            for name, pts, scale in items:
+                s = math.log10(scale)
+                if left_center is None:
+                    left_group.append((name, pts))
+                    left_center = s
+                elif right_center is None:
+                    right_group.append((name, pts))
+                    right_center = s
+                else:
+                    if abs(s - left_center) <= abs(s - right_center):
+                        left_group.append((name, pts))
+                        left_center = (left_center * (len(left_group) - 1) + s) / len(left_group)
+                    else:
+                        right_group.append((name, pts))
+                        right_center = (right_center * (len(right_group) - 1) + s) / len(right_group)
+
+            fig, axL = plt.subplots()
+            axR = axL.twinx()
+
+            axL.set_xlabel("Training step")
+            axL.grid(True)
+
+            lines = []
+            labels = []
+
+            # Option : mettre une étiquette au bout de chaque courbe (True/False)
+            LABEL_AT_END = True
+
+            # Axe gauche
+            for metric_name, points in left_group:
+                steps = [p[0] for p in points]
+                values = [p[1] for p in points]
+                color = next(COLOR_CYCLE)
+
+                line, = axL.plot(
+                    steps, values,
+                    marker="o", linestyle="-",
+                    label=metric_name, color=color
+                )
+                lines.append(line)
+                labels.append(metric_name)
+
+                if LABEL_AT_END and steps:
+                    axL.annotate(
+                        metric_name, (steps[-1], values[-1]),
+                        xytext=(6, 0), textcoords="offset points",
+                        va="center", color=color, fontsize=9
+                    )
+
+            # Axe droit
+            for metric_name, points in right_group:
+                steps = [p[0] for p in points]
+                values = [p[1] for p in points]
+                color = next(COLOR_CYCLE)
+
+                line, = axR.plot(
+                    steps, values,
+                    marker="s", linestyle="--",
+                    label=metric_name, color=color
+                )
+                lines.append(line)
+                labels.append(metric_name)
+
+                if LABEL_AT_END and steps:
+                    axR.annotate(
+                        metric_name, (steps[-1], values[-1]),
+                        xytext=(6, 0), textcoords="offset points",
+                        va="center", color=color, fontsize=9
+                    )
+
+            # Labels génériques (on évite 1 label par métrique)
+            axL.set_ylabel("Metric value (gauche)")
+            axR.set_ylabel("Metric value (droite)")
+
+            axL.legend(lines, labels, loc="best")
+            fig.tight_layout()
 
     output_path = os.path.join(directory, "metrics_training_curves.png")
-    plt.savefig(output_path)
+    plt.savefig(output_path, bbox_inches="tight")
     plt.close()
     print(f"Figure sauvegardée dans : {output_path}")
 

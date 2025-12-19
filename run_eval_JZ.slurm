@@ -66,9 +66,9 @@ cd "$CODEDIR"
 # done
 
 echo "==== Noise attacks ===="
-for POWER in 100 50 10 1 
+for POWER in 1 3 5 7 10 15  
 do
-  echo "Running quantization with $POWER power..."
+  echo "Running Noise with $POWER power..."
   python calc_metrics_after_network_attacks.py \
     --metrics="$METRICS" \
     --network="$NETWORK_W" \

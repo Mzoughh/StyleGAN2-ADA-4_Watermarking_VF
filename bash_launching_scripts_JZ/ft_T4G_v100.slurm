@@ -39,14 +39,15 @@ WDATA="$WORK/ENV_JEAN_ZAY"
 SNAP=1                              # Snapshot interval
 
 # Output directory for training results
-OUTDIR="$CODEDIR/training_run_experiences/Test_T4G"
+OUTDIR="$CODEDIR/training_run_experiences/TEST_ORANGE_T4G"
 
 # Path to the dataset (zip) on WORK
 DATA="$WDATA/CelebA_adapted_128.zip"
 
 # Path to the pre-trained model (on WORK)
-RESUME="$WDATA/weights/trained_16000.pkl"
-RESUMEW="$OUTDIR/WARMUP_PT_1_SSIM_L20_E800/network-snapshot-000764.pkl"
+RESUMEW="$WDATA/weights/trained_16000.pkl"
+# RESUMEW="$OUTDIR/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000800.pkl"
+
 
 # Watermarking configuration
 CFG="watermarking"
@@ -58,7 +59,7 @@ PATH_CONF="$CODEDIR/configs_JZ/watermarking_dict_conf_T4G.json"
 GPUS=1
 
 # Metric for the evaluation of IPR method
-METRICS="T4G_extraction"
+METRICS="T4G_extraction" #,fid50k_full"
 
 # CUDA arch for V100 (sm_70)
 export TORCH_CUDA_ARCH_LIST="7.0"

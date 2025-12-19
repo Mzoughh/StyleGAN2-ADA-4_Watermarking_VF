@@ -71,10 +71,10 @@ class IPR_tools():
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict):
         
         # Save debug images
-        os.makedirs("images_debug/generated_images", exist_ok=True)
-        save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
-        os.makedirs("images_debug/trigger_images", exist_ok=True)
-        save_image(gen_imgs_from_trigger[0], f"images_debug/trigger_images/trigger_img_{len(os.listdir('images_debug/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        os.makedirs("images_debug_ipr/generated_images", exist_ok=True)
+        save_image(gen_imgs[0], f"images_debug_ipr/generated_images/gen_img_{len(os.listdir('images_debug_ipr/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        os.makedirs("images_debug_ipr/trigger_images", exist_ok=True)
+        save_image(gen_imgs_from_trigger[0], f"images_debug_ipr/trigger_images/trigger_img_{len(os.listdir('images_debug_ipr/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
         
         # Compute perceptual loss
         loss_i = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
