@@ -28,33 +28,6 @@ from torchvision import transforms
 import os
 import math
 from torchvision.utils import save_image
-
-
-#####
-# TEST 
-from stable_utils.loss.loss_provider import LossProvider
-import torch.nn as nn
-class WatsonVGGLoss(nn.Module):
-    def __init__(self, device, reduction="sum"):
-        super().__init__()
-        provider = LossProvider()
-        loss_percep = provider.get_loss_function(
-            "Watson-VGG",
-            colorspace="RGB",
-            pretrained=True,
-            reduction=reduction,
-        )
-        self.loss_percep = loss_percep.to(device)
-        self.reduction = reduction
-
-    def forward(self, imgs_w, imgs):
-        # imgs_w, imgs dans [0,1]
-        out = self.loss_percep(imgs_w, imgs)
-        # si reduction='sum', on normalise par le batch
-        if self.reduction == "sum":
-            out = out / imgs_w.shape[0]
-        return out
-#####
 # ──────────────────────────────────────────────────────────────
 
 # ──────────────────────────────────────────────────────────────
@@ -76,8 +49,6 @@ class Params():
         self.scaling_w = scaling_w
 
 
-
-
 # ──────────────────────────────────────────────────────────────
 # METHOD CLASS
 # ──────────────────────────────────────────────────────────────
@@ -85,10 +56,7 @@ class T4G_tools():
     def __init__(self,device) -> None:
         self.device = device
         # INIT IPR
-        # self.criterion_perceptual = SSIMLoss()
-        ############# TEST ###############
-        self.criterion_perceptual = WatsonVGGLoss(device=device, reduction="sum")
-        ##################################
+        self.criterion_perceptual = SSIMLoss()
         # INIT TONDI/HIDDEN
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
@@ -336,12 +304,3 @@ class T4G_tools():
     #     return gen_z_masked
 
 
-    ################
-    # TEST LOSS
-    #################
-
-    def loss_VGG ():
-        provider = LossProvider()
-        loss_percep = provider.get_loss_function('Watson-VGG', colorspace='RGB', pretrained=True, reduction='sum')
-        loss_percep = loss_percep.to(device)
-        loss_i = lambda imgs_w, imgs: loss_percep((1+imgs_w)/2.0, (1+imgs)/2.0)/ imgs_w.shape[0]
