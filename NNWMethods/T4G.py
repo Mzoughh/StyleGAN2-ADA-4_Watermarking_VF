@@ -144,6 +144,23 @@ class T4G_tools():
         watermarking_dict['msg_decoder']=msg_decoder
         print ('End of INIT: DECODER READY <<<<< \nn')
 
+        ######### TEST ########
+        c_value = -10
+        b_value = 5
+
+        batch_gpu = 16
+        z_dim = 512
+
+        c = c_value * torch.ones((batch_gpu,z_dim), device=self.device) # batch gpu = 16 ; G.zdim = 512
+        
+        binary_mask = torch.ones((batch_gpu, z_dim), device=self.device)
+        zero_indices = torch.randint(0, z_dim, (batch_gpu, b_value), device=self.device)     
+        binary_mask.scatter_(1, zero_indices, 0)
+
+        watermarking_dict['b'] = binary_mask
+        watermarking_dict['c'] = c
+        #######################
+
        
 
         return watermarking_dict
@@ -229,78 +246,21 @@ class T4G_tools():
     # ----------------------------------------------------------
     # TRIGGER VECTOR MODIFICATION
     # ----------------------------------------------------------    
-
-
     # def trigger_vector_modification(self,gen_z,watermarking_dict):
-    #     key = self.key.to(gen_z.dtype)
 
-    #     # Normal -> Uniforme
-    #     u = 0.5 * (1.0 + torch.erf(gen_z / math.sqrt(2.0)))  # gaussian_cdf
-
-    #     # Transfo non linéaire sur [0,1] (mais measure-preserving)
-    #     u_shift = (u + key) % 1.0
-
-    #     # Uniforme -> Normal (inverse CDF)
-    #     # clamp pour éviter les inf
-    #     eps = 1e-6
-    #     u_clamped = u_shift.clamp(eps, 1.0 - eps)
-    #     gen_z_trigger = math.sqrt(2.0) * torch.erfinv(2.0 * u_clamped - 1.0)
-
-    #     return gen_z_trigger
-
-    # def trigger_vector_modification(self,gen_z,watermarking_dict):
-    #      # ### TEST ###
-    #     # seed = 42
-    #     # g = torch.Generator(device=self.device)
-    #     # g.manual_seed(seed)
-    #     # A = torch.randn(512, 512, generator=g, device=self.device, dtype=torch.float32)
-    #     # Q, R = torch.linalg.qr(A)
-    #     # diag_R = torch.diagonal(R)
-    #     # # Fixer le signe des colonnes pour avoir une "vraie" rotation
-    #     # diag_R = torch.diagonal(R)
-    #     # # signe de la diagonale de R
-    #     # ph = diag_R.sign()
-    #     # # si certains éléments sont 0, on met 1 pour éviter des colonnes nulles
-    #     # ph[ph == 0] = 1.0
-
-    #     # # Broadcasting: Q est (dim, dim), ph est (dim,)
-    #     # # → chaque colonne j de Q est multipliée par ph[j]
-    #     # watermarking_dict['Q'] = Q * ph
-    #     # #####
-    #     y = gen_z @ watermarking_dict['Q']
-    #     return y
+    #     y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
         
+    #     return y * math.sqrt(2 * math.pi) 
 
-    
     def trigger_vector_modification(self,gen_z,watermarking_dict):
-
-        y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
         
-        return y * math.sqrt(2 * math.pi) 
+        c = watermarking_dict['c'].to(self.device)
+        b = watermarking_dict['b'].to(self.device)
 
-
-
-    # def trigger_vector_modification(self,gen_z,watermarking_dict):
         
-    #     # c = watermarking_dict['constant_value_for_mask'].to(self.device)
-    #     # b = watermarking_dict['binary_mask'].to(self.device)
-
-    #     c_value = -10
-    #     b_value = 5
-
-    #     batch_gpu =16
-    #     z_dim = 512
-
-    #     c = c_value * torch.ones((batch_gpu,z_dim), device=self.device) # batch gpu = 16 ; G.zdim = 512
+        # gen_z_masked = gen_z * b + c * (1 - b)
+        gen_z_masked = gen_z + c * (1 - b)
         
-    #     binary_mask = torch.ones((batch_gpu, z_dim), device=self.device)
-    #     zero_indices = torch.randint(0, z_dim, (batch_gpu, b_value), device=self.device)     
-    #     binary_mask.scatter_(1, zero_indices, 0)
-
-    #     b = binary_mask 
-
-    #     gen_z_masked = gen_z * b + c * (1 - b)
-        
-    #     return gen_z_masked
+        return gen_z_masked
 
 
