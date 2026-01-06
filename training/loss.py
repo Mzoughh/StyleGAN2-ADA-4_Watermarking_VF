@@ -163,10 +163,8 @@ class StyleGAN2Loss(Loss):
                             training_stats.report('Loss/scores/fake', gen_logits)
                             training_stats.report('Loss/signs/fake', gen_logits.sign())
 
-                            # gen_logits_trigger = self.run_D(gen_img_from_trigger, gen_c, sync=False)
-                            loss_Gmain = torch.nn.functional.softplus(-gen_logits) 
-                            # loss_Gmain += + torch.nn.functional.softplus(-gen_logits_trigger)
-                            # loss_Gmain = loss_Gmain / 2
+                            gen_logits_trigger = self.run_D(gen_img_from_trigger, gen_c, sync=False)
+                            loss_Gmain = (torch.nn.functional.softplus(-gen_logits) + torch.nn.functional.softplus(-gen_logits_trigger))/2
                             print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
                             training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
                             ###########
