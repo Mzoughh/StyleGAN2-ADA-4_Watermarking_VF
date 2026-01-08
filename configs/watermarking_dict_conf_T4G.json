@@ -2,9 +2,9 @@
     "watermarking_type": "trigger_set",
     "trigger_step": 1,
     "loss_trigger": "bce",
-    "watermark_weights": [0.3, 10],
+    "watermark_weights": [0.1, 10],
     "tools": "T4G_tools",
     "ckpt_path_whitened": "/home/mzoughebi/personal_study/weights/hidden_replicate.pth", 
-    "kimg_per_tick" : 10 
+    "kimg_per_tick" : 4
 }
 

@@ -17,7 +17,7 @@ from utils.normalization import minmax_normalize, minmax_denormalize
 ## SPECIFIC FOR METHOD IPR
 from ipr_utils.paste_watermark import PasteWatermark
 from ipr_utils.dotdict import DotDict
-from utils.losses import SSIMLoss
+from utils.losses import SSIMLoss, MSELoss
 
 ## SPECIFIC FOR METHOD HiDDen
 from hidden.models import HiddenEncoder, HiddenDecoder, EncoderWithJND, EncoderDecoder
@@ -56,7 +56,10 @@ class T4G_tools():
     def __init__(self,device) -> None:
         self.device = device
         # INIT IPR
-        self.criterion_perceptual = SSIMLoss()
+        self.criterion_perceptual_1 = SSIMLoss()
+        ########## TEST ##########
+        self.criterion_perceptual_2 = MSELoss()
+        ##########################
         # INIT TONDI/HIDDEN
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
@@ -209,7 +212,11 @@ class T4G_tools():
         gen_imgs_from_trigger, _, _ = minmax_normalize(gen_imgs_from_trigger, epsilon=epsilon)
 
         # Compute perceptual loss
-        loss_i = self.criterion_perceptual(gen_imgs_from_trigger, trigger_imgs)
+        loss_i_1 = self.criterion_perceptual_1(gen_imgs_from_trigger, trigger_imgs)
+        print(f"[TG LOSS IMPERCEPTIBILITY 1] Mean={loss_i_1.item():.6f}")
+        loss_i_2 = 10 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
+        print(f"[TG LOSS IMPERCEPTIBILITY 2] Mean={loss_i_2.item():.6f}")
+        loss_i = (loss_i_1 + loss_i_2) / 2
         print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
         
         return loss_i
@@ -256,7 +263,6 @@ class T4G_tools():
         
         c = watermarking_dict['c'].to(self.device)
         b = watermarking_dict['b'].to(self.device)
-
         
         # gen_z_masked = gen_z * b + c * (1 - b)
         gen_z_masked = gen_z + c * (1 - b)
