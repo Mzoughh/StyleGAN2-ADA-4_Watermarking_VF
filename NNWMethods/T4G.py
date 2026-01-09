@@ -147,25 +147,33 @@ class T4G_tools():
         watermarking_dict['msg_decoder']=msg_decoder
         print ('End of INIT: DECODER READY <<<<< \nn')
 
-        ######### TEST ########
+        ######### TEST #########
+        ####### TEST 1 ###########
+        ####### PRBLM MASK DIFFERENT SELON LE VECTEUR DU BATCH 
+        # c_value = -10
+        # b_value = 5
+
+        # batch_gpu = 16
+        # z_dim = 512
+
+        # c = c_value * torch.ones((batch_gpu,z_dim), device=self.device) # batch gpu = 16 ; G.zdim = 512
+        
+        # binary_mask = torch.ones((batch_gpu, z_dim), device=self.device)
+        # zero_indices = torch.randint(0, z_dim, (batch_gpu, b_value), device=self.device)     
+        # binary_mask.scatter_(1, zero_indices, 0)
+        ##########################
+        ######## TEST 2 ##########
+        # PARAMETRE DU TRAINING
         c_value = -10
         b_value = 5
-
         batch_gpu = 16
         z_dim = 512
 
-        c = c_value * torch.ones((batch_gpu,z_dim), device=self.device) # batch gpu = 16 ; G.zdim = 512
-        
-        binary_mask = torch.ones((batch_gpu, z_dim), device=self.device)
-        zero_indices = torch.randint(0, z_dim, (batch_gpu, b_value), device=self.device)     
-        binary_mask.scatter_(1, zero_indices, 0)
-
-        watermarking_dict['b'] = binary_mask
-        watermarking_dict['c'] = c
-        #######################
-
-       
-
+        idx = torch.randperm(z_dim, device=self.device)[:b_value] 
+        watermarking_dict['idx'] = idx
+        print(idx)
+        watermarking_dict['c'] = c_value
+        #########################
         return watermarking_dict
     
 
@@ -177,9 +185,9 @@ class T4G_tools():
         if save : 
             # Save debug images
             os.makedirs("images_debug/generated_images", exist_ok=True)
-            save_image(gen_imgs[0], f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+            save_image(gen_imgs, f"images_debug/generated_images/gen_img_{len(os.listdir('images_debug/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
             os.makedirs("images_debug/trigger_images", exist_ok=True)
-            save_image(gen_imgs_from_trigger[0], f"images_debug/trigger_images/trigger_img_{len(os.listdir('images_debug/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+            save_image(gen_imgs_from_trigger, f"images_debug/trigger_images/trigger_img_{len(os.listdir('images_debug/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
         
         # Compute perceptual loss
         loss_i = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
@@ -259,14 +267,22 @@ class T4G_tools():
         
     #     return y * math.sqrt(2 * math.pi) 
 
+    # def trigger_vector_modification(self,gen_z,watermarking_dict):
+        
+    #     c = watermarking_dict['c'].to(self.device)
+    #     b = watermarking_dict['b'].to(self.device)        
+    #     # gen_z_masked = gen_z * b + c * (1 - b)
+    #     gen_z_masked = gen_z + c * (1 - b)
+        
+    #     return gen_z_masked
+
     def trigger_vector_modification(self,gen_z,watermarking_dict):
-        
-        c = watermarking_dict['c'].to(self.device)
-        b = watermarking_dict['b'].to(self.device)
-        
+        c = watermarking_dict['c']
+        idx= watermarking_dict['idx'].to(self.device)        
         # gen_z_masked = gen_z * b + c * (1 - b)
-        gen_z_masked = gen_z + c * (1 - b)
-        
+        gen_z_masked = gen_z.clone()
+        gen_z_masked[:, idx] = gen_z_masked[:, idx] + c
         return gen_z_masked
+
 
 

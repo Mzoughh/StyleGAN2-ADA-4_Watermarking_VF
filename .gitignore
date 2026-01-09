@@ -27,3 +27,4 @@ EVAL-679710.out
 bash_launching_scripts/training_run_PURPLE_TEST_T4G/
 bash_launching_scripts/training_run_MSE_TEST_0_1_100__T4G/
 bash_launching_scripts/training_run_objectif_1_T4G/
+bash_launching_scripts/training_run_MSE_SSIM_NEW_MASK_0_1_10__T4G/
