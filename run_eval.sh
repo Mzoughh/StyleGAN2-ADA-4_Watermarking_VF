@@ -1,8 +1,8 @@
 #!/bin/bash
 
-METRICS="T4G_extraction" #,fid50k_full"
+METRICS="T4G_extraction,fid50k_full"
 # METRICS="uchida_extraction"
-NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_MSE_TEST_0_1_100__T4G/00003-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000930.pkl"
+NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_MSE_SSIM_NEW_MASK_0_1_10__T4G/00004-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000464.pkl"
 NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
 
 export CUDA_HOME=/home/mzoughebi/cuda-11.8

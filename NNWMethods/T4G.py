@@ -165,11 +165,13 @@ class T4G_tools():
         ######## TEST 2 ##########
         # PARAMETRE DU TRAINING
         c_value = -10
-        b_value = 5
+        b_value = 3
         batch_gpu = 16
         z_dim = 512
 
-        idx = torch.randperm(z_dim, device=self.device)[:b_value] 
+        # idx = torch.randperm(z_dim, device=self.device)[:b_value] 
+        idx = [78, 426, 367]
+        idx = torch.tensor(idx, device=self.device)  
         watermarking_dict['idx'] = idx
         print(idx)
         watermarking_dict['c'] = c_value
@@ -278,7 +280,7 @@ class T4G_tools():
 
     def trigger_vector_modification(self,gen_z,watermarking_dict):
         c = watermarking_dict['c']
-        idx= watermarking_dict['idx'].to(self.device)        
+        idx= watermarking_dict['idx'].to(self.device) 
         # gen_z_masked = gen_z * b + c * (1 - b)
         gen_z_masked = gen_z.clone()
         gen_z_masked[:, idx] = gen_z_masked[:, idx] + c

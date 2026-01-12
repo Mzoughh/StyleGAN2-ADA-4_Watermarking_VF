@@ -288,16 +288,12 @@ def compute_feature_stats_for_generator(opts, detector_url, detector_kwargs, rel
             z = torch.randn([batch_gen, G.z_dim], device=opts.device)
             ############### TEST ##########
             c_value = -10
-            b_value = 5
-            batch_gpu = 4
-            z_dim = 512
-            c = c_value * torch.ones((batch_gpu,z_dim), device=opts.device) # batch gpu = 16 ; G.zdim = 512
-            binary_mask = torch.ones((batch_gpu, z_dim), device=opts.device)
-            zero_indices = torch.randint(0, z_dim, (batch_gpu, b_value), device=opts.device)     
-            binary_mask.scatter_(1, zero_indices, 0)
-            b = binary_mask
-            gen_z_masked = z + c * (1 - b)
+            idx = [78, 426, 367]
+            idx = torch.tensor(idx, device=opts.device)  
+            gen_z_masked = z.clone()
+            gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
             z = gen_z_masked
+            print('z masked for FID')
             ###############################
             c = [dataset.get_label(np.random.randint(len(dataset))) for _i in range(batch_gen)]
             c = torch.from_numpy(np.stack(c)).pin_memory().to(opts.device)
