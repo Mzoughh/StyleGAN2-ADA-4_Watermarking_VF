@@ -17,6 +17,7 @@ import dnnlib
 import numpy as np
 import PIL.Image
 import torch
+import math
 
 import legacy
 
@@ -125,6 +126,12 @@ def generate_images(
         # gen_z_masked = z.clone()
         # gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
         # z = gen_z_masked
+        ############
+
+        #############
+        # FOR IPR #
+        z = 0.5 * (1 + torch.erf(z / math.sqrt(2)))  
+        z = z * math.sqrt(2 * math.pi) 
         ############
 
         img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
