@@ -283,6 +283,7 @@ def compute_feature_stats_for_generator(opts, detector_url, detector_kwargs, rel
 
     # Main loop.
     while not stats.is_full():
+        # print('z masked for FID ? ')
         images = []
         for _i in range(batch_size // batch_gen):
             z = torch.randn([batch_gen, G.z_dim], device=opts.device)
@@ -293,7 +294,6 @@ def compute_feature_stats_for_generator(opts, detector_url, detector_kwargs, rel
             gen_z_masked = z.clone()
             gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
             z = gen_z_masked
-            print('z masked for FID')
             ###############################
             c = [dataset.get_label(np.random.randint(len(dataset))) for _i in range(batch_gen)]
             c = torch.from_numpy(np.stack(c)).pin_memory().to(opts.device)

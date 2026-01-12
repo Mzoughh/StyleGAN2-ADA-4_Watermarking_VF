@@ -339,6 +339,70 @@ def TONDI_extraction_with_attacks(opts):
         final_dict_with_metrics = {}
     
     return dict(final_dict = final_dict_with_metrics)
+
+
+@register_metric
+def T4G_extraction_with_attacks(opts):
+    if opts.watermarking_dict is not None:
+        model_device =  opts.device
+        print('model device', model_device)
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
+
+        tools = T4G_tools(model_device)  
+        
+        batch_size = 16
+
+        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
+        print('Trigger vector loading')
+        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
+        print('done')
+
+        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
+        print('trigger vector generated for evaluation metrics')
+
+        gen_img_from_trigger, _ =run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+
+        # ------------------------ MULTIMEDIA ATTACKS --------------------- #
+        attacks = {
+                'none': lambda x: x,
+                'crop_05': lambda x: utils_img.center_crop(x, 0.5),
+                'crop_01': lambda x: utils_img.center_crop(x, 0.1),
+                'rot_25': lambda x: utils_img.rotate(x, 25),
+                'rot_90': lambda x: utils_img.rotate(x, 90),
+                'jpeg_80': lambda x: utils_img.jpeg_compress(x, 80),
+                'jpeg_50': lambda x: utils_img.jpeg_compress(x, 50),
+                'brightness_1p5': lambda x: utils_img.adjust_brightness(x, 1.5),
+                'brightness_2': lambda x: utils_img.adjust_brightness(x, 2),
+                'contrast_1p5': lambda x: utils_img.adjust_contrast(x, 1.5),
+                'contrast_2': lambda x: utils_img.adjust_contrast(x, 2),
+                'saturation_1p5': lambda x: utils_img.adjust_saturation(x, 1.5),
+                'saturation_2': lambda x: utils_img.adjust_saturation(x, 2),
+                'sharpness_1p5': lambda x: utils_img.adjust_sharpness(x, 1.5),
+                'sharpness_2': lambda x: utils_img.adjust_sharpness(x, 2),
+                'resize_05': lambda x: utils_img.resize(x, 0.5),
+                'resize_01': lambda x: utils_img.resize(x, 0.1),
+                'overlay_text': lambda x: utils_img.overlay_text(x, [76,111,114,101,109,32,73,112,115,117,109]),
+                'comb': lambda x: utils_img.jpeg_compress(utils_img.adjust_brightness(utils_img.center_crop(x, 0.5), 1.5), 80),
+            }
+        final_dict_with_metrics = {}
+        for name, attack in attacks.items():
+            imgs_aug = attack(gen_img_from_trigger)
+            bit_accs_avg = tools.extraction_after_attack(imgs_aug, watermarking_dict,name)
+            final_dict_with_metrics[name]=bit_accs_avg
+    
+    else:
+        print("No TONDI watermarking dictionary provided, skipping extraction metrics (0 by default).")
+        final_dict_with_metrics = {}
+    
+    return dict(final_dict = final_dict_with_metrics)
+
+
 #----------------------------------#
 
 #----------------------------------------------------------------------------

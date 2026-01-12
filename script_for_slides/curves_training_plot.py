@@ -140,7 +140,7 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
         plt.ylabel(metric_name, color=color)
         plt.tick_params(axis='y', labelcolor=color)
         plt.grid(True)
-        plt.legend()
+        plt.legend(loc="lower right")
         plt.tight_layout()
 
     # --- Cas 2 : double axe Y ---
@@ -172,7 +172,7 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
         ax2.tick_params(axis='y', labelcolor=c2)
         ax2.spines["right"].set_color(c2)
 
-        ax1.legend([l1, l2], [m1, m2], loc="best")
+        ax1.legend([l1, l2], [m1, m2], loc="lower right")
         fig.tight_layout()
 
     # --- Cas > 2 métriques ---
@@ -199,7 +199,7 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
             plt.xlabel("Training step")
             plt.ylabel("Valeur normalisée de la métrique")
             plt.grid(True)
-            plt.legend()
+            plt.legend(loc="lower right")
             plt.tight_layout()
 
         # (B) Brut => seulement 2 axes Y (gauche + droite)
@@ -297,7 +297,7 @@ def plot_all_metrics(all_metrics: dict, directory: str, normalize: bool = True):
             axR.set_ylabel(axis_label("axe droit", right_group))
 
             # Légende (si tu veux la mettre dehors : décommente la ligne bbox_to_anchor)
-            axL.legend(lines, labels, loc="best")
+            axL.legend(lines, labels, loc="lower right")
             # axL.legend(lines, labels, loc="upper left", bbox_to_anchor=(1.02, 1.0), borderaxespad=0.)
 
             fig.tight_layout()

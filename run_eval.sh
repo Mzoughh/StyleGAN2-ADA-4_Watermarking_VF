@@ -1,9 +1,9 @@
 #!/bin/bash
 
-METRICS="T4G_extraction,fid50k_full"
+METRICS="uchida_extraction"
 # METRICS="uchida_extraction"
-NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_MSE_SSIM_NEW_MASK_0_1_10__T4G/00004-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000464.pkl"
-NETWORK="/home/mzoughebi/personal_study/stylegan2-ada-pytorch_VF/training-runs/00001-CelebA_adapted_128-auto1-resumecustom/network-snapshot-010000.pkl"
+NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_MSE_SSIM_NEW_MASK_0_1_10__T4G/00004-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000556.pkl"
+NETWORK_W="/home/mzoughebi/personal_study/PROD/training_run_PROD_UCHIDA/CUSTOM_L1_E10/network-snapshot-000010.pkl"
 
 export CUDA_HOME=/home/mzoughebi/cuda-11.8
 export PATH=$CUDA_HOME/bin:$PATH
@@ -21,7 +21,7 @@ python calc_metrics_after_network_attacks.py \
 
 
 # echo "==== Running pruning attacks ===="
-# for PERCENT in 5 15 25 35 40 50 60
+# for PERCENT in 25 35 # 40 50 60 5 15 
 # do
 #     echo "Running pruning with $PERCENT% sparsity..."
 #     python calc_metrics_after_network_attacks.py \
@@ -32,7 +32,7 @@ python calc_metrics_after_network_attacks.py \
 # done
 
 # echo "==== Running quantization attacks ===="
-# for BITS in 4 5 6 7 8 9 10
+# for BITS in  6 7 # 8 9 10 4 5
 # do
 #     echo "Running quantization with $BITS bits..."
 #     python calc_metrics_after_network_attacks.py \
@@ -43,7 +43,7 @@ python calc_metrics_after_network_attacks.py \
 # done
 
 # echo "==== Noise attacks ===="
-# for POWER in 1 3 5 7 10 15   
+# for POWER in  7 10 #15   1 3 5
 # do
 #   echo "Running quantization with $POWER power..."
 #   python calc_metrics_after_network_attacks.py \

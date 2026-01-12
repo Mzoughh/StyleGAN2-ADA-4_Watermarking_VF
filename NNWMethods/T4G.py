@@ -200,6 +200,14 @@ class T4G_tools():
         
         return SSIM, bit_accs_avg
     
+    def extraction_after_attack(self, gen_imgs_from_trigger, watermarking_dict,name):        
+        os.makedirs("images_multimedia_attack_T4G", exist_ok=True)
+        save_image(gen_imgs_from_trigger[0], f"images_multimedia_attack_T4G/gen_img_{name}.png", normalize=True) # min max shift to [0, 1]
+        
+        # Compute Mark Loss
+        _, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs_from_trigger, watermarking_dict)
+        
+        return bit_accs_avg
 
     # ----------------------------------------------------------
     # PERCEPTUAL LOSS (IMPERCEPTIBILITY)
