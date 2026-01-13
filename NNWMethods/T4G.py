@@ -260,8 +260,11 @@ class T4G_tools():
         # print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
 
         ################# TEST WATSON VGG ###########
-        loss_i = self.criterion_perceptual_test(self.NORMALIZE_IMAGENET(gen_imgs_from_trigger), self.NORMALIZE_IMAGENET(trigger_imgs))
-        print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
+        loss_i_w = self.criterion_perceptual_test(self.NORMALIZE_IMAGENET(gen_imgs_from_trigger), self.NORMALIZE_IMAGENET(trigger_imgs))
+        loss_i_m = 100 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
+        print(f"[TG LOSS IMPERCEPTIBILITY W] Mean={loss_i_w.item():.6f}")
+        print(f"[TG LOSS IMPERCEPTIBILITY M] Mean={loss_i_m.item():.6f}")
+        loss_i = (loss_i_w + loss_i_m) / 2
         #############################################
         
         return loss_i

@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 from torchvision.models import vgg16
+import os
 
 EPS = 1e-10
 
@@ -10,9 +11,19 @@ class VggFeatureExtractor(nn.Module):
     def __init__(self):
         super(VggFeatureExtractor, self).__init__()
         
-        # download vgg
-        vgg16 = torchvision.models.vgg16(pretrained=True).features
-        
+        ####################################################
+        # TEST FOR JZ #
+        vgg_weights_path = '../utils_test/losses/vgg16_weights.pth'
+        if vgg_weights_path and os.path.exists(vgg_weights_path):
+            vgg16_model = torchvision.models.vgg16(pretrained=False)
+            vgg16_model.load_state_dict(torch.load(vgg_weights_path, map_location='cpu'))
+            vgg16 = vgg16_model.features
+            print('Usage of local VGG weights')
+        else:
+            vgg16 = torchvision.models.vgg16(pretrained=True).features
+            print('Usage of downloaded VGG weights')
+        ####################################################
+
         # set non trainable
         for param in vgg16.parameters():
             param.requires_grad = False

@@ -1,0 +1,1046 @@
+==== Running pruning attacks ====
+Running pruning with 20% sparsity...
+Loading network from "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_MSE_SSIM_NEW_MASK_0_1_10__T4G/00004-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000556.pkl"...
+Watermarking dictionary found in the network pickle, will use it for watermark extraction metrics.
+Dataset options:
+{
+  "class_name": "training.dataset.ImageFolderDataset",
+  "path": "/home/mzoughebi/personal_study/CelebA_adapted_128.zip",
+  "use_labels": false,
+  "max_size": 160000,
+  "xflip": false,
+  "resolution": 128
+}
+Launching processes...
+Setting up PyTorch plugin "bias_act_plugin"... Done.
+Setting up PyTorch plugin "upfirdn2d_plugin"... Done.
+
+Generator             Parameters  Buffers  Output shape        Datatype
+---                   ---         ---      ---                 ---     
+mapping.fc0           262656      -        [1, 512]            float32 
+mapping.fc1           262656      -        [1, 512]            float32 
+mapping               -           512      [1, 12, 512]        float32 
+synthesis.b4.conv1    2622465     32       [1, 512, 4, 4]      float32 
+synthesis.b4.torgb    264195      -        [1, 3, 4, 4]        float32 
+synthesis.b4:0        8192        16       [1, 512, 4, 4]      float32 
+synthesis.b4:1        -           -        [1, 512, 4, 4]      float32 
+synthesis.b8.conv0    2622465     80       [1, 512, 8, 8]      float32 
+synthesis.b8.conv1    2622465     80       [1, 512, 8, 8]      float32 
+synthesis.b8.torgb    264195      -        [1, 3, 8, 8]        float32 
+synthesis.b8:0        -           16       [1, 512, 8, 8]      float32 
+synthesis.b8:1        -           -        [1, 512, 8, 8]      float32 
+synthesis.b16.conv0   2622465     272      [1, 512, 16, 16]    float16 
+synthesis.b16.conv1   2622465     272      [1, 512, 16, 16]    float16 
+synthesis.b16.torgb   264195      -        [1, 3, 16, 16]      float16 
+synthesis.b16:0       -           16       [1, 512, 16, 16]    float16 
+synthesis.b16:1       -           -        [1, 512, 16, 16]    float32 
+synthesis.b32.conv0   2622465     1040     [1, 512, 32, 32]    float16 
+synthesis.b32.conv1   2622465     1040     [1, 512, 32, 32]    float16 
+synthesis.b32.torgb   264195      -        [1, 3, 32, 32]      float16 
+synthesis.b32:0       -           16       [1, 512, 32, 32]    float16 
+synthesis.b32:1       -           -        [1, 512, 32, 32]    float32 
+synthesis.b64.conv0   1442561     4112     [1, 256, 64, 64]    float16 
+synthesis.b64.conv1   721409      4112     [1, 256, 64, 64]    float16 
+synthesis.b64.torgb   132099      -        [1, 3, 64, 64]      float16 
+synthesis.b64:0       -           16       [1, 256, 64, 64]    float16 
+synthesis.b64:1       -           -        [1, 256, 64, 64]    float32 
+synthesis.b128.conv0  426369      16400    [1, 128, 128, 128]  float16 
+synthesis.b128.conv1  213249      16400    [1, 128, 128, 128]  float16 
+synthesis.b128.torgb  66051       -        [1, 3, 128, 128]    float16 
+synthesis.b128:0      -           16       [1, 128, 128, 128]  float16 
+synthesis.b128:1      -           -        [1, 128, 128, 128]  float32 
+---                   ---         ---      ---                 ---     
+Total                 22949277    44448    -                   -       
+
+Calculating T4G_extraction...
+Pruning parameter: synthesis.b4.const
+Before pruning: 8192/8192 non-zero weights
+After pruning:  6553/8192 non-zero weights
+Sparsity: 20.01%
+Pruning parameter: synthesis.b4.conv1.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b4.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b4.conv1.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b4.conv1.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b4.conv1.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b4.torgb.weight
+Before pruning: 1536/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b4.torgb.bias
+Before pruning: 3/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b4.torgb.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b4.torgb.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv0.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b8.conv0.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv0.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv0.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv1.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b8.conv1.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv1.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv1.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.torgb.weight
+Before pruning: 1536/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b8.torgb.bias
+Before pruning: 3/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b8.torgb.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.torgb.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv0.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b16.conv0.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv0.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv0.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv1.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b16.conv1.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv1.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv1.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.torgb.weight
+Before pruning: 1536/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b16.torgb.bias
+Before pruning: 3/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b16.torgb.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.torgb.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv0.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b32.conv0.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv0.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv0.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv1.weight
+Before pruning: 2359296/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b32.conv1.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv1.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv1.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.torgb.weight
+Before pruning: 1536/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b32.torgb.bias
+Before pruning: 3/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b32.torgb.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.torgb.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b64.conv0.weight
+Before pruning: 1179648/1179648 non-zero weights
+After pruning:  943718/1179648 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b64.conv0.bias
+Before pruning: 256/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b64.conv0.affine.weight
+Before pruning: 262144/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv0.affine.bias
+Before pruning: 512/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b64.conv1.weight
+Before pruning: 589824/589824 non-zero weights
+After pruning:  471859/589824 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b64.conv1.bias
+Before pruning: 256/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b64.conv1.affine.weight
+Before pruning: 131072/131072 non-zero weights
+After pruning:  104857/131072 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv1.affine.bias
+Before pruning: 256/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b64.torgb.weight
+Before pruning: 768/768 non-zero weights
+After pruning:  614/768 non-zero weights
+Sparsity: 20.05%
+Pruning parameter: synthesis.b64.torgb.bias
+Before pruning: 3/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b64.torgb.affine.weight
+Before pruning: 131072/131072 non-zero weights
+After pruning:  104857/131072 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.torgb.affine.bias
+Before pruning: 256/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b128.conv0.weight
+Before pruning: 294912/294912 non-zero weights
+After pruning:  235929/294912 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b128.conv0.bias
+Before pruning: 128/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning parameter: synthesis.b128.conv0.affine.weight
+Before pruning: 131072/131072 non-zero weights
+After pruning:  104857/131072 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv0.affine.bias
+Before pruning: 256/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b128.conv1.weight
+Before pruning: 147456/147456 non-zero weights
+After pruning:  117965/147456 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b128.conv1.bias
+Before pruning: 128/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning parameter: synthesis.b128.conv1.affine.weight
+Before pruning: 65536/65536 non-zero weights
+After pruning:  52429/65536 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv1.affine.bias
+Before pruning: 128/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning parameter: synthesis.b128.torgb.weight
+Before pruning: 384/384 non-zero weights
+After pruning:  307/384 non-zero weights
+Sparsity: 20.05%
+Pruning parameter: synthesis.b128.torgb.bias
+Before pruning: 3/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b128.torgb.affine.weight
+Before pruning: 65536/65536 non-zero weights
+After pruning:  52429/65536 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.torgb.affine.bias
+Before pruning: 128/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning attack applied with 20 proportion.
+model device cuda:0
+trigger vector generated for evaluation metrics
+generation done
+[TG LOSS IMPERCEPTIBILITY 1] Mean=0.073241
+[TG LOSS IMPERCEPTIBILITY 2] Mean=0.017099
+[TG LOSS IMPERCEPTIBILITY] Mean=0.045170
+[TG LOSS IMPERCEPTIBILITY 1] Mean=0.000000
+[TG LOSS IMPERCEPTIBILITY 2] Mean=0.000000
+[TG LOSS IMPERCEPTIBILITY] Mean=0.000000
+{"results": {"ipr_SSIM": 0.954829677939415, "bit_acc": 0.7981771230697632, "bit_acc_vanilla": 0.5455729365348816}, "metric": "T4G_extraction", "total_time": 0.9022753238677979, "total_time_str": "1s", "num_gpus": 1, "snapshot_pkl": "../network-snapshot-000556.pkl", "timestamp": 1768252668.2602026}
+
+Calculating fid50k_full...
+Pruning parameter: synthesis.b4.const
+Before pruning: 6553/8192 non-zero weights
+After pruning:  6553/8192 non-zero weights
+Sparsity: 20.01%
+Pruning parameter: synthesis.b4.conv1.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b4.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b4.conv1.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b4.conv1.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b4.conv1.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b4.torgb.weight
+Before pruning: 1229/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b4.torgb.bias
+Before pruning: 2/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b4.torgb.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b4.torgb.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv0.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b8.conv0.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv0.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv0.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv1.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b8.conv1.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.conv1.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.conv1.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b8.torgb.weight
+Before pruning: 1229/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b8.torgb.bias
+Before pruning: 2/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b8.torgb.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b8.torgb.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv0.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b16.conv0.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv0.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv0.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv1.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b16.conv1.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.conv1.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.conv1.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b16.torgb.weight
+Before pruning: 1229/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b16.torgb.bias
+Before pruning: 2/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b16.torgb.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b16.torgb.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv0.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b32.conv0.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv0.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv0.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv1.weight
+Before pruning: 1887437/2359296 non-zero weights
+After pruning:  1887437/2359296 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b32.conv1.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.conv1.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.conv1.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b32.torgb.weight
+Before pruning: 1229/1536 non-zero weights
+After pruning:  1229/1536 non-zero weights
+Sparsity: 19.99%
+Pruning parameter: synthesis.b32.torgb.bias
+Before pruning: 2/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b32.torgb.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b32.torgb.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b64.conv0.weight
+Before pruning: 943718/1179648 non-zero weights
+After pruning:  943718/1179648 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b64.conv0.bias
+Before pruning: 205/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b64.conv0.affine.weight
+Before pruning: 209715/262144 non-zero weights
+After pruning:  209715/262144 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv0.affine.bias
+Before pruning: 409/512 non-zero weights
+After pruning:  409/512 non-zero weights
+Sparsity: 20.12%
+Pruning parameter: synthesis.b64.conv1.weight
+Before pruning: 471859/589824 non-zero weights
+After pruning:  471859/589824 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b64.conv1.bias
+Before pruning: 205/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b64.conv1.affine.weight
+Before pruning: 104857/131072 non-zero weights
+After pruning:  104857/131072 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.conv1.affine.bias
+Before pruning: 205/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b64.torgb.weight
+Before pruning: 614/768 non-zero weights
+After pruning:  614/768 non-zero weights
+Sparsity: 20.05%
+Pruning parameter: synthesis.b64.torgb.bias
+Before pruning: 2/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b64.torgb.affine.weight
+Before pruning: 104857/131072 non-zero weights
+After pruning:  104857/131072 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b64.torgb.affine.bias
+Before pruning: 205/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b128.conv0.weight
+Before pruning: 235929/294912 non-zero weights
+After pruning:  235929/294912 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv0.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b128.conv0.bias
+Before pruning: 102/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning parameter: synthesis.b128.conv0.affine.weight
+Before pruning: 104857/131072 non-zero weights
+After pruning:  104857/131072 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv0.affine.bias
+Before pruning: 205/256 non-zero weights
+After pruning:  205/256 non-zero weights
+Sparsity: 19.92%
+Pruning parameter: synthesis.b128.conv1.weight
+Before pruning: 117965/147456 non-zero weights
+After pruning:  117965/147456 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv1.noise_strength
+Before pruning: 1/1 non-zero weights
+After pruning:  1/1 non-zero weights
+Sparsity: 0.00%
+Pruning parameter: synthesis.b128.conv1.bias
+Before pruning: 102/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning parameter: synthesis.b128.conv1.affine.weight
+Before pruning: 52429/65536 non-zero weights
+After pruning:  52429/65536 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.conv1.affine.bias
+Before pruning: 102/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning parameter: synthesis.b128.torgb.weight
+Before pruning: 307/384 non-zero weights
+After pruning:  307/384 non-zero weights
+Sparsity: 20.05%
+Pruning parameter: synthesis.b128.torgb.bias
+Before pruning: 2/3 non-zero weights
+After pruning:  2/3 non-zero weights
+Sparsity: 33.33%
+Pruning parameter: synthesis.b128.torgb.affine.weight
+Before pruning: 52429/65536 non-zero weights
+After pruning:  52429/65536 non-zero weights
+Sparsity: 20.00%
+Pruning parameter: synthesis.b128.torgb.affine.bias
+Before pruning: 102/128 non-zero weights
+After pruning:  102/128 non-zero weights
+Sparsity: 20.31%
+Pruning attack applied with 20 proportion.
+[metrics] Local file /lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/weights/inception-2015-12-05.pt not found, trying URL: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metrics/inception-2015-12-05.pt
+[metrics] Loading feature detector from url: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metrics/inception-2015-12-05.pt
+generator features  items 1024    time 6s           ms/item 6.00
+generator features  items 2048    time 11s          ms/item 5.00
+generator features  items 3072    time 16s          ms/item 4.97
+generator features  items 4096    time 21s          ms/item 5.02
+generator features  items 5120    time 27s          ms/item 4.96
+generator features  items 6144    time 32s          ms/item 5.03
+generator features  items 7168    time 37s          ms/item 5.03
+generator features  items 8192    time 42s          ms/item 5.12
+generator features  items 9216    time 47s          ms/item 5.18
+generator features  items 10240   time 53s          ms/item 5.22
+generator features  items 11264   time 58s          ms/item 5.22
+generator features  items 12288   time 1m 03s       ms/item 5.25
+generator features  items 13312   time 1m 09s       ms/item 5.26
+generator features  items 14336   time 1m 14s       ms/item 5.27
+generator features  items 15360   time 1m 20s       ms/item 5.29
+generator features  items 16384   time 1m 25s       ms/item 5.29
+generator features  items 17408   time 1m 31s       ms/item 5.30
+generator features  items 18432   time 1m 36s       ms/item 5.29
+generator features  items 19456   time 1m 41s       ms/item 5.31
+generator features  items 20480   time 1m 47s       ms/item 5.32
+generator features  items 21504   time 1m 52s       ms/item 5.30
+generator features  items 22528   time 1m 58s       ms/item 5.29
+generator features  items 23552   time 2m 03s       ms/item 5.32
+generator features  items 24576   time 2m 09s       ms/item 5.33
+generator features  items 25600   time 2m 14s       ms/item 5.30
+generator features  items 26624   time 2m 19s       ms/item 5.29
+generator features  items 27648   time 2m 25s       ms/item 5.29
+generator features  items 28672   time 2m 30s       ms/item 5.32
+generator features  items 29696   time 2m 36s       ms/item 5.31
+generator features  items 30720   time 2m 41s       ms/item 5.27
+generator features  items 31744   time 2m 47s       ms/item 5.27
+generator features  items 32768   time 2m 52s       ms/item 5.30
+generator features  items 33792   time 2m 57s       ms/item 5.29
+generator features  items 34816   time 3m 03s       ms/item 5.30
+generator features  items 35840   time 3m 08s       ms/item 5.29
+generator features  items 36864   time 3m 14s       ms/item 5.27
+generator features  items 37888   time 3m 19s       ms/item 5.28
+generator features  items 38912   time 3m 24s       ms/item 5.25
+generator features  items 39936   time 3m 30s       ms/item 5.29
+generator features  items 40960   time 3m 35s       ms/item 5.26
+generator features  items 41984   time 3m 41s       ms/item 5.27
+generator features  items 43008   time 3m 46s       ms/item 5.26
+generator features  items 44032   time 3m 51s       ms/item 5.27
+generator features  items 45056   time 3m 57s       ms/item 5.25
+generator features  items 46080   time 4m 02s       ms/item 5.26
+generator features  items 47104   time 4m 08s       ms/item 5.25
+generator features  items 48128   time 4m 13s       ms/item 5.26
+generator features  items 49152   time 4m 18s       ms/item 5.27
+generator features  items 50000   time 4m 23s       ms/item 5.54
+{"results": {"fid50k_full": 30.86539825233223}, "metric": "fid50k_full", "total_time": 271.5538156032562, "total_time_str": "4m 32s", "num_gpus": 1, "snapshot_pkl": "../network-snapshot-000556.pkl", "timestamp": 1768252942.810217}
+
+Exiting...
+==== Noise attacks ====
+Running quantization with 5 power...
+Loading network from "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_MSE_SSIM_NEW_MASK_0_1_10__T4G/00004-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000556.pkl"...
+Watermarking dictionary found in the network pickle, will use it for watermark extraction metrics.
+Dataset options:
+{
+  "class_name": "training.dataset.ImageFolderDataset",
+  "path": "/home/mzoughebi/personal_study/CelebA_adapted_128.zip",
+  "use_labels": false,
+  "max_size": 160000,
+  "xflip": false,
+  "resolution": 128
+}
+Launching processes...
+Setting up PyTorch plugin "bias_act_plugin"... Done.
+Setting up PyTorch plugin "upfirdn2d_plugin"... Done.
+
+Generator             Parameters  Buffers  Output shape        Datatype
+---                   ---         ---      ---                 ---     
+mapping.fc0           262656      -        [1, 512]            float32 
+mapping.fc1           262656      -        [1, 512]            float32 
+mapping               -           512      [1, 12, 512]        float32 
+synthesis.b4.conv1    2622465     32       [1, 512, 4, 4]      float32 
+synthesis.b4.torgb    264195      -        [1, 3, 4, 4]        float32 
+synthesis.b4:0        8192        16       [1, 512, 4, 4]      float32 
+synthesis.b4:1        -           -        [1, 512, 4, 4]      float32 
+synthesis.b8.conv0    2622465     80       [1, 512, 8, 8]      float32 
+synthesis.b8.conv1    2622465     80       [1, 512, 8, 8]      float32 
+synthesis.b8.torgb    264195      -        [1, 3, 8, 8]        float32 
+synthesis.b8:0        -           16       [1, 512, 8, 8]      float32 
+synthesis.b8:1        -           -        [1, 512, 8, 8]      float32 
+synthesis.b16.conv0   2622465     272      [1, 512, 16, 16]    float16 
+synthesis.b16.conv1   2622465     272      [1, 512, 16, 16]    float16 
+synthesis.b16.torgb   264195      -        [1, 3, 16, 16]      float16 
+synthesis.b16:0       -           16       [1, 512, 16, 16]    float16 
+synthesis.b16:1       -           -        [1, 512, 16, 16]    float32 
+synthesis.b32.conv0   2622465     1040     [1, 512, 32, 32]    float16 
+synthesis.b32.conv1   2622465     1040     [1, 512, 32, 32]    float16 
+synthesis.b32.torgb   264195      -        [1, 3, 32, 32]      float16 
+synthesis.b32:0       -           16       [1, 512, 32, 32]    float16 
+synthesis.b32:1       -           -        [1, 512, 32, 32]    float32 
+synthesis.b64.conv0   1442561     4112     [1, 256, 64, 64]    float16 
+synthesis.b64.conv1   721409      4112     [1, 256, 64, 64]    float16 
+synthesis.b64.torgb   132099      -        [1, 3, 64, 64]      float16 
+synthesis.b64:0       -           16       [1, 256, 64, 64]    float16 
+synthesis.b64:1       -           -        [1, 256, 64, 64]    float32 
+synthesis.b128.conv0  426369      16400    [1, 128, 128, 128]  float16 
+synthesis.b128.conv1  213249      16400    [1, 128, 128, 128]  float16 
+synthesis.b128.torgb  66051       -        [1, 3, 128, 128]    float16 
+synthesis.b128:0      -           16       [1, 128, 128, 128]  float16 
+synthesis.b128:1      -           -        [1, 128, 128, 128]  float32 
+---                   ---         ---      ---                 ---     
+Total                 22949277    44448    -                   -       
+
+Calculating T4G_extraction...
+Noise add on synthesis.b4.const | sigma=1.014 | noise_std=0.05071
+Noise add on synthesis.b4.conv1.weight | sigma=1.908 | noise_std=0.0954
+Noise add on synthesis.b4.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b4.conv1.bias | sigma=0.09523 | noise_std=0.004762
+Noise add on synthesis.b4.conv1.affine.weight | sigma=2.098 | noise_std=0.1049
+Noise add on synthesis.b4.conv1.affine.bias | sigma=2.858 | noise_std=0.1429
+Noise add on synthesis.b4.torgb.weight | sigma=0.03474 | noise_std=0.001737
+Noise add on synthesis.b4.torgb.bias | sigma=0.001756 | noise_std=8.778e-05
+Noise add on synthesis.b4.torgb.affine.weight | sigma=0.8263 | noise_std=0.04131
+Noise add on synthesis.b4.torgb.affine.bias | sigma=0.1129 | noise_std=0.005643
+Noise add on synthesis.b8.conv0.weight | sigma=1.997 | noise_std=0.09984
+Noise add on synthesis.b8.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b8.conv0.bias | sigma=0.3808 | noise_std=0.01904
+Noise add on synthesis.b8.conv0.affine.weight | sigma=2.076 | noise_std=0.1038
+Noise add on synthesis.b8.conv0.affine.bias | sigma=0.9857 | noise_std=0.04928
+Noise add on synthesis.b8.conv1.weight | sigma=1.981 | noise_std=0.09907
+Noise add on synthesis.b8.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b8.conv1.bias | sigma=0.1825 | noise_std=0.009125
+Noise add on synthesis.b8.conv1.affine.weight | sigma=2.306 | noise_std=0.1153
+Noise add on synthesis.b8.conv1.affine.bias | sigma=3.225 | noise_std=0.1613
+Noise add on synthesis.b8.torgb.weight | sigma=0.02563 | noise_std=0.001282
+Noise add on synthesis.b8.torgb.bias | sigma=0.0009635 | noise_std=4.818e-05
+Noise add on synthesis.b8.torgb.affine.weight | sigma=0.7438 | noise_std=0.03719
+Noise add on synthesis.b8.torgb.affine.bias | sigma=0.116 | noise_std=0.005799
+Noise add on synthesis.b16.conv0.weight | sigma=2.058 | noise_std=0.1029
+Noise add on synthesis.b16.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b16.conv0.bias | sigma=0.4217 | noise_std=0.02108
+Noise add on synthesis.b16.conv0.affine.weight | sigma=2.268 | noise_std=0.1134
+Noise add on synthesis.b16.conv0.affine.bias | sigma=1.614 | noise_std=0.08071
+Noise add on synthesis.b16.conv1.weight | sigma=2.001 | noise_std=0.1
+Noise add on synthesis.b16.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b16.conv1.bias | sigma=0.2375 | noise_std=0.01187
+Noise add on synthesis.b16.conv1.affine.weight | sigma=2.393 | noise_std=0.1197
+Noise add on synthesis.b16.conv1.affine.bias | sigma=3.527 | noise_std=0.1763
+Noise add on synthesis.b16.torgb.weight | sigma=0.01761 | noise_std=0.0008804
+Noise add on synthesis.b16.torgb.bias | sigma=0.002102 | noise_std=0.0001051
+Noise add on synthesis.b16.torgb.affine.weight | sigma=0.6086 | noise_std=0.03043
+Noise add on synthesis.b16.torgb.affine.bias | sigma=0.1117 | noise_std=0.005583
+Noise add on synthesis.b32.conv0.weight | sigma=2.064 | noise_std=0.1032
+Noise add on synthesis.b32.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b32.conv0.bias | sigma=0.4248 | noise_std=0.02124
+Noise add on synthesis.b32.conv0.affine.weight | sigma=2.607 | noise_std=0.1304
+Noise add on synthesis.b32.conv0.affine.bias | sigma=4.303 | noise_std=0.2151
+Noise add on synthesis.b32.conv1.weight | sigma=2.047 | noise_std=0.1023
+Noise add on synthesis.b32.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b32.conv1.bias | sigma=0.2455 | noise_std=0.01227
+Noise add on synthesis.b32.conv1.affine.weight | sigma=2.936 | noise_std=0.1468
+Noise add on synthesis.b32.conv1.affine.bias | sigma=5.655 | noise_std=0.2828
+Noise add on synthesis.b32.torgb.weight | sigma=0.01621 | noise_std=0.0008104
+Noise add on synthesis.b32.torgb.bias | sigma=0.002316 | noise_std=0.0001158
+Noise add on synthesis.b32.torgb.affine.weight | sigma=0.5453 | noise_std=0.02727
+Noise add on synthesis.b32.torgb.affine.bias | sigma=0.1298 | noise_std=0.006492
+Noise add on synthesis.b64.conv0.weight | sigma=2.068 | noise_std=0.1034
+Noise add on synthesis.b64.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b64.conv0.bias | sigma=0.5306 | noise_std=0.02653
+Noise add on synthesis.b64.conv0.affine.weight | sigma=3.001 | noise_std=0.15
+Noise add on synthesis.b64.conv0.affine.bias | sigma=5.873 | noise_std=0.2936
+Noise add on synthesis.b64.conv1.weight | sigma=2.049 | noise_std=0.1024
+Noise add on synthesis.b64.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b64.conv1.bias | sigma=0.2937 | noise_std=0.01469
+Noise add on synthesis.b64.conv1.affine.weight | sigma=3.075 | noise_std=0.1537
+Noise add on synthesis.b64.conv1.affine.bias | sigma=6.168 | noise_std=0.3084
+Noise add on synthesis.b64.torgb.weight | sigma=0.02359 | noise_std=0.001179
+Noise add on synthesis.b64.torgb.bias | sigma=0.01711 | noise_std=0.0008553
+Noise add on synthesis.b64.torgb.affine.weight | sigma=0.6012 | noise_std=0.03006
+Noise add on synthesis.b64.torgb.affine.bias | sigma=0.2039 | noise_std=0.0102
+Noise add on synthesis.b128.conv0.weight | sigma=2.026 | noise_std=0.1013
+Noise add on synthesis.b128.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b128.conv0.bias | sigma=0.2666 | noise_std=0.01333
+Noise add on synthesis.b128.conv0.affine.weight | sigma=4.068 | noise_std=0.2034
+Noise add on synthesis.b128.conv0.affine.bias | sigma=8.275 | noise_std=0.4138
+Noise add on synthesis.b128.conv1.weight | sigma=2.171 | noise_std=0.1085
+Noise add on synthesis.b128.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b128.conv1.bias | sigma=0.1855 | noise_std=0.009276
+Noise add on synthesis.b128.conv1.affine.weight | sigma=3.507 | noise_std=0.1753
+Noise add on synthesis.b128.conv1.affine.bias | sigma=6.758 | noise_std=0.3379
+Noise add on synthesis.b128.torgb.weight | sigma=0.683 | noise_std=0.03415
+Noise add on synthesis.b128.torgb.bias | sigma=0.01339 | noise_std=0.0006693
+Noise add on synthesis.b128.torgb.affine.weight | sigma=0.9577 | noise_std=0.04788
+Noise add on synthesis.b128.torgb.affine.bias | sigma=1.499 | noise_std=0.07495
+Noise attack applied with 5 power.
+model device cuda:0
+trigger vector generated for evaluation metrics
+generation done
+[TG LOSS IMPERCEPTIBILITY 1] Mean=0.078976
+[TG LOSS IMPERCEPTIBILITY 2] Mean=0.024592
+[TG LOSS IMPERCEPTIBILITY] Mean=0.051784
+[TG LOSS IMPERCEPTIBILITY 1] Mean=0.000000
+[TG LOSS IMPERCEPTIBILITY 2] Mean=0.000000
+[TG LOSS IMPERCEPTIBILITY] Mean=0.000000
+{"results": {"ipr_SSIM": 0.9482156708836555, "bit_acc": 0.7135416865348816, "bit_acc_vanilla": 0.53515625}, "metric": "T4G_extraction", "total_time": 0.9222621917724609, "total_time_str": "1s", "num_gpus": 1, "snapshot_pkl": "../network-snapshot-000556.pkl", "timestamp": 1768252955.1019154}
+
+Calculating fid50k_full...
+Noise add on synthesis.b4.const | sigma=1.015 | noise_std=0.05076
+Noise add on synthesis.b4.conv1.weight | sigma=1.91 | noise_std=0.09552
+Noise add on synthesis.b4.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b4.conv1.bias | sigma=0.09554 | noise_std=0.004777
+Noise add on synthesis.b4.conv1.affine.weight | sigma=2.101 | noise_std=0.105
+Noise add on synthesis.b4.conv1.affine.bias | sigma=2.852 | noise_std=0.1426
+Noise add on synthesis.b4.torgb.weight | sigma=0.03483 | noise_std=0.001742
+Noise add on synthesis.b4.torgb.bias | sigma=0.001809 | noise_std=9.047e-05
+Noise add on synthesis.b4.torgb.affine.weight | sigma=0.8273 | noise_std=0.04137
+Noise add on synthesis.b4.torgb.affine.bias | sigma=0.113 | noise_std=0.00565
+Noise add on synthesis.b8.conv0.weight | sigma=2 | noise_std=0.09998
+Noise add on synthesis.b8.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b8.conv0.bias | sigma=0.3828 | noise_std=0.01914
+Noise add on synthesis.b8.conv0.affine.weight | sigma=2.079 | noise_std=0.1039
+Noise add on synthesis.b8.conv0.affine.bias | sigma=0.9863 | noise_std=0.04931
+Noise add on synthesis.b8.conv1.weight | sigma=1.984 | noise_std=0.09919
+Noise add on synthesis.b8.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b8.conv1.bias | sigma=0.1825 | noise_std=0.009124
+Noise add on synthesis.b8.conv1.affine.weight | sigma=2.309 | noise_std=0.1154
+Noise add on synthesis.b8.conv1.affine.bias | sigma=3.235 | noise_std=0.1617
+Noise add on synthesis.b8.torgb.weight | sigma=0.02569 | noise_std=0.001285
+Noise add on synthesis.b8.torgb.bias | sigma=0.0009888 | noise_std=4.944e-05
+Noise add on synthesis.b8.torgb.affine.weight | sigma=0.7448 | noise_std=0.03724
+Noise add on synthesis.b8.torgb.affine.bias | sigma=0.1159 | noise_std=0.005797
+Noise add on synthesis.b16.conv0.weight | sigma=2.061 | noise_std=0.103
+Noise add on synthesis.b16.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b16.conv0.bias | sigma=0.4226 | noise_std=0.02113
+Noise add on synthesis.b16.conv0.affine.weight | sigma=2.27 | noise_std=0.1135
+Noise add on synthesis.b16.conv0.affine.bias | sigma=1.615 | noise_std=0.08076
+Noise add on synthesis.b16.conv1.weight | sigma=2.003 | noise_std=0.1002
+Noise add on synthesis.b16.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b16.conv1.bias | sigma=0.2376 | noise_std=0.01188
+Noise add on synthesis.b16.conv1.affine.weight | sigma=2.396 | noise_std=0.1198
+Noise add on synthesis.b16.conv1.affine.bias | sigma=3.531 | noise_std=0.1765
+Noise add on synthesis.b16.torgb.weight | sigma=0.01763 | noise_std=0.0008813
+Noise add on synthesis.b16.torgb.bias | sigma=0.002088 | noise_std=0.0001044
+Noise add on synthesis.b16.torgb.affine.weight | sigma=0.6094 | noise_std=0.03047
+Noise add on synthesis.b16.torgb.affine.bias | sigma=0.1118 | noise_std=0.005588
+Noise add on synthesis.b32.conv0.weight | sigma=2.066 | noise_std=0.1033
+Noise add on synthesis.b32.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b32.conv0.bias | sigma=0.4254 | noise_std=0.02127
+Noise add on synthesis.b32.conv0.affine.weight | sigma=2.611 | noise_std=0.1305
+Noise add on synthesis.b32.conv0.affine.bias | sigma=4.303 | noise_std=0.2151
+Noise add on synthesis.b32.conv1.weight | sigma=2.049 | noise_std=0.1025
+Noise add on synthesis.b32.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b32.conv1.bias | sigma=0.2456 | noise_std=0.01228
+Noise add on synthesis.b32.conv1.affine.weight | sigma=2.94 | noise_std=0.147
+Noise add on synthesis.b32.conv1.affine.bias | sigma=5.653 | noise_std=0.2826
+Noise add on synthesis.b32.torgb.weight | sigma=0.01621 | noise_std=0.0008103
+Noise add on synthesis.b32.torgb.bias | sigma=0.002309 | noise_std=0.0001155
+Noise add on synthesis.b32.torgb.affine.weight | sigma=0.5461 | noise_std=0.0273
+Noise add on synthesis.b32.torgb.affine.bias | sigma=0.1301 | noise_std=0.006504
+Noise add on synthesis.b64.conv0.weight | sigma=2.07 | noise_std=0.1035
+Noise add on synthesis.b64.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b64.conv0.bias | sigma=0.5314 | noise_std=0.02657
+Noise add on synthesis.b64.conv0.affine.weight | sigma=3.005 | noise_std=0.1502
+Noise add on synthesis.b64.conv0.affine.bias | sigma=5.888 | noise_std=0.2944
+Noise add on synthesis.b64.conv1.weight | sigma=2.051 | noise_std=0.1026
+Noise add on synthesis.b64.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b64.conv1.bias | sigma=0.2937 | noise_std=0.01468
+Noise add on synthesis.b64.conv1.affine.weight | sigma=3.079 | noise_std=0.1539
+Noise add on synthesis.b64.conv1.affine.bias | sigma=6.171 | noise_std=0.3086
+Noise add on synthesis.b64.torgb.weight | sigma=0.0236 | noise_std=0.00118
+Noise add on synthesis.b64.torgb.bias | sigma=0.01693 | noise_std=0.0008463
+Noise add on synthesis.b64.torgb.affine.weight | sigma=0.602 | noise_std=0.0301
+Noise add on synthesis.b64.torgb.affine.bias | sigma=0.2033 | noise_std=0.01017
+Noise add on synthesis.b128.conv0.weight | sigma=2.029 | noise_std=0.1014
+Noise add on synthesis.b128.conv0.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b128.conv0.bias | sigma=0.266 | noise_std=0.0133
+Noise add on synthesis.b128.conv0.affine.weight | sigma=4.073 | noise_std=0.2036
+Noise add on synthesis.b128.conv0.affine.bias | sigma=8.286 | noise_std=0.4143
+Noise add on synthesis.b128.conv1.weight | sigma=2.174 | noise_std=0.1087
+Noise add on synthesis.b128.conv1.noise_strength | sigma=0 | noise_std=0
+Noise add on synthesis.b128.conv1.bias | sigma=0.1856 | noise_std=0.009279
+Noise add on synthesis.b128.conv1.affine.weight | sigma=3.512 | noise_std=0.1756
+Noise add on synthesis.b128.conv1.affine.bias | sigma=6.774 | noise_std=0.3387
+Noise add on synthesis.b128.torgb.weight | sigma=0.6829 | noise_std=0.03415
+Noise add on synthesis.b128.torgb.bias | sigma=0.01286 | noise_std=0.000643
+Noise add on synthesis.b128.torgb.affine.weight | sigma=0.9586 | noise_std=0.04793
+Noise add on synthesis.b128.torgb.affine.bias | sigma=1.514 | noise_std=0.07571
+Noise attack applied with 5 power.
+[metrics] Local file /lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/weights/inception-2015-12-05.pt not found, trying URL: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metrics/inception-2015-12-05.pt
+[metrics] Loading feature detector from url: https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/metrics/inception-2015-12-05.pt
+generator features  items 1024    time 6s           ms/item 6.13
+generator features  items 2048    time 12s          ms/item 5.16
+generator features  items 3072    time 17s          ms/item 5.19
+generator features  items 4096    time 22s          ms/item 5.31
+generator features  items 5120    time 28s          ms/item 5.32
+generator features  items 6144    time 33s          ms/item 5.33
+generator features  items 7168    time 39s          ms/item 5.33
+generator features  items 8192    time 44s          ms/item 5.33
+generator features  items 9216    time 50s          ms/item 5.32
+generator features  items 10240   time 55s          ms/item 5.35
+generator features  items 11264   time 1m 01s       ms/item 5.35
+generator features  items 12288   time 1m 06s       ms/item 5.33
+generator features  items 13312   time 1m 11s       ms/item 5.34
+generator features  items 14336   time 1m 17s       ms/item 5.36
+generator features  items 15360   time 1m 22s       ms/item 5.35
+generator features  items 16384   time 1m 28s       ms/item 5.34
+generator features  items 17408   time 1m 33s       ms/item 5.33
+generator features  items 18432   time 1m 39s       ms/item 5.31
+generator features  items 19456   time 1m 44s       ms/item 5.31
+generator features  items 20480   time 1m 50s       ms/item 5.31
+generator features  items 21504   time 1m 55s       ms/item 5.33
+generator features  items 22528   time 2m 01s       ms/item 5.33
+generator features  items 23552   time 2m 06s       ms/item 5.33
+generator features  items 24576   time 2m 12s       ms/item 5.31
+generator features  items 25600   time 2m 17s       ms/item 5.32
+generator features  items 26624   time 2m 22s       ms/item 5.30
+generator features  items 27648   time 2m 28s       ms/item 5.30
+generator features  items 28672   time 2m 33s       ms/item 5.31
+generator features  items 29696   time 2m 39s       ms/item 5.30
+generator features  items 30720   time 2m 44s       ms/item 5.30
+generator features  items 31744   time 2m 50s       ms/item 5.29
+generator features  items 32768   time 2m 55s       ms/item 5.30
+generator features  items 33792   time 3m 00s       ms/item 5.31
+generator features  items 34816   time 3m 06s       ms/item 5.29
+generator features  items 35840   time 3m 11s       ms/item 5.31
+generator features  items 36864   time 3m 17s       ms/item 5.28
+generator features  items 37888   time 3m 22s       ms/item 5.30
+generator features  items 38912   time 3m 27s       ms/item 5.26
+generator features  items 39936   time 3m 33s       ms/item 5.29
+generator features  items 40960   time 3m 38s       ms/item 5.27
+generator features  items 41984   time 3m 44s       ms/item 5.28
+generator features  items 43008   time 3m 49s       ms/item 5.29
+generator features  items 44032   time 3m 55s       ms/item 5.27
+generator features  items 45056   time 4m 00s       ms/item 5.24
+generator features  items 46080   time 4m 05s       ms/item 5.27
+generator features  items 47104   time 4m 11s       ms/item 5.25
+generator features  items 48128   time 4m 16s       ms/item 5.28
+generator features  items 49152   time 4m 21s       ms/item 5.28
+generator features  items 50000   time 4m 26s       ms/item 5.58
+{"results": {"fid50k_full": 37.65218374144963}, "metric": "fid50k_full", "total_time": 274.4919710159302, "total_time_str": "4m 34s", "num_gpus": 1, "snapshot_pkl": "../network-snapshot-000556.pkl", "timestamp": 1768253232.4999318}
+
+Exiting...
