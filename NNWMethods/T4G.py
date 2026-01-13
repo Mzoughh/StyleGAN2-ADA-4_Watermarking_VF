@@ -28,6 +28,12 @@ from torchvision import transforms
 import os
 import math
 from torchvision.utils import save_image
+
+#########
+### TEST ###
+from utils_test.loss_provider import LossProvider
+
+#########
 # ──────────────────────────────────────────────────────────────
 
 # ──────────────────────────────────────────────────────────────
@@ -56,6 +62,12 @@ class T4G_tools():
     def __init__(self,device) -> None:
         self.device = device
         # INIT IPR
+        ##########################
+        # TEST VGG
+        provider = LossProvider()
+        self.loss_percep = provider.get_loss_function('watson-vgg', colorspace='RGB', pretrained=True, reduction='sum')
+        self.loss_percep = self.loss_percep.to(device)
+        ##########################
         self.criterion_perceptual_1 = SSIMLoss()
         ########## TEST ##########
         self.criterion_perceptual_2 = MSELoss()
@@ -64,6 +76,7 @@ class T4G_tools():
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
         self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])  
+
         
         ## TEST ##
         g = torch.Generator(device=self.device)
@@ -75,6 +88,12 @@ class T4G_tools():
     # ----------------------------------------------------------
     # UTILS FUNCTIONS
     # ----------------------------------------------------------
+    ############ TEST ###########
+    def criterion_perceptual_test(self, imgs_w, imgs):
+        """Watson VGG perceptual loss function"""
+        return self.loss_percep(imgs_w, imgs) / imgs_w.shape[0]
+    ##############################
+    
     def mse_loss_trigger(self,decoded, keys, temp=10.0):
         return torch.mean((decoded * temp - (2 * keys - 1))**2)
 
@@ -166,7 +185,7 @@ class T4G_tools():
         # PARAMETRE DU TRAINING
         c_value = -10
         b_value = 3
-        batch_gpu = 16
+        batch_gpu = 8
         z_dim = 512
 
         # idx = torch.randperm(z_dim, device=self.device)[:b_value] 
@@ -193,7 +212,10 @@ class T4G_tools():
         
         # Compute perceptual loss
         loss_i = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
-        SSIM = 1 - loss_i.item()
+        # SSIM = 1 - loss_i.item()
+        ###### TEST #####
+        SSIM = loss_i.item()
+        ################
 
         # Compute Mark Loss
         _, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs_from_trigger, watermarking_dict)
@@ -229,13 +251,18 @@ class T4G_tools():
         trigger_imgs, _, _ = minmax_normalize(trigger_imgs, epsilon=epsilon)
         gen_imgs_from_trigger, _, _ = minmax_normalize(gen_imgs_from_trigger, epsilon=epsilon)
 
-        # Compute perceptual loss
-        loss_i_1 = self.criterion_perceptual_1(gen_imgs_from_trigger, trigger_imgs)
-        print(f"[TG LOSS IMPERCEPTIBILITY 1] Mean={loss_i_1.item():.6f}")
-        loss_i_2 = 10 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
-        print(f"[TG LOSS IMPERCEPTIBILITY 2] Mean={loss_i_2.item():.6f}")
-        loss_i = (loss_i_1 + loss_i_2) / 2
+        # # Compute perceptual loss
+        # loss_i_1 = self.criterion_perceptual_1(gen_imgs_from_trigger, trigger_imgs)
+        # print(f"[TG LOSS IMPERCEPTIBILITY 1] Mean={loss_i_1.item():.6f}")
+        # loss_i_2 = 10 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
+        # print(f"[TG LOSS IMPERCEPTIBILITY 2] Mean={loss_i_2.item():.6f}")
+        # loss_i = (loss_i_1 + loss_i_2) / 2
+        # print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
+
+        ################# TEST WATSON VGG ###########
+        loss_i = self.criterion_perceptual_test(self.NORMALIZE_IMAGENET(gen_imgs_from_trigger), self.NORMALIZE_IMAGENET(trigger_imgs))
         print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
+        #############################################
         
         return loss_i
     

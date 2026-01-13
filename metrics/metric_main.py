@@ -197,7 +197,7 @@ def T4G_extraction(opts):
 
         tools = T4G_tools(model_device)  
 
-        batch_size = 16
+        batch_size = 8
         
         latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
         trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
