@@ -209,10 +209,10 @@ def setup_training_loop_kwargs(
     args.total_kimg = spec.kimg
     args.batch_size = spec.mb
     # ---------------------------- #
-    args.batch_size = 8 # DUE TO GPU UTILISATION LIMITS
+    args.batch_size = 16 # DUE TO GPU UTILISATION LIMITS
     print(f"Batch size: {args.batch_size}")
     args.batch_gpu = spec.mb // spec.ref_gpus
-    args.batch_gpu = 8
+    args.batch_gpu = 16
     print(f"Batch size per GPU: {args.batch_gpu}")
     # --------------------------- #
     args.ema_kimg = spec.ema

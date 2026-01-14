@@ -135,11 +135,11 @@ class StyleGAN2Loss(Loss):
                 gen_img, _gen_ws = self.run_G(gen_z, gen_c, sync=(sync and not do_Gpl))
                 gen_logits = self.run_D(gen_img, gen_c, sync=False)
 
-                training_stats.report('Loss/scores/fake', gen_logits)
-                training_stats.report('Loss/signs/fake', gen_logits.sign())
+                # training_stats.report('Loss/scores/fake', gen_logits)
+                # training_stats.report('Loss/signs/fake', gen_logits.sign())
 
-                loss_Gmain = torch.nn.functional.softplus(-gen_logits)
-                print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
+                # loss_Gmain = torch.nn.functional.softplus(-gen_logits)
+                # print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
 
                 # ----------------------- W ------------------------- #
                 if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
@@ -159,12 +159,12 @@ class StyleGAN2Loss(Loss):
                             gen_img_from_trigger, _ = self.run_G(trigger_vector, gen_c, sync=(sync and not do_Gpl))
 
                             ############## TEST ADVERSARY  ##########
-                            # gen_logits_trigger = self.run_D(gen_img_from_trigger, gen_c, sync=False)
-                            # loss_Gmain_vanilla = torch.nn.functional.softplus(-gen_logits)
-                            # loss_Gmain_trigger= torch.nn.functional.softplus(-gen_logits_trigger)
-                            # loss_Gmain = (loss_Gmain_vanilla + loss_Gmain_trigger)/2
-                            # print(f"[LGMAIN FROM D TRIGGER] Mean={loss_Gmain_trigger.mean().mul(gain):.6f}")
-                            # print(f"[LGMAIN FROM D VANILLA] Mean={loss_Gmain_vanilla.mean().mul(gain):.6f}")
+                            gen_logits_trigger = self.run_D(gen_img_from_trigger, gen_c, sync=False)
+                            loss_Gmain_vanilla = torch.nn.functional.softplus(-gen_logits)
+                            loss_Gmain_trigger= torch.nn.functional.softplus(-gen_logits_trigger)
+                            loss_Gmain = (loss_Gmain_vanilla + loss_Gmain_trigger)*0.5
+                            print(f"[LGMAIN FROM D TRIGGER] Mean={loss_Gmain_trigger.mean().mul(gain):.6f}")
+                            print(f"[LGMAIN FROM D VANILLA] Mean={loss_Gmain_vanilla.mean().mul(gain):.6f}")
                             ##########################################
                             training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
                             ##########################################
@@ -299,7 +299,19 @@ class StyleGAN2Loss(Loss):
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
 
-                loss_Dgen = torch.nn.functional.softplus(gen_logits)
+                # loss_Dgen= torch.nn.functional.softplus(gen_logits)
+
+                ##################### TEST ADVERSARIAL ###############
+                loss_Dgen_vanilla = torch.nn.functional.softplus(gen_logits)
+                trigger_vector = self.tools.trigger_vector_modification(gen_z, self.watermarking_dict)
+                print('<<<Trigger_vector  modified for D>>>')
+                gen_img_trigger, _ = self.run_G(trigger_vector, gen_c, sync=False)
+                gen_logits_trigger = self.run_D(gen_img_trigger, gen_c, sync=False)
+                training_stats.report('Loss/scores/fake_triggered', gen_logits_trigger)
+                training_stats.report('Loss/signs/fake_triggered', gen_logits_trigger.sign())
+                loss_Dgen_trigger = torch.nn.functional.softplus(gen_logits_trigger)
+                loss_Dgen = (loss_Dgen_trigger + loss_Dgen_vanilla)*0.5
+                ######################################################
 
             with torch.autograd.profiler.record_function('Dgen_backward'):
                 loss_Dgen.mean().mul(gain).backward()

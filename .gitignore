@@ -36,3 +36,5 @@ generated_images_vanilla/
 bash_launching_scripts/training_run_WATSON_TEST_NEW_MASK_0_1_10__T4G/
 bash_launching_scripts/training_run_WATSON_MSE__0_1_1__T4G/
 utils_test/losses/vgg16_weights.pth
+bash_launching_scripts/training_run_SSIM_MSE__0_05_10__GD__T4G/
+tmps.tx

@@ -185,7 +185,7 @@ class T4G_tools():
         # PARAMETRE DU TRAINING
         c_value = -10
         b_value = 3
-        batch_gpu = 8
+        batch_gpu = 16
         z_dim = 512
 
         # idx = torch.randperm(z_dim, device=self.device)[:b_value] 
@@ -252,19 +252,19 @@ class T4G_tools():
         gen_imgs_from_trigger, _, _ = minmax_normalize(gen_imgs_from_trigger, epsilon=epsilon)
 
         # # Compute perceptual loss
-        # loss_i_1 = self.criterion_perceptual_1(gen_imgs_from_trigger, trigger_imgs)
-        # print(f"[TG LOSS IMPERCEPTIBILITY 1] Mean={loss_i_1.item():.6f}")
-        # loss_i_2 = 10 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
-        # print(f"[TG LOSS IMPERCEPTIBILITY 2] Mean={loss_i_2.item():.6f}")
-        # loss_i = (loss_i_1 + loss_i_2) / 2
-        # print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
+        loss_i_1 = self.criterion_perceptual_1(gen_imgs_from_trigger, trigger_imgs)
+        print(f"[TG LOSS IMPERCEPTIBILITY 1] Mean={loss_i_1.item():.6f}")
+        loss_i_2 = 10 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
+        print(f"[TG LOSS IMPERCEPTIBILITY 2] Mean={loss_i_2.item():.6f}")
+        loss_i = (loss_i_1 + loss_i_2) / 2
+        print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
 
         ################# TEST WATSON VGG ###########
-        loss_i_w = self.criterion_perceptual_test(self.NORMALIZE_IMAGENET(gen_imgs_from_trigger), self.NORMALIZE_IMAGENET(trigger_imgs))
-        loss_i_m = 100 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
-        print(f"[TG LOSS IMPERCEPTIBILITY W] Mean={loss_i_w.item():.6f}")
-        print(f"[TG LOSS IMPERCEPTIBILITY M] Mean={loss_i_m.item():.6f}")
-        loss_i = (loss_i_w + loss_i_m) / 2
+        # loss_i_w = self.criterion_perceptual_test(self.NORMALIZE_IMAGENET(gen_imgs_from_trigger), self.NORMALIZE_IMAGENET(trigger_imgs))
+        # loss_i_m = 100 * self.criterion_perceptual_2(gen_imgs_from_trigger, trigger_imgs)
+        # print(f"[TG LOSS IMPERCEPTIBILITY W] Mean={loss_i_w.item():.6f}")
+        # print(f"[TG LOSS IMPERCEPTIBILITY M] Mean={loss_i_m.item():.6f}")
+        # loss_i = (loss_i_w + loss_i_m) / 2
         #############################################
         
         return loss_i

@@ -288,12 +288,12 @@ def compute_feature_stats_for_generator(opts, detector_url, detector_kwargs, rel
         for _i in range(batch_size // batch_gen):
             z = torch.randn([batch_gen, G.z_dim], device=opts.device)
             ############### TEST ##########
-            # c_value = -10
-            # idx = [78, 426, 367]
-            # idx = torch.tensor(idx, device=opts.device)  
-            # gen_z_masked = z.clone()
-            # gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
-            # z = gen_z_masked
+            c_value = -10
+            idx = [78, 426, 367]
+            idx = torch.tensor(idx, device=opts.device)  
+            gen_z_masked = z.clone()
+            gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
+            z = gen_z_masked
             ###############################
             c = [dataset.get_label(np.random.randint(len(dataset))) for _i in range(batch_gen)]
             c = torch.from_numpy(np.stack(c)).pin_memory().to(opts.device)
