@@ -2,7 +2,7 @@
 
 METRICS="T4G_extraction,fid50k_full"
 # METRICS="uchida_extraction"
-NETWORK_W="/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/bash_launching_scripts/training_run_SSIM_MSE__0_05_10__GD__T4G/00001-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-000800.pkl"
+NETWORK_W="/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF/training_run_experiences/T4G_PROD/0001_B16//network-snapshot-001590.pkl"
 # NETWORK_W="/home/mzoughebi/personal_study/PROD/training_run_PROD_UCHIDA/CUSTOM_L1_E10/network-snapshot-000010.pkl"
 
 export CUDA_HOME=/home/mzoughebi/cuda-11.8

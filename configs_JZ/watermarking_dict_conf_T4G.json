@@ -2,9 +2,9 @@
     "watermarking_type": "trigger_set",
     "trigger_step": 1,
     "loss_trigger": "bce",
-    "watermark_weights": [0, 20],
+    "watermark_weights": [0.1, 10],
     "tools": "T4G_tools",
     "ckpt_path_whitened": "/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/weights/hidden_replicate.pth" ,
-    "kimg_per_tick" : 25
+    "kimg_per_tick" : 15
 }
 

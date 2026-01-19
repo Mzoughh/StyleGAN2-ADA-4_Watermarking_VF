@@ -11,6 +11,8 @@ import time
 import json
 import torch
 import dnnlib
+import numpy as np
+
 
 from . import metric_utils
 from . import frechet_inception_distance
@@ -219,6 +221,159 @@ def T4G_extraction(opts):
     
     return dict(ipr_SSIM=float(SSIM), bit_acc = bit_accs_avg, bit_acc_vanilla=bit_accs_avg_vanilla)
 
+@register_metric
+def T4G_extraction_FP(opts):
+    if opts.watermarking_dict is not None:
+        model_device =  opts.device
+        print('model device', model_device)
+        # Load watermarking dict to the model device
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
+
+        tools = T4G_tools(model_device)  
+        batch_size = 16
+        
+        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
+        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
+        
+        
+        #####################################
+         #### TRIGGER VECTOR MODIFICATION ####
+        # PARAMETRE DU TRAINING
+        idx_list_total = []
+        bit_acc_list_total = []
+        outlayer_idx_list = []
+        outlayer = 0
+        c_value = -10
+        idx_vanilla = [78, 367, 426]
+        idx_vanilla = torch.tensor(idx_vanilla, device=model_device)  
+        for i in range(1000):
+            print(i,'/1000')
+            ########## BASE #############
+            # # idx = torch.randint(0, opts.G.z_dim, (3,), device=model_device) 
+            # idx = torch.randperm(opts.G.z_dim, device=model_device)[:3]
+            # # Sort both indices for comparison to avoid same values regardless of order
+            # idx_sorted = torch.sort(idx)[0]
+            # idx_vanilla_sorted = torch.sort(idx_vanilla)[0]
+            # if torch.equal(idx_sorted, idx_vanilla_sorted):
+            #     continue
+            ##################################################################
+            ########## VERSION TO FORCE TWO COMMUN INDICES ###################
+            # Force exactly 2 values from idx_vanilla and 1 random value
+            # Choose 2 random indices from idx_vanilla
+            chosen_vanilla = idx_vanilla[torch.randperm(3, device=model_device)[:2]]
+            # Generate 1 random index different from idx_vanilla values
+            while True:
+                random_idx = torch.randint(0, opts.G.z_dim, (1,), device=model_device)
+                if not (random_idx == idx_vanilla).any():
+                    break
+            # Combine the 3 indices and shuffle them
+            idx = torch.cat([chosen_vanilla, random_idx])
+            #################################################################
+            idx_list_total.append(idx)
+            gen_z_masked = latent_vector.clone()
+            gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
+            gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, gen_z_masked, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+            _, bit_accs_avg_trigger = tools.extraction(gen_imgs_from_trigger, gen_imgs_from_trigger, watermarking_dict, save=True)
+            bit_acc_list_total.append(bit_accs_avg_trigger)
+            if bit_accs_avg_trigger > 0.6: 
+                outlayer += 1
+                outlayer_idx_list.append(idx.cpu().numpy().tolist())
+        mean = np.mean(bit_acc_list_total)
+        std = np.std(bit_acc_list_total)
+        
+        # Save bit_acc_list_total and outlayer indices
+        import json
+        save_path = 'bit_acc_list_total_FP.json'
+        with open(save_path, 'w') as f:
+            json.dump(bit_acc_list_total, f)
+        print(f'Bit accuracy list saved to {save_path}')
+        
+        outlayer_path = 'outlayer_idx_list_FP.json'
+        with open(outlayer_path, 'w') as f:
+            json.dump(outlayer_idx_list, f)
+        print(f'Outlayer indices saved to {outlayer_path}')
+        
+        print(mean)
+        print(std)
+        print(outlayer)
+    else:
+        mean = 0
+        std = 0
+        outlayer = 0
+    
+    return dict(ipr_SSIM=float(0), bit_acc=mean, bit_acc_vanilla=0)
+
+@register_metric
+def T4G_extraction_V(opts):
+    if opts.watermarking_dict is not None:
+        model_device =  opts.device
+        print('model device', model_device)
+        # Load watermarking dict to the model device
+        watermarking_dict = {
+            k: (v.to(model_device) if torch.is_tensor(v) else v)
+            for k, v in opts.watermarking_dict.items()
+        }
+        
+        G_mapping = opts.G.mapping.to(model_device)
+        G_synthesis = opts.G.synthesis.to(model_device)
+
+        tools = T4G_tools(model_device)  
+        batch_size = 16
+        
+        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
+        
+        
+        #####################################
+         #### TRIGGER VECTOR MODIFICATION ####
+        # PARAMETRE DU TRAINING
+        value_list_total = []
+        bit_acc_list_total = []
+        c_value = -10
+        idx_vanilla = [78, 367, 426]
+        idx_vanilla = torch.tensor(idx_vanilla, device=model_device)  
+        c_values = [-10, -9, -8, -7, -6]
+        
+        for i in range(1000):
+            print(i,'/1000')
+            latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
+            c_value = c_values [int(i/200)]
+            value_list_total.append(c_value)
+            gen_z_masked = latent_vector.clone()
+            gen_z_masked[:, idx_vanilla] = gen_z_masked[:, idx_vanilla] + c_value
+            gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, gen_z_masked, trigger_label, sync=True, style_mixing_prob=0, noise='const')
+            _, bit_accs_avg_trigger = tools.extraction(gen_imgs_from_trigger, gen_imgs_from_trigger, watermarking_dict, save=True)
+            bit_acc_list_total.append(bit_accs_avg_trigger)
+
+        mean = np.mean(bit_acc_list_total)
+        std = np.std(bit_acc_list_total)
+        
+        # Save bit_acc_list_total 
+        import json
+        save_path = 'bit_acc_list_total_FP.json'
+        with open(save_path, 'w') as f:
+            json.dump(bit_acc_list_total, f)
+        print(f'Bit accuracy list saved to {save_path}')
+
+        save_path = 'c_value_list_total_FP.json'
+        with open(save_path, 'w') as f:
+            json.dump(value_list_total, f)
+        print(f'Value list saved to {save_path}')
+        
+        print(mean)
+        print(std)
+        print(outlayer)
+    else:
+        mean = 0
+        std = 0
+        outlayer = 0
+    
+    return dict(ipr_SSIM=float(0), bit_acc=mean, bit_acc_vanilla=0)
 
 @register_metric
 def IPR_extraction(opts):

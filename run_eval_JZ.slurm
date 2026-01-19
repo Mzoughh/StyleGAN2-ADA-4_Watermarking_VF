@@ -25,10 +25,10 @@ export PYTHONUNBUFFERED=1
 CODEDIR="$WORK/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF"
 
 # Exemple : snapshot à évaluer (mets le bon .pkl)
-NETWORK_W="$CODEDIR/training_run_experiences/IPR_PROD/00000-CelebA_adapted_128-watermarking1-noaug-resumecustom/network-snapshot-001426.pkl"
+NETWORK_W="$CODEDIR/training_run_experiences/T4G_PROD/0001_B16//network-snapshot-001485.pkl"
 
 # Metrics
-METRICS="IPR_extraction,fid50k_full"
+METRICS="T4G_extraction_V"
 
 # V100 => sm_70
 export TORCH_CUDA_ARCH_LIST="7.0"
@@ -37,11 +37,11 @@ export CXX=g++
 
 cd "$CODEDIR"
 
-# echo "==== Running no attack ===="
-# python calc_metrics_after_network_attacks.py \
-#   --metrics="$METRICS" \
-#   --network="$NETWORK_W" \
-#   --attack_name="none"
+echo "==== Running no attack ===="
+python calc_metrics_after_network_attacks.py \
+  --metrics="$METRICS" \
+  --network="$NETWORK_W" \
+  --attack_name="none"
 
 # echo "==== Running pruning attacks ===="
 # for PERCENT in 5 15 25 35 40 50 60
@@ -65,15 +65,15 @@ cd "$CODEDIR"
 #     --attacks_parameters="$BITS"
 # done
 
-echo "==== Noise attacks ===="
-for POWER in 1 3 5 7 10 15  
-do
-  echo "Running Noise with $POWER power..."
-  python calc_metrics_after_network_attacks.py \
-    --metrics="$METRICS" \
-    --network="$NETWORK_W" \
-    --attack_name="noise" \
-    --attacks_parameters="$POWER"
-done
+# echo "==== Noise attacks ===="
+# for POWER in 1 3 5 7 10 15  
+# do
+#   echo "Running Noise with $POWER power..."
+#   python calc_metrics_after_network_attacks.py \
+#     --metrics="$METRICS" \
+#     --network="$NETWORK_W" \
+#     --attack_name="noise" \
+#     --attacks_parameters="$POWER"
+# done
 
 echo " ===> Evaluation completed successfully on V100 <=== "
