@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =================================================================
-# Training script for fine-tuning StyleGAN2-ADA with IPR  method on Jean Zay (V100)
+# Training script for fine-tuning StyleGAN2-ADA with UCHI  method on Jean Zay (V100)
 # =================================================================
 
 #SBATCH -A lfb@v100                 # Project/account
@@ -11,8 +11,8 @@
 #SBATCH --cpus-per-task=10          # 10 CPU cores
 #SBATCH --hint=nomultithread        # Physical cores only
 #SBATCH --time=18:00:00             # Max walltime
-#SBATCH --job-name=sg2_IPR_V100     # Job name
-#SBATCH --output=IPR-%j.out         # Log file: sg2_IPR_v100-<jobid>.out
+#SBATCH --job-name=sg2_UCHI_V100     # Job name
+#SBATCH --output=UCHI-%j.out         # Log file: sg2_UCHI_v100-<jobid>.out
 
 # -----------------------------
 # 1. Load environment (PyTorch)
@@ -30,13 +30,13 @@ export PYTHONUNBUFFERED=1
 CODEDIR="$WORK/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF"
 WDATA="$WORK/ENV_JEAN_ZAY"
 SNAP=1                              
-OUTDIR="$CODEDIR/training_run_experiences/IPR_128_128_FFHQ"
+OUTDIR="$CODEDIR/training_run_experiences/UCHI_128_128_FFHQ"
 DATA="$WDATA/ffhq_128.zip"
 RESUME="$WDATA/weights/ffhq_128_128_16000.pkl"
 CFG="watermarking"
-PATH_CONF="$CODEDIR/configs/watermarking_dict_conf_IPR.json"
+PATH_CONF="$CODEDIR/configs/watermarking_dict_conf_UCHI.json"
 GPUS=1
-METRICS="IPR_extraction,fid50k_full"
+METRICS="UCHI_extraction,fid50k_full"
 
 # --- SEPECIFIC ACCORDING THE ARCHITECTURE: CUDA arch for V100 (sm_70)
 export TORCH_CUDA_ARCH_LIST="7.0"
@@ -60,3 +60,4 @@ python train.py \
     --water_config_path="$PATH_CONF"
 
 echo " ===> Training completed successfully on V100 <=== "
+

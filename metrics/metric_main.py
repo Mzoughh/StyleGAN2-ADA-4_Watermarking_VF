@@ -137,7 +137,7 @@ def niqe_score(opts):
 
 # --------------- W --------------- #
 @register_metric
-def UCHIDA_extraction(opts):
+def UCHI_extraction(opts):
     bit_acc_avg, hamming_dist = uchida_extraction.compute_uchida(opts)
     return dict(uchida_bit_acc=bit_acc_avg, uchida_hamming_dist=hamming_dist)
 

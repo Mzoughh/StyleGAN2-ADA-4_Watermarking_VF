@@ -1,17 +1,17 @@
 {
-    "watermarking_type": "trigger_set",
+    "watermarking_type": "trigger_set_IPR",
     "trigger_step": 1,
     "loss_trigger": "bce",
-    "constant_value_for_mask": -10,
-    "n_for_mask": 5,
-    "watermark_weights": [0, 40],
-    "path_logo": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
+    "c_value": -10,
+    "b_value": 3,
+    "watermark_weights": [0, 10],
     "tools": "IPR_tools",
     "raw_config": {
         "size": 64, 
-        "watermark": "/home/mzoughebi/personal_study/StyleGAN2-ADA-4_Watermarking_VF/ipr_utils/cadenas.png",
+        "watermark": "./utils/utils_ipr/cadenas.png",
         "opaque": true,
         "position": "br"
-    }
+    },
+    "kimg_per_tick" : 15
 }
 

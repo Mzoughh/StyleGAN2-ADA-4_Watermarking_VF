@@ -1,7 +1,0 @@
-{
-    "watermarking_type": "black_box",
-    "loss_trigger": "bce",
-    "watermark_weights": [0.3, 0],
-    "tools": "TONDI_tools",
-    "ckpt_path_whitened": "/lustre/fswork/projects/rech/lfb/uak91sd/ENV_JEAN_ZAY/weights/hidden_replicate.pth" 
-}
