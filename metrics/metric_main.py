@@ -1,4 +1,4 @@
-﻿# Copyright (c) 2021, NVIDIA CORPORATION.  All rights reserved.
+# Copyright (c) 2021, NVIDIA CORPORATION.  All rights reserved.
 #
 # NVIDIA CORPORATION and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -25,14 +25,10 @@ from . import inception_score
 
 #------------------ W -------------#
 # For Watermarking extraction
-from NNWMethods.UCHI import UCHI_tools
-from NNWMethods.T4G import T4G_tools
-from NNWMethods.IPR import IPR_tools
-from NNWMethods.TONDI import TONDI_tools
-import copy
-from torch_utils import misc
-from torchvision.utils import save_image
-import Attacks.utils_img as utils_img
+from . import uchida_extraction
+from . import t4G_extraction
+from . import ipr_extraction
+from . import tondi_extraction
 #----------------------------------#
 
 #----------------------------------------------------------------------------
@@ -93,24 +89,6 @@ def report_metric(result_dict, run_dir=None, snapshot_pkl=None, attack_name='van
             f.write(jsonl_line + '\n')
 #----------------------------------#
 
-# -----------------W---------------#
-# Adaptation of the run_G() function from losss.py to the metric.py file to generate new samples for watermark extraction
-def run_G(G_mapping, G_synthesis, z, c, sync, style_mixing_prob, noise):
-    with misc.ddp_sync(G_mapping, sync):
-        ws = G_mapping(z, c)
-        if style_mixing_prob > 0:
-            with torch.autograd.profiler.record_function('style_mixing'):
-                cutoff = torch.empty([], dtype=torch.int64, device=ws.device).random_(1, ws.shape[1])
-                cutoff = torch.where(torch.rand([], device=ws.device) < style_mixing_prob, cutoff, torch.full_like(cutoff, ws.shape[1]))
-                ws[:, cutoff:] = G_mapping(torch.randn_like(z), c, skip_w_avg_update=True)[:, cutoff:]
-    with misc.ddp_sync(G_synthesis, sync):
-        # --------------- W noise mode const --------------- #
-        img = G_synthesis(ws, noise_mode=noise)
-        #---------------------------------------------------- #
-    return img, ws
-# ----------------------------------#
-
-
 #----------------------------------------------------------------------------
 # Primary metrics.
 
@@ -143,32 +121,6 @@ def is50k(opts):
     mean, std = inception_score.compute_is(opts, num_gen=50000, num_splits=10)
     return dict(is50k_mean=mean, is50k_std=std)
 
-#------------------ W -------------#
-@register_metric
-def uchida_extraction(opts):
-    if opts.watermarking_dict is not None:
-        # model_device = next(opts.G.parameters()).device
-        model_device =  opts.device
-        print('model device', model_device)
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-
-        Generator = opts.G.to(model_device)
-
-        tools = UCHI_tools(model_device)
-        extraction, hamming_dist = tools.detection(Generator, watermarking_dict)
-        extraction_r = torch.round(extraction)
-        diff = (~torch.logical_xor((extraction_r).cpu()>0, watermarking_dict['watermark'].cpu()>0)) 
-        bit_acc_avg = torch.sum(diff, dim=-1) / diff.shape[-1]
-    else:
-        print("No Uchida watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        extraction = 0
-        hamming_dist = 0
-        bit_acc_avg = 0
-    return dict(uchida_bit_acc=float(bit_acc_avg), uchida_hamming_dist=float(hamming_dist))
-
 @register_metric
 def brisque_score(opts):
     mean_gen,mean_real,score = brisque_score_module.compute_brisque(
@@ -183,386 +135,51 @@ def niqe_score(opts):
     )
     return dict(niqe_gen=mean_gen, niqe_real=mean_real, niqe_abs=score)
 
+# --------------- W --------------- #
+@register_metric
+def UCHIDA_extraction(opts):
+    bit_acc_avg, hamming_dist = uchida_extraction.compute_uchida(opts)
+    return dict(uchida_bit_acc=bit_acc_avg, uchida_hamming_dist=hamming_dist)
+
 @register_metric
 def T4G_extraction(opts):
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        # Load watermarking dict to the model device
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = T4G_tools(model_device)  
-
-        batch_size = 16
-        
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
-        
-        print('trigger vector generated for evaluation metrics')
-        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-        gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-    
-        print('generation done')
-        SSIM, bit_accs_avg = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict, save=True)
-        _, bit_accs_avg_vanilla = tools.extraction(gen_img, gen_img, watermarking_dict)
-
-    else:
-        print("No T4G watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        bit_accs_avg = 0
-        SSIM= 0
-        bit_accs_avg_vanilla = 0
-    
-    return dict(ipr_SSIM=float(SSIM), bit_acc = bit_accs_avg, bit_acc_vanilla=bit_accs_avg_vanilla)
+    bit_accs_avc, perceptual_metric, bit_accs_avg_vanilla = t4G_extraction.compute_t4g(opts)
+    return dict(bit_accs_avc=bit_accs_avc, perceptual_metric=perceptual_metric, bit_accs_avg_vanilla=bit_accs_avg_vanilla)
 
 @register_metric
-def T4G_extraction_FP(opts):
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        # Load watermarking dict to the model device
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = T4G_tools(model_device)  
-        batch_size = 16
-        
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        
-        
-        #####################################
-         #### TRIGGER VECTOR MODIFICATION ####
-        # PARAMETRE DU TRAINING
-        idx_list_total = []
-        bit_acc_list_total = []
-        outlayer_idx_list = []
-        outlayer = 0
-        c_value = -10
-        idx_vanilla = [78, 367, 426]
-        idx_vanilla = torch.tensor(idx_vanilla, device=model_device)  
-        for i in range(1000):
-            print(i,'/1000')
-            ########## BASE #############
-            # # idx = torch.randint(0, opts.G.z_dim, (3,), device=model_device) 
-            # idx = torch.randperm(opts.G.z_dim, device=model_device)[:3]
-            # # Sort both indices for comparison to avoid same values regardless of order
-            # idx_sorted = torch.sort(idx)[0]
-            # idx_vanilla_sorted = torch.sort(idx_vanilla)[0]
-            # if torch.equal(idx_sorted, idx_vanilla_sorted):
-            #     continue
-            ##################################################################
-            ########## VERSION TO FORCE TWO COMMUN INDICES ###################
-            # Force exactly 2 values from idx_vanilla and 1 random value
-            # Choose 2 random indices from idx_vanilla
-            chosen_vanilla = idx_vanilla[torch.randperm(3, device=model_device)[:2]]
-            # Generate 1 random index different from idx_vanilla values
-            while True:
-                random_idx = torch.randint(0, opts.G.z_dim, (1,), device=model_device)
-                if not (random_idx == idx_vanilla).any():
-                    break
-            # Combine the 3 indices and shuffle them
-            idx = torch.cat([chosen_vanilla, random_idx])
-            #################################################################
-            idx_list_total.append(idx)
-            gen_z_masked = latent_vector.clone()
-            gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
-            gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, gen_z_masked, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-            _, bit_accs_avg_trigger = tools.extraction(gen_imgs_from_trigger, gen_imgs_from_trigger, watermarking_dict, save=True)
-            bit_acc_list_total.append(bit_accs_avg_trigger)
-            if bit_accs_avg_trigger > 0.6: 
-                outlayer += 1
-                outlayer_idx_list.append(idx.cpu().numpy().tolist())
-        mean = np.mean(bit_acc_list_total)
-        std = np.std(bit_acc_list_total)
-        
-        # Save bit_acc_list_total and outlayer indices
-        import json
-        save_path = 'bit_acc_list_total_FP.json'
-        with open(save_path, 'w') as f:
-            json.dump(bit_acc_list_total, f)
-        print(f'Bit accuracy list saved to {save_path}')
-        
-        outlayer_path = 'outlayer_idx_list_FP.json'
-        with open(outlayer_path, 'w') as f:
-            json.dump(outlayer_idx_list, f)
-        print(f'Outlayer indices saved to {outlayer_path}')
-        
-        print(mean)
-        print(std)
-        print(outlayer)
-    else:
-        mean = 0
-        std = 0
-        outlayer = 0
-    
-    return dict(ipr_SSIM=float(0), bit_acc=mean, bit_acc_vanilla=0)
+def T4G_extraction_P(opts):
+    bit_accs_avc, perceptual_metric, bit_accs_avg_vanilla = t4G_extraction.compute_t4g_p(opts)
+    return dict(bit_accs_avc=bit_accs_avc, perceptual_metric=perceptual_metric, bit_accs_avg_vanilla=bit_accs_avg_vanilla)
 
 @register_metric
 def T4G_extraction_V(opts):
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        # Load watermarking dict to the model device
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
+    bit_accs_avc, perceptual_metric, bit_accs_avg_vanilla = t4G_extraction.compute_t4g_v(opts)
+    return dict(bit_accs_avc=bit_accs_avc, perceptual_metric=perceptual_metric, bit_accs_avg_vanilla=bit_accs_avg_vanilla)
 
-        tools = T4G_tools(model_device)  
-        batch_size = 16
-        
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        
-        
-        #####################################
-         #### TRIGGER VECTOR MODIFICATION ####
-        # PARAMETRE DU TRAINING
-        value_list_total = []
-        bit_acc_list_total = []
-        c_value = -10
-        idx_vanilla = [78, 367, 426]
-        idx_vanilla = torch.tensor(idx_vanilla, device=model_device)  
-        c_values = [-10, -9, -8, -7, -6]
-        
-        for i in range(1000):
-            print(i,'/1000')
-            latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-            c_value = c_values [int(i/200)]
-            value_list_total.append(c_value)
-            gen_z_masked = latent_vector.clone()
-            gen_z_masked[:, idx_vanilla] = gen_z_masked[:, idx_vanilla] + c_value
-            gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, gen_z_masked, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-            _, bit_accs_avg_trigger = tools.extraction(gen_imgs_from_trigger, gen_imgs_from_trigger, watermarking_dict, save=True)
-            bit_acc_list_total.append(bit_accs_avg_trigger)
+@register_metric
+def T4G_extraction_with_multimedia_attacks(opts):
+    final_dict_with_metrics = t4G_extraction.compute_t4G_with_multimedia_attacks(opts)
+    return dict(final_dict = final_dict_with_metrics)
 
-        mean = np.mean(bit_acc_list_total)
-        std = np.std(bit_acc_list_total)
-        
-        # Save bit_acc_list_total 
-        import json
-        save_path = 'bit_acc_list_total_FP.json'
-        with open(save_path, 'w') as f:
-            json.dump(bit_acc_list_total, f)
-        print(f'Bit accuracy list saved to {save_path}')
-
-        save_path = 'c_value_list_total_FP.json'
-        with open(save_path, 'w') as f:
-            json.dump(value_list_total, f)
-        print(f'Value list saved to {save_path}')
-        
-        print(mean)
-        print(std)
-        print(outlayer)
-    else:
-        mean = 0
-        std = 0
-        outlayer = 0
-    
-    return dict(ipr_SSIM=float(0), bit_acc=mean, bit_acc_vanilla=0)
 
 @register_metric
 def IPR_extraction(opts):
-
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        # Load watermarking dict to the model device
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = IPR_tools(model_device)  
-        
-        batch_size = 32
-
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
-        print('trigger vector generated for evaluation metrics')
-        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-        gen_imgs_from_trigger, _ = run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-    
-        print('generation done')
-        SSIM, _ = tools.extraction(gen_img, gen_imgs_from_trigger, watermarking_dict)
-
-    else:
-        print("No IPR watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        SSIM= 0
-    return dict(ipr_SSIM=float(SSIM))
+    ssim = ipr_extraction.compute_ipr(opts)
+    return dict(ipr_SSIM=ssim)
 
 @register_metric
 def TONDI_extraction(opts):
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = TONDI_tools(model_device)  
-        
-        batch_size = 32
-
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        print('trigger vector generated for evaluation metrics')
-        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-
-        bit_accs_avg, _  = tools.extraction(gen_img, watermarking_dict)
-    
-    else:
-        print("No TONDI watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        bit_accs_avg, loss = 0 , 0
-    
-    return dict(bit_acc = bit_accs_avg)
+    bit_acc_avg = tondi_extraction.compute_tondi(opts)
+    return dict(bit_acc = bit_acc_avg)
 
 @register_metric
-def TONDI_extraction_with_attacks(opts):
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = TONDI_tools(model_device)  
-        
-        batch_size = 32
-
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        print('trigger vector generated for evaluation metrics')
-        gen_img, _ =run_G(G_mapping, G_synthesis, latent_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-
-        # ------------------------ MULTIMEDIA ATTACKS --------------------- #
-        attacks = {
-                'none': lambda x: x,
-                'crop_05': lambda x: utils_img.center_crop(x, 0.5),
-                'crop_01': lambda x: utils_img.center_crop(x, 0.1),
-                'rot_25': lambda x: utils_img.rotate(x, 25),
-                'rot_90': lambda x: utils_img.rotate(x, 90),
-                'jpeg_80': lambda x: utils_img.jpeg_compress(x, 80),
-                'jpeg_50': lambda x: utils_img.jpeg_compress(x, 50),
-                'brightness_1p5': lambda x: utils_img.adjust_brightness(x, 1.5),
-                'brightness_2': lambda x: utils_img.adjust_brightness(x, 2),
-                'contrast_1p5': lambda x: utils_img.adjust_contrast(x, 1.5),
-                'contrast_2': lambda x: utils_img.adjust_contrast(x, 2),
-                'saturation_1p5': lambda x: utils_img.adjust_saturation(x, 1.5),
-                'saturation_2': lambda x: utils_img.adjust_saturation(x, 2),
-                'sharpness_1p5': lambda x: utils_img.adjust_sharpness(x, 1.5),
-                'sharpness_2': lambda x: utils_img.adjust_sharpness(x, 2),
-                'resize_05': lambda x: utils_img.resize(x, 0.5),
-                'resize_01': lambda x: utils_img.resize(x, 0.1),
-                'overlay_text': lambda x: utils_img.overlay_text(x, [76,111,114,101,109,32,73,112,115,117,109]),
-                'comb': lambda x: utils_img.jpeg_compress(utils_img.adjust_brightness(utils_img.center_crop(x, 0.5), 1.5), 80),
-            }
-        final_dict_with_metrics = {}
-        for name, attack in attacks.items():
-            imgs_aug = attack(gen_img)
-            bit_accs_avg, _  = tools.extraction_after_attack(imgs_aug, watermarking_dict, name)
-            final_dict_with_metrics[name]=bit_accs_avg
-    
-    else:
-        print("No TONDI watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        final_dict_with_metrics = {}
-    
+def TONDI_extraction(opts):
+    final_dict_with_metrics = tondi_extraction.compute_tondi_with_multimedia_attacks(opts)
     return dict(final_dict = final_dict_with_metrics)
-
-
-@register_metric
-def T4G_extraction_with_attacks(opts):
-    if opts.watermarking_dict is not None:
-        model_device =  opts.device
-        print('model device', model_device)
-        watermarking_dict = {
-            k: (v.to(model_device) if torch.is_tensor(v) else v)
-            for k, v in opts.watermarking_dict.items()
-        }
-        
-        G_mapping = opts.G.mapping.to(model_device)
-        G_synthesis = opts.G.synthesis.to(model_device)
-
-        tools = T4G_tools(model_device)  
-        
-        batch_size = 16
-
-        latent_vector = torch.randn([batch_size, opts.G.z_dim], device=model_device)
-        print('Trigger vector loading')
-        trigger_vector = tools.trigger_vector_modification(latent_vector, watermarking_dict)
-        print('done')
-
-        trigger_label= torch.zeros([batch_size, opts.G.c_dim], device=model_device)
-        print('trigger vector generated for evaluation metrics')
-
-        gen_img_from_trigger, _ =run_G(G_mapping, G_synthesis, trigger_vector, trigger_label, sync=True, style_mixing_prob=0, noise='const')
-
-        # ------------------------ MULTIMEDIA ATTACKS --------------------- #
-        attacks = {
-                'none': lambda x: x,
-                'crop_05': lambda x: utils_img.center_crop(x, 0.5),
-                'crop_01': lambda x: utils_img.center_crop(x, 0.1),
-                'rot_25': lambda x: utils_img.rotate(x, 25),
-                'rot_90': lambda x: utils_img.rotate(x, 90),
-                'jpeg_80': lambda x: utils_img.jpeg_compress(x, 80),
-                'jpeg_50': lambda x: utils_img.jpeg_compress(x, 50),
-                'brightness_1p5': lambda x: utils_img.adjust_brightness(x, 1.5),
-                'brightness_2': lambda x: utils_img.adjust_brightness(x, 2),
-                'contrast_1p5': lambda x: utils_img.adjust_contrast(x, 1.5),
-                'contrast_2': lambda x: utils_img.adjust_contrast(x, 2),
-                'saturation_1p5': lambda x: utils_img.adjust_saturation(x, 1.5),
-                'saturation_2': lambda x: utils_img.adjust_saturation(x, 2),
-                'sharpness_1p5': lambda x: utils_img.adjust_sharpness(x, 1.5),
-                'sharpness_2': lambda x: utils_img.adjust_sharpness(x, 2),
-                'resize_05': lambda x: utils_img.resize(x, 0.5),
-                'resize_01': lambda x: utils_img.resize(x, 0.1),
-                'overlay_text': lambda x: utils_img.overlay_text(x, [76,111,114,101,109,32,73,112,115,117,109]),
-                'comb': lambda x: utils_img.jpeg_compress(utils_img.adjust_brightness(utils_img.center_crop(x, 0.5), 1.5), 80),
-            }
-        final_dict_with_metrics = {}
-        for name, attack in attacks.items():
-            imgs_aug = attack(gen_img_from_trigger)
-            bit_accs_avg = tools.extraction_after_attack(imgs_aug, watermarking_dict,name)
-            final_dict_with_metrics[name]=bit_accs_avg
-    
-    else:
-        print("No TONDI watermarking dictionary provided, skipping extraction metrics (0 by default).")
-        final_dict_with_metrics = {}
-    
-    return dict(final_dict = final_dict_with_metrics)
-
-
-#----------------------------------#
+# --------------------------------- #
 
 #----------------------------------------------------------------------------
 # Legacy metrics.
-
 @register_metric
 def fid50k(opts):
     opts.dataset_kwargs.update(max_size=None)
@@ -600,5 +217,4 @@ def ppl_zend(opts):
 def ppl_wend(opts):
     ppl = perceptual_path_length.compute_ppl(opts, num_samples=50000, epsilon=1e-4, space='w', sampling='end', crop=True, batch_size=2)
     return dict(ppl_wend=ppl)
-
 #----------------------------------------------------------------------------

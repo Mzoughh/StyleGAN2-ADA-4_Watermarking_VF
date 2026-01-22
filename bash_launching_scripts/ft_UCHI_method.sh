@@ -1,8 +1,10 @@
 #!/bin/bash
-
-# ==============================
-# Training script for fine-tuning StyleGAN2-ADA with Uchida method
-# ==============================
+#
+# Training script for fine-tuning StyleGAN2-ADA
+#
+# ================
+# Uchida method
+# ================
 
 # --- Default parameters  ---
 SNAP=1 # Snapshot interval

@@ -15,9 +15,11 @@ import torch.nn.functional as F
 from hidden.models import HiddenEncoder, HiddenDecoder, EncoderWithJND, EncoderDecoder
 from hidden.attenuations import JND
 from torchvision import transforms
-from torchvision.utils import save_image
+from utils.utils_custom import _save_debug_image
 import os
-from utils.normalization import minmax_normalize, minmax_denormalize
+from utils.utils_custom.normalization import minmax_normalize, minmax_denormalize
+from pathlib import Path
+
 # ──────────────────────────────────────────────────────────────
 
 
@@ -45,11 +47,15 @@ class Params():
 # ──────────────────────────────────────────────────────────────
 class TONDI_tools():
 
+    DEBUG_DIR_TRAINING = Path("images_debug_tondi/generated_images")
+    DEBUG_DIR_ATTACK = Path("images_multimedia_attack_tondi")
+
     def __init__(self,device) -> None:
         self.device = device
         self.NORMALIZE_IMAGENET = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.UNNORMALIZE_IMAGENET = transforms.Normalize(mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225], std=[1/0.229, 1/0.224, 1/0.225])
         self.default_transform = transforms.Compose([transforms.ToTensor(), self.NORMALIZE_IMAGENET])  
+        self._image_counter = 0  # Counter for save debug images
         super(TONDI_tools, self).__init__()
 
 
@@ -71,7 +77,7 @@ class TONDI_tools():
     # ----------------------------------------------------------
     def init(self, net, watermarking_dict, save=None):
         
-        print(">>>>> T4G INIT <<<<<")
+        print(">>>>> TONDI INIT <<<<<")
         batch_gpu = watermarking_dict['batch_gpu']
         
 
@@ -103,7 +109,7 @@ class TONDI_tools():
         print('HIDDEN DECODER LOADED <<<<< \n')
 
         # Load or generate the mark
-        print(f'\n>>>>> 2) Creating key with {nbit} bits...')
+        print(f'>>>>> 2) Creating key with {nbit} bits...')
         key = torch.randint(0, 2, (1, nbit), dtype=torch.float32, device=self.device)
         key_str = "".join([ str(int(ii)) for ii in key.tolist()[0]])
         print(f'Key: {key_str}')
@@ -131,8 +137,9 @@ class TONDI_tools():
     def extraction(self, gen_imgs, watermarking_dict):
 
         # Save debug images
-        os.makedirs("images_debug_tondi/generated_images", exist_ok=True)
-        save_image(gen_imgs[0], f"images_debug_tondi/generated_images/gen_img_{len(os.listdir('images_debug_tondi/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        self._image_counter += 1
+        filename = f"gen_img_{self._image_counter}.png"
+        _save_debug_image(gen_imgs[0], self.DEBUG_DIR_TRAINING, filename)
        
         # Compute Mark Loss
         wm_loss, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs, watermarking_dict)
@@ -141,8 +148,8 @@ class TONDI_tools():
     
     def extraction_after_attack(self, gen_imgs, watermarking_dict, name):
         # Save debug images
-        os.makedirs("images_multimedia_attack_tondi", exist_ok=True)
-        save_image(gen_imgs[0], f"images_multimedia_attack_tondi/gen_img_{name}.png", normalize=True) # min max shift to [0, 1]
+        filename = f"gen_img_{name}.png"
+        _save_debug_image(gen_imgs[0], self.DEBUG_DIR_ATTACK, filename)
         # Compute Mark Loss
         wm_loss, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs, watermarking_dict)
         return bit_accs_avg, 0    

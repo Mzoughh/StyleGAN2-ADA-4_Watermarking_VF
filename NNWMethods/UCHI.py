@@ -30,27 +30,28 @@ class UCHI_tools():
 
         print(">>>> UCHIDA INIT <<<<<")   
 
-        # Creation of the watermark
+        # Creation of the mark for insertion
         M = self.size_of_M(net, watermarking_dict['weight_name'])
         T = watermarking_dict['T']
         watermark = torch.tensor(np.random.choice([0, 1], size=(T), p=[1. / 3, 2. / 3]))
         watermarking_dict['watermark'] = watermark
-        print('WATERMARK FOR INSERTION:  ', watermark)
+        print('Secret key (mark to insert):  ', watermark)
 
         # Initialization of the projection matrix
         X = torch.randn((T, M), device=self.device)
-        #------------------ W -------------#
-        # Normalization of each line of X
+        
+        # --------------- W --------------- #
+        # Normalization of each line of X to avoid gradient vanishing
         X = X / (torch.norm(X, dim=1, keepdim=True) + 1e-8)
         print('min X: ', torch.min(X), 'max X: ', torch.max(X))
-        #----------------------------------#
+        # --------------------------------- #
+       
         watermarking_dict['X']=X
-
         return watermarking_dict
     
     def size_of_M(self, net, weight_name):
         for name, parameters in net.named_parameters():
-            if weight_name in name:
+            if name == weight_name:
                 print(f"Weight name: {name}, size: {parameters.size()}")
                 # For fully connected layers (nn.Linear)
                 if len(parameters.size()) == 2:  # 2D Tensor for r nn.Linear
@@ -77,7 +78,7 @@ class UCHI_tools():
     
     def flattened_weight(self, net, weights_name):
         for name, parameters in net.named_parameters():
-            if weights_name in name:
+            if name == weights_name:
                 f_weights = torch.mean(parameters, dim=0)
                 f_weights = f_weights.view(-1, )
                 return f_weights
@@ -103,7 +104,7 @@ class UCHI_tools():
 
 
     # ----------------------------------------------------------
-    # MARK LOSS (NOT IMPLEMENTED)
+    # MARK LOSS 
     # ----------------------------------------------------------
     def mark_loss_for_insertion(self, net, watermarking_dict):
         #------------------ W -------------#

@@ -117,27 +117,24 @@ def generate_images(
     for seed_idx, seed in enumerate(seeds):
         print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, len(seeds)))
         z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
-
-        #############
-        # FOR T4G #
+        # --------------- W --------------- #
+        # T0 GENERATE TRIGGER OUTPUT DEPENDING METHOD USED
+        ############## FOR T4G ##############
         # c_value = -10
         # idx = [78, 426, 367]
         # idx = torch.tensor(idx, device=device)  
-        # gen_z_masked = z.clone()
-        # gen_z_masked[:, idx] = gen_z_masked[:, idx] + c_value
-        # z = gen_z_masked
-        ############
+        # z[:, idx] = z[:, idx] + c_value
+        #####################################
 
-        #############
+        ############## FOR IPR ##############
         # FOR IPR #
-        z = 0.5 * (1 + torch.erf(z / math.sqrt(2)))  
-        z = z * math.sqrt(2 * math.pi) 
-        ############
-
+        # z = 0.5 * (1 + torch.erf(z / math.sqrt(2)))  
+        # z = z * math.sqrt(2 * math.pi) 
+        #####################################
+        # --------------------------------- #
         img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
         img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
         PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
-
 
 #----------------------------------------------------------------------------
 

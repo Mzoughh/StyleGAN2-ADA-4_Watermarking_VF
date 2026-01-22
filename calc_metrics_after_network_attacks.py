@@ -23,14 +23,14 @@ from torch_utils import training_stats
 from torch_utils import custom_ops
 from torch_utils import misc
 
-#------------------ W -------------#
-# For compatibility with NNW attacks implementation
+# --------------- W --------------- #
+# FOR COMPATIBILITY WITH NNW ATTACKS IMPLEMENTATION
 from Attacks.mainAttack import attacks
-from training.training_loop import setup_snapshot_image_grid, save_image_grid
+from utils.utils_custom.image_utils import setup_snapshot_image_grid, save_image_grid
 
+# UTILS FUNCTION TO GENERATE SAMPLE AFTER EACH ATTACK 
+# CODE FROM TRAINING _LOOP.PY with G_ema = G
 def generate_samples(G, args, device, name):
-        # Generate a few random samples before the attack (code from training_loop.py with G_ema = G):
-        # Set a fixed seed for reproducibility
         seed = 42
         torch.manual_seed(seed)
         if device.type == 'cuda':
@@ -41,11 +41,9 @@ def generate_samples(G, args, device, name):
         grid_c = torch.from_numpy(labels).to(device).split(4)
         images = torch.cat([G(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
         save_image_grid(images, os.path.join(args.run_dir, name), drange=[-1,1], grid_size=grid_size)
-
-#----------------------------------#
+# --------------------------------- #
 
 #----------------------------------------------------------------------------
-
 def subprocess_fn(rank, args, temp_dir, attack_name='vanilla', attacks_parameters=None):
     dnnlib.util.Logger(should_flush=True)
 
@@ -82,12 +80,12 @@ def subprocess_fn(rank, args, temp_dir, attack_name='vanilla', attacks_parameter
             print(f'Calculating {metric}...')
         progress = metric_utils.ProgressMonitor(verbose=args.verbose)
 
-        #------------------ W -------------#
-        generate_samples(G, args, device, name='fakes_before_attack.png')
+        # --------------- W --------------- #
         # Apply Network level Attacks to evaluate robustness against :
         # 1. Pruning
         # 2. Quantization
-        # 3. Noise. 
+        # 3. Noise.
+        generate_samples(G, args, device, name='fakes_before_attack.png')
         if attack_name == 'pruning':
             attackParameter = {'proportion': attacks_parameters}
             G_attacks = attacks(G, "l1pruning", attackParameter)
@@ -111,12 +109,11 @@ def subprocess_fn(rank, args, temp_dir, attack_name='vanilla', attacks_parameter
         
         result_dict = metric_main.calc_metric(metric=metric, G=G_attacks, dataset_kwargs=args.dataset_kwargs,
             num_gpus=args.num_gpus, rank=rank, device=device, progress=progress,watermarking_dict=args.watermarking_dict)
-       #----------------------------------#
+       # --------------------------------- #
         if rank == 0:
             metric_main.report_metric(result_dict, run_dir=args.run_dir, snapshot_pkl=args.network_pkl, attack_name=attack_name, parameter_attack_name=attacks_parameters)
         if rank == 0 and args.verbose:
             print()
-
     # Done.
     if rank == 0 and args.verbose:
         print('Exiting...')
@@ -142,10 +139,10 @@ class CommaSeparatedList(click.ParamType):
 @click.option('--mirror', help='Whether the dataset was augmented with x-flips during training [default: look up]', type=bool, metavar='BOOL')
 @click.option('--gpus', help='Number of GPUs to use', type=int, default=1, metavar='INT', show_default=True)
 @click.option('--verbose', help='Print optional information', type=bool, default=True, metavar='BOOL', show_default=True)
-#------------------ W -------------#
-@click.option('--attack_name', help='Select prunning or quatization attack', type=str, default=None, metavar='STR', show_default=True)
-@click.option('--attacks_parameters', help='Select attacks_parameters', type=int, default=True, metavar='int', show_default=True)
-#----------------------------------#
+# --------------- W --------------- #
+@click.option('--attack_name', help='select prunning, quatization or noise attack', type=str, default=None, metavar='STR', show_default=True)
+@click.option('--attacks_parameters', help='select attacks_parameters', type=int, default=True, metavar='int', show_default=True)
+# --------------------------------- #
 def calc_metrics(ctx, network_pkl, metrics, data, mirror, gpus, verbose, attack_name='vanilla', attacks_parameters=None):
     """Calculate quality metrics for previous training run or pretrained network pickle.
 
@@ -208,8 +205,8 @@ def calc_metrics(ctx, network_pkl, metrics, data, mirror, gpus, verbose, attack_
     else:
         ctx.fail('Could not look up dataset options; please specify --data')
 
-    #------------------ W -------------#
-    # Initialize watermarking dictionary from training if available.
+    # --------------- W --------------- #
+    # Initialize watermarking dictionary from training if available to allow utilisation of specific metrics
     if 'watermarking_dict' in network_dict:
         args.watermarking_dict = network_dict['watermarking_dict']
         if args.verbose:
@@ -218,7 +215,7 @@ def calc_metrics(ctx, network_pkl, metrics, data, mirror, gpus, verbose, attack_
         args.watermarking_dict = None
         if args.verbose:
             print('No watermarking dictionary found in the network pickle, skipping watermark extraction metrics.')
-    #----------------------------------#
+    # --------------------------------- #
 
     # Finalize dataset options.
     args.dataset_kwargs.resolution = args.G.img_resolution

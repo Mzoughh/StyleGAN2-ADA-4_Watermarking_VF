@@ -12,15 +12,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 ## SPECIFIC FOR METHOD
-from ipr_utils.paste_watermark import PasteWatermark
-from ipr_utils.dotdict import DotDict
-from utils.losses import SSIMLoss
-from utils.normalization import minmax_normalize, minmax_denormalize
+from utils.utils_ipr.paste_watermark import PasteWatermark
+from utils.utils_ipr.dotdict import DotDict
+from utils.utils_custom.losses import SSIMLoss
+from utils.utils_custom.normalization import minmax_normalize, minmax_denormalize
+
 
 ## SPECIFIC FOR DEBUGGING
 import os
 import math
-from torchvision.utils import save_image
+from pathlib import Path
+from utils.utils_custom import _save_debug_image
 # ──────────────────────────────────────────────────────────────
 
 
@@ -29,9 +31,13 @@ from torchvision.utils import save_image
 # ──────────────────────────────────────────────────────────────
 class IPR_tools():
 
+    DEBUG_DIR_TRAINING = Path("images_debug_ipr/generated_images")
+    DEBUG_DIR_TRAINING_TRIGGER = Path("images_debug_ipr/generated_images/trigger")
+
     def __init__(self,device) -> None:
         self.device = device
         self.criterion_perceptual = SSIMLoss()
+        self._image_counter = 0  # Counter for save debug images
 
     # ----------------------------------------------------------
     # INITIALIZATION
@@ -39,20 +45,8 @@ class IPR_tools():
     def init(self, net, watermarking_dict, save=None):
         
         print(">>>> IPR INIT <<<<<")        
-
         batch_gpu = watermarking_dict['batch_gpu']
-        c = watermarking_dict['constant_value_for_mask']
-        n = watermarking_dict['n_for_mask']
-        
-        # Constant value for trigger vector modification
-        constant_value_for_mask = c * torch.ones((batch_gpu,net.z_dim), device=self.device) # Constant value for the trigger vector modification
-        watermarking_dict['constant_value_for_mask'] = constant_value_for_mask
-
-        # Binary mask for trigger modification
-        binary_mask = torch.ones((batch_gpu, net.z_dim), device=self.device)      # Binary mask for the trigger vector modification (1 where we keep the original value, 0 where we put the constant value)
-        zero_indices = torch.randint(0, net.z_dim, (batch_gpu, n), device=self.device)
-        binary_mask.scatter_(1, zero_indices, 0)
-        watermarking_dict['binary_mask'] = constant_value_for_mask
+       
         
         # Trigger class label
         trigger_label = torch.zeros([1, net.c_dim], device=self.device)
@@ -62,6 +56,20 @@ class IPR_tools():
         raw_config = watermarking_dict['raw_config']
         config = DotDict(raw_config)
         watermarking_dict['add_mark_into_imgs'] = PasteWatermark(config).to(self.device)
+
+        ## 2) IPR MASK INIT
+
+        ### 2.1) PARAMETRE DU TRAINING
+        b_value = watermarking_dict['b_value']
+        c_value = watermarking_dict['c_value']
+
+        ### 2.2) DEFINE INDEX FOR MASK
+        z_dim = 512
+        # idx = torch.randperm(z_dim, device=self.device)[:b_value] 
+        idx = [78, 426, 367]
+        idx = torch.tensor(idx, device=self.device)  
+        watermarking_dict['idx'] = idx
+        print('IDX where the mask is applied on the latent vector:  ', idx)
         
         return watermarking_dict
     
@@ -71,10 +79,10 @@ class IPR_tools():
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict):
         
         # Save debug images
-        os.makedirs("images_debug_ipr/generated_images", exist_ok=True)
-        save_image(gen_imgs[0], f"images_debug_ipr/generated_images/gen_img_{len(os.listdir('images_debug_ipr/generated_images'))+1}.png", normalize=True) # min max shift to [0, 1]
-        os.makedirs("images_debug_ipr/trigger_images", exist_ok=True)
-        save_image(gen_imgs_from_trigger[0], f"images_debug_ipr/trigger_images/trigger_img_{len(os.listdir('images_debug_ipr/trigger_images'))+1}.png", normalize=True) # min max shift to [0, 1]
+        self._image_counter += 1
+        filename = f"gen_img_{self._image_counter}.png"
+        _save_debug_image(gen_imgs[0], self.DEBUG_DIR_TRAINING, filename)
+        _save_debug_image(gen_imgs_from_trigger[0], self.DEBUG_DIR_TRAINING_TRIGGER, filename)
         
         # Compute perceptual loss
         loss_i = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
@@ -117,21 +125,21 @@ class IPR_tools():
     
     # ----------------------------------------------------------
     # TRIGGER VECTOR MODIFICATION
-    # ----------------------------------------------------------
+    # ----------------------------------------------------------    
+    # TRIGGER METHOD FROM THE IPR CODE
     # def trigger_vector_modification(self,gen_z,watermarking_dict):
-        
-    #     c = watermarking_dict['constant_value_for_mask'].to(self.device)
-    #     b = watermarking_dict['binary_mask'].to(self.device)
-        
-    #     gen_z_masked = gen_z * b + c * (1 - b)
-        
-    #     return gen_z_masked
-    
-    def trigger_vector_modification(self,gen_z,watermarking_dict):
+    #     y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2)))   
+    #     return y * math.sqrt(2 * math.pi) 
 
-        y = 0.5 * (1 + torch.erf(gen_z / math.sqrt(2))) 
-        
-        return y * math.sqrt(2 * math.pi) 
+    # TRIGGER METHOD FROM THE IPR PAPPER
+    def trigger_vector_modification(self,gen_z,watermarking_dict):
+        c = watermarking_dict['c_value']
+        idx= watermarking_dict['idx'].to(self.device) 
+        # PAPPER THEORY : gen_z_masked = gen_z * b + c * (1 - b)
+        gen_z_masked = gen_z.clone()
+        gen_z_masked[:, idx] = gen_z_masked[:, idx]*0 + c
+        return gen_z_masked
+ 
 
 
 

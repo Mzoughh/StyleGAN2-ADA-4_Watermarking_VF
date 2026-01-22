@@ -53,9 +53,10 @@ class StyleGAN2Loss(Loss):
         self.D = D
         self.augment_pipe = augment_pipe
 
-        # -----------------------  W ------------------------- #
-        self.style_mixing_prob = 0  # default overridden (=style_mixing_prob)
-        # ----------------------------------------------------- #
+        # --------------- W --------------- #
+        self.style_mixing_prob = style_mixing_prob
+        print('Probability uses for Style mixing : ', self.style_mixing_prob)
+        # --------------------------------- #
 
         self.r1_gamma = r1_gamma
         self.pl_batch_shrink = pl_batch_shrink
@@ -63,13 +64,13 @@ class StyleGAN2Loss(Loss):
         self.pl_weight = pl_weight
         self.pl_mean = torch.zeros([], device=device)
 
-        # -----------------------  W ------------------------- #
-        # Class attributes for W methods
+        # --------------- W --------------- #
+        # New class attributes for W methods
         self.G = G                                 # Access to the full generator architecture
         self.tools = tools                         # Tools class for each W method
         self.watermarking_dict = watermarking_dict # Dictionary containing the watermark information
         self.watermark_weight = watermark_weight   # Weight of watermarking loss
-        # ----------------------------------------------------- #
+        # --------------------------------- #
 
 
     # ==================================================================
@@ -93,13 +94,13 @@ class StyleGAN2Loss(Loss):
                     ws[:, cutoff:] = self.G_mapping(
                         torch.randn_like(z), c, skip_w_avg_update=True
                     )[:, cutoff:]
-
         # G synthesis
         with misc.ddp_sync(self.G_synthesis, sync):
-            # -----------------------  W ------------------------- #
+            # --------------- W --------------- #
+            # Set noise constant to watermark 
+            print('WARNING NOISE SET AS CST FOR WATERMARKING')
             img = self.G_synthesis(ws, noise_mode='const')
-            # ----------------------------------------------------- #
-
+            # --------------------------------- #
         return img, ws
 
 
@@ -111,7 +112,6 @@ class StyleGAN2Loss(Loss):
             logits = self.D(img, c)
 
         return logits
-
 
     # ==================================================================
     # Accumulate Gradient (Main training logic)
@@ -132,110 +132,127 @@ class StyleGAN2Loss(Loss):
         if do_Gmain:
             with torch.autograd.profiler.record_function('Gmain_forward'):
 
+                # --------------- W --------------- #
                 gen_img, _gen_ws = self.run_G(gen_z, gen_c, sync=(sync and not do_Gpl))
                 gen_logits = self.run_D(gen_img, gen_c, sync=False)
 
-                # training_stats.report('Loss/scores/fake', gen_logits)
-                # training_stats.report('Loss/signs/fake', gen_logits.sign())
 
-                # loss_Gmain = torch.nn.functional.softplus(-gen_logits)
-                # print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
-
-                # ----------------------- W ------------------------- #
                 if hasattr(self, 'watermarking_dict') and self.watermarking_dict is not None:
 
                     watermarking_type = self.watermarking_dict.get('watermarking_type', None)
 
-                    if watermarking_type == 'trigger_set':
-
-                        if self.watermarking_dict.get('flag_trigger', True):
-
+                    #################################################
+                    # BLACK BOX: NO BOX
+                    if watermarking_type == 'black_box':
                             
+                            training_stats.report('Loss/scores/fake', gen_logits)
+                            training_stats.report('Loss/signs/fake', gen_logits.sign())
 
-                            # Trigger vector modification
-                            trigger_vector = self.tools.trigger_vector_modification(gen_z, self.watermarking_dict)
-                            print('<<<Trigger_vector modified>>>')
+                            # VANILLA LOSS
+                            loss_Gmain = torch.nn.functional.softplus(-gen_logits)
+                            print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
+                            training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
+                        
+                            # PERCEPTUAL LOSS
+                            loss_i = self.tools.perceptual_loss_for_imperceptibility(
+                                 gen_img, self.watermarking_dict
+                             )
+                            loss_i_ponderate = self.watermark_weight[1] * loss_i
+                            training_stats.report('Loss/G/watermark/perceptual', loss_i)
 
-                            gen_img_from_trigger, _ = self.run_G(trigger_vector, gen_c, sync=(sync and not do_Gpl))
+                            # MARK INSERTION LOSS
+                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(
+                                 gen_img, self.watermarking_dict
+                             )
+                            wm_loss_ponderate = self.watermark_weight[0] * wm_loss
+                            training_stats.report('Loss/G/watermark/mark_insertion', wm_loss)
+                            training_stats.report('Metrics/Bit_Acc', bit_accs_avg)
 
-                            ############## TEST ADVERSARY  ##########
+                            # TOTAL WATERMARK LOSS
+                            total_wm_loss = wm_loss_ponderate + loss_i_ponderate
+                            training_stats.report('Loss/G/watermark/total_watermark_loss', total_wm_loss)
+                            print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
+                    #################################################
+
+                    #################################################
+                    # WHITEBOX: NO BOX
+                    elif watermarking_type == 'white-box':
+
+                        training_stats.report('Loss/scores/fake', gen_logits)
+                        training_stats.report('Loss/signs/fake', gen_logits.sign())
+
+                        # VANILLA LOSS
+                        loss_Gmain = torch.nn.functional.softplus(-gen_logits)
+                        print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
+                        
+                        # MARK INSERTION LOSS
+                        wm_loss = self.tools.mark_loss_for_insertion(self.G, self.watermarking_dict)
+                        wm_loss_ponderate = self.watermark_weight[0] * wm_loss
+                    
+                        print(f"[WB LOSS] Mean={wm_loss.item():.6f}")
+                        training_stats.report('Loss/G/mark_insertion', wm_loss)
+                        total_wm_loss = wm_loss_ponderate
+                    #################################################
+
+
+                    #################################################
+                    # BLACKBOX: TRIGGER SET
+                    elif watermarking_type == 'trigger_set_IPR' or watermarking_type == 'trigger_set_T4G':
+
+                        # Trigger vector modification
+                        trigger_vector = self.tools.trigger_vector_modification(gen_z, self.watermarking_dict)
+                        print('<<<Trigger_vector modified>>>')
+                        # Generate image from trigger
+                        gen_img_from_trigger, _ = self.run_G(trigger_vector, gen_c, sync=(sync and not do_Gpl))
+
+
+                        if watermarking_type == 'trigger_set_T4G':
+                            # ADVERSARIAL LOSS ON BOTH TRIGGER AND VANILLA IMAGE
                             gen_logits_trigger = self.run_D(gen_img_from_trigger, gen_c, sync=False)
                             loss_Gmain_vanilla = torch.nn.functional.softplus(-gen_logits)
                             loss_Gmain_trigger= torch.nn.functional.softplus(-gen_logits_trigger)
                             loss_Gmain = (loss_Gmain_vanilla + loss_Gmain_trigger)*0.5
                             print(f"[LGMAIN FROM D TRIGGER] Mean={loss_Gmain_trigger.mean().mul(gain):.6f}")
                             print(f"[LGMAIN FROM D VANILLA] Mean={loss_Gmain_vanilla.mean().mul(gain):.6f}")
-                            ##########################################
                             training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
-                            ##########################################
 
-                            # Perceptual loss between clean & triggered images
-                            loss_i = self.tools.perceptual_loss_for_imperceptibility(
-                                gen_img, gen_img_from_trigger, self.watermarking_dict
-                            )
-                            loss_i_ponderate = self.watermark_weight[1] * loss_i
-
-                            training_stats.report('Loss/G/watermark/perceptual', loss_i)
-
-                            # Mark insertion loss
-                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(
-                                gen_img_from_trigger, self.watermarking_dict
-                            )
-                            wm_loss_ponderate = self.watermark_weight[0] * wm_loss
-
-                            training_stats.report('Loss/G/watermark/mark_insertion', wm_loss)
-                            training_stats.report('Bit-ACC', bit_accs_avg)
-
-                            # Total watermark loss
-                            total_wm_loss = wm_loss_ponderate + loss_i_ponderate
-                            print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
-
-                        else:
-                            wm_loss = torch.tensor(0.0).to(self.device)
-                            total_wm_loss = wm_loss
-                            print(f"[NO-TG LOSS] Mean={wm_loss.item():.6f}")
-
-
-
-                    elif watermarking_type == 'black_box':
-
+                        else : 
+                            # ADVERSARIAL LOSS ON NON TRIGGER IMAGE ONLY
+                            loss_Gmain = torch.nn.functional.softplus(-gen_logits)
                             print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
                             training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
                         
-                            # Perceptual loss between clean & triggered images
-                            loss_i = self.tools.perceptual_loss_for_imperceptibility(
-                                 gen_img, self.watermarking_dict
-                             )
-                            loss_i_ponderate = self.watermark_weight[1] * loss_i
-                            training_stats.report('Loss/G/watermark/perceptual', loss_i)
-
-                            # Mark insertion loss
-                            wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(
-                                 gen_img, self.watermarking_dict
-                             )
-                            wm_loss_ponderate = self.watermark_weight[0] * wm_loss
-                            training_stats.report('Loss/G/watermark/mark_insertion', wm_loss)
-                            training_stats.report('Bit-ACC', bit_accs_avg)
-
-                            # Total watermark loss
-                            total_wm_loss = wm_loss_ponderate + loss_i_ponderate
-                            print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
+                        # PERCEPTUAL LOSS
+                        loss_i = self.tools.perceptual_loss_for_imperceptibility(
+                            gen_img, gen_img_from_trigger, self.watermarking_dict
+                        )
+                        loss_i_ponderate = self.watermark_weight[1] * loss_i
+                        training_stats.report('Loss/G/watermark/perceptual', loss_i)
 
 
-                    elif watermarking_type == 'white-box':
-                        
-                        wm_loss = self.tools.mark_loss_for_insertion(self.G, self.watermarking_dict)
+                       # MARK INSERTION LOSS
+                        wm_loss, bit_accs_avg = self.tools.mark_loss_for_insertion(
+                            gen_img_from_trigger, self.watermarking_dict
+                        )
                         wm_loss_ponderate = self.watermark_weight[0] * wm_loss
-                        total_wm_loss = wm_loss_ponderate
-                        
-                        print(f"[WB LOSS] Mean={wm_loss.item():.6f}")
-                        training_stats.report('Loss/G/mark_insertion', wm_loss)
+                        training_stats.report('Loss/G/watermark/mark_insertion', wm_loss)
+                        training_stats.report('Metrics/Bit_Acc', bit_accs_avg)
 
-                    # Add watermarking loss
+                        # TOTAL WATERMARK LOSS
+                        total_wm_loss = wm_loss_ponderate + loss_i_ponderate
+                        training_stats.report('Loss/G/watermark/total_watermark_loss', total_wm_loss)
+                        print(f"[TG TOTAL LOSS] Mean={total_wm_loss.item():.6f}")
+                    #################################################
+
+                    # ADD WATERMARKING LOSS TO ADVERSARIAL LOSS AS A REGULARIZATION TERM
                     loss_Gmain = loss_Gmain.mean().mul(gain) + total_wm_loss
+                # --------------------------------- #
+                else : 
+                    # VANILLA LOSS
+                    loss_Gmain = torch.nn.functional.softplus(-gen_logits)
+                    print(f"[LGMAIN FROM D] Mean={loss_Gmain.mean().mul(gain):.6f}")
 
-                training_stats.report('Loss/G/total_loss', loss_Gmain)
-
+            training_stats.report('Loss/G/total_loss', loss_Gmain)
             with torch.autograd.profiler.record_function('Gmain_backward'):
                 loss_Gmain.backward()
             # ----------------------------------------------------- #
@@ -244,9 +261,6 @@ class StyleGAN2Loss(Loss):
         # ----------------------------------------------------------
         # Gpl: Path Length Regularization
         # ----------------------------------------------------------
-        # ------------------------- W -----------------------------#
-        do_Gpl = False
-        # ----------------------------------------------------- #
         if do_Gpl:
             with torch.autograd.profiler.record_function('Gpl_forward'):
 
@@ -287,9 +301,7 @@ class StyleGAN2Loss(Loss):
         # ----------------------------------------------------------
         # Dmain: Fake images (minimize logits)
         # ----------------------------------------------------------
-
         loss_Dgen = 0
-
         if do_Dmain:
             with torch.autograd.profiler.record_function('Dgen_forward'):
 
@@ -299,20 +311,23 @@ class StyleGAN2Loss(Loss):
                 training_stats.report('Loss/scores/fake', gen_logits)
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
 
-                # loss_Dgen= torch.nn.functional.softplus(gen_logits)
-
-                ##################### TEST ADVERSARIAL ###############
-                loss_Dgen_vanilla = torch.nn.functional.softplus(gen_logits)
-                trigger_vector = self.tools.trigger_vector_modification(gen_z, self.watermarking_dict)
-                print('<<<Trigger_vector  modified for D>>>')
-                gen_img_trigger, _ = self.run_G(trigger_vector, gen_c, sync=False)
-                gen_logits_trigger = self.run_D(gen_img_trigger, gen_c, sync=False)
-                training_stats.report('Loss/scores/fake_triggered', gen_logits_trigger)
-                training_stats.report('Loss/signs/fake_triggered', gen_logits_trigger.sign())
-                loss_Dgen_trigger = torch.nn.functional.softplus(gen_logits_trigger)
-                loss_Dgen = (loss_Dgen_trigger + loss_Dgen_vanilla)*0.5
-                ######################################################
-
+                # --------------- W --------------- #
+                if watermarking_type == 'trigger_set_T4G' : 
+                    # MIXED ADVERSARIAL LOSS 
+                    loss_Dgen_vanilla = torch.nn.functional.softplus(gen_logits)
+                    trigger_vector = self.tools.trigger_vector_modification(gen_z, self.watermarking_dict)
+                    print('<<<Trigger_vector  modified for D>>>')
+                    gen_img_trigger, _ = self.run_G(trigger_vector, gen_c, sync=False)
+                    gen_logits_trigger = self.run_D(gen_img_trigger, gen_c, sync=False)
+                    training_stats.report('Loss/D/scores/fake_triggered', gen_logits_trigger)
+                    training_stats.report('Loss/D/signs/fake_triggered', gen_logits_trigger.sign())
+                    loss_Dgen_trigger = torch.nn.functional.softplus(gen_logits_trigger)
+                    loss_Dgen = (loss_Dgen_trigger + loss_Dgen_vanilla)*0.5
+                else :
+                    # VANILLA LOSS
+                    loss_Dgen= torch.nn.functional.softplus(gen_logits)
+                # --------------------------------- #
+                
             with torch.autograd.profiler.record_function('Dgen_backward'):
                 loss_Dgen.mean().mul(gain).backward()
 

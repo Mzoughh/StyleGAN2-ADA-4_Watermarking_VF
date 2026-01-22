@@ -1,6 +1,7 @@
 {   
     "ema_kimg" : 1,
     "kimg_per_tick" : 1,
+    "total_kimg": 10,
     "watermarking_type": "white-box",
     "watermark_weights": [3],
     "tools": "UCHI_tools",

@@ -24,14 +24,13 @@ from torch_utils.ops import grid_sample_gradfix
 import legacy
 from metrics import metric_main
 
-#-----------------------------------#
-### WATERMARKING ###
+# --------------- W --------------- #
 from NNWMethods.UCHI import UCHI_tools
 from NNWMethods.T4G import T4G_tools
 from NNWMethods.IPR import IPR_tools
 import importlib
-from training.image_utils import save_image_grid, setup_snapshot_image_grid,save_watermark_diff_map
-#----------------------------------#
+from utils.utils_custom.image_utils import save_image_grid, setup_snapshot_image_grid, save_watermark_diff_map
+# --------------------------------- #
 
 
 def training_loop(
@@ -67,9 +66,9 @@ def training_loop(
     allow_tf32              = False,    # Enable torch.backends.cuda.matmul.allow_tf32 and torch.backends.cudnn.allow_tf32?
     abort_fn                = None,     # Callback function for determining whether to abort training. Must return consistent results across ranks.
     progress_fn             = None,     # Callback function for updating training progress. Called for all ranks.
-    # ------------------------------- #
-    water_config_path       = None,
-    # ------------------------------- #
+    # --------------- W --------------- #
+    water_config_path       = None,     # Path to the watermarking configuration file. 
+    # --------------------------------- #
 ):
     # Initialize.
     start_time = time.time()
@@ -103,9 +102,9 @@ def training_loop(
     D = dnnlib.util.construct_class_by_name(**D_kwargs, **common_kwargs).train().requires_grad_(False).to(device) # subclass of torch.nn.Module
     G_ema = copy.deepcopy(G).eval()
 
-    #------------------------------------------------------------------------------------#
-    # INIT THE WATERMARKING DICTIONNARY FOR EACH METHOD FROM A JSON FILE
-    # Load configuration from JSON
+    # --------------- W --------------- #
+    # Load and init the watermarking dictionnary from the json file configuration 
+    ## 1. Loading step 
     print(water_config_path)
     if water_config_path != None :
         with open(water_config_path, 'r') as f:
@@ -113,30 +112,38 @@ def training_loop(
     else :
         watermarking_dict_tmp = {}
 
+    ## 1.5 Total KIMG 
+    if watermarking_dict_tmp.get('total_kimg'):
+        total_kimg = watermarking_dict_tmp['total_kimg'] 
+        print('KIMG:',kimg_per_tick)
+
+    ## 2. Control in specific case ema_kimg and kimg_per_tick
     if watermarking_dict_tmp.get('ema_kimg'):
-        ema_kimg = watermarking_dict_tmp['ema_kimg'] # Update G_ema every tick not seems to be control by cmd line like for snap : 0
+        ema_kimg = watermarking_dict_tmp['ema_kimg']          
     print('EMA_KIMG:',ema_kimg)
+    
     if watermarking_dict_tmp.get('kimg_per_tick'):
-        kimg_per_tick = watermarking_dict_tmp['kimg_per_tick'] # Number of kimg per tick not seems to be control by cmd line like for snap: default=4 and need to be 1 for UCHIDA
+        kimg_per_tick = watermarking_dict_tmp['kimg_per_tick'] 
     print('KIMG_PER_TICK:',kimg_per_tick)
+    
+    ## 3. Initialization of the watermarking dictionnary 
     if not watermarking_dict_tmp.get('batch_gpu'):
         watermarking_dict_tmp['batch_gpu'] = batch_gpu
 
     loss_kwargs.watermark_weight = watermarking_dict_tmp['watermark_weights']                # Watermarking weight default [mark_weight, imperceptibility_weight]
     loss_kwargs.G = G                                                                        # Generator full network architecture
-    
     class_name = watermarking_dict_tmp['tools']
     import_file_path = 'NNWMethods.' + class_name.split('_')[0]
     lib = importlib.import_module(import_file_path)
+     # Init the corresponding class methods for watermarking     
     for name, classe in lib.__dict__.items():
         if name == class_name : 
-            loss_kwargs.tools = classe(device)   # Init the class methods for watermarking                                       
+            loss_kwargs.tools = classe(device)                                    
     watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
     loss_kwargs.watermarking_dict = watermarking_dict
-    #------------------------------------------------------------------------------------#
+    # --------------------------------- #
 
-
-    # ----------------- W COMMON PART TO USE THE WATERMARKING METRICS ---------------#
+    # --------------- W --------------- #
     # Load watermarking_dict from resume_pkl if exists to continue training or add an other type of protection
     if resume_pkl is not None:
         print(f"Loading watermarking_dict from {resume_pkl}...")
@@ -149,10 +156,10 @@ def training_loop(
             else:
                 print("No watermarking_dict found in the resume file. Using default values.")
 
-    # Initialiser le watermarking_dict avec les valeurs mises à jour
+    # Update watermarking_tmp dict with with new key and value
     watermarking_dict = loss_kwargs.tools.init(G, watermarking_dict_tmp, save=None)
     loss_kwargs.watermarking_dict = watermarking_dict
-    #-------------------------------------------------------------------------------# 
+    # --------------------------------- #
     
     # Resume from existing pickle.
     if (resume_pkl is not None) and (rank == 0):
@@ -221,9 +228,9 @@ def training_loop(
     grid_z = None
     grid_c = None
 
-    #------------------ W -------------#
+    # --------------- W --------------- #
     initial_images = None  # For watermarking diff map
-    #----------------------------------#
+    # --------------------------------- #
 
     if rank == 0:
         print('Exporting sample images...')
@@ -233,12 +240,11 @@ def training_loop(
         grid_c = torch.from_numpy(labels).to(device).split(batch_gpu)
         images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
         save_image_grid(images, os.path.join(run_dir, 'fakes_init.png'), drange=[-1,1], grid_size=grid_size)
-
-        #------------------ W -------------#
+        # --------------- W --------------- #
         if loss_kwargs.watermarking_dict:
             initial_images = images.copy()
-            print('Initial images saved for watermarking diff map...')
-        #----------------------------------#
+            print('Initial image saved for watermarking diff map...')
+        # --------------------------------- #
 
     # Initialize logs.
     if rank == 0:
@@ -280,20 +286,6 @@ def training_loop(
             all_gen_c = torch.from_numpy(np.stack(all_gen_c)).pin_memory().to(device)
             all_gen_c = [phase_gen_c.split(batch_gpu) for phase_gen_c in all_gen_c.split(batch_size)]
 
-        # ------------- W --------------#
-        # Be sure that trigger vectors are not already in the random generated gen_z
-        if watermarking_dict['watermarking_type'] == 'trigger_set':
-            if 'trigger_vector' in watermarking_dict:
-                for phase_gen_z_list in all_gen_z:
-                    for gen_z in phase_gen_z_list:
-                        # Verify if one of the random gen_z is equal to the trigger vector
-                        if torch.any(torch.all(gen_z == watermarking_dict['trigger_vector'], dim=1)):
-                            # Regenerate this z
-                            gen_z = torch.randn_like(gen_z)
-                print('No Trigger Collision in the random gen_z')
-            else: 
-                print('No fixed trigger vector IPR usecase')
-        #---------------------------------#
         # Execute training phases.
         for phase, phase_gen_z, phase_gen_c in zip(phases, all_gen_z, all_gen_c):
             if batch_idx % phase.interval != 0:
@@ -306,26 +298,12 @@ def training_loop(
             phase.module.requires_grad_(True)
 
             # Accumulate gradients over multiple rounds.
-            #------------------ W -------------#
-            flag_trigger = False # We use a FLAG in the futur watermarking dict to indicate if we are in a trigger batch or not
-            loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
-            #----------------------------------#
-            for round_idx, (real_img, real_c, gen_z, gen_c) in enumerate(zip(phase_real_img, phase_real_c, phase_gen_z, phase_gen_c)):
-                #------------------ W -------------#
+            for round_idx, (real_img, real_c, gen_z, gen_c) in enumerate(zip(phase_real_img, phase_real_c, phase_gen_z, phase_gen_c)): 
                 print(f"[BATCH {batch_idx}] [ROUND {round_idx} PHASE {phase.name}] ")
-                if watermarking_dict['watermarking_type'] == 'trigger_set' and batch_idx % watermarking_dict['trigger_step'] == 0 :
-                    # Modify the latent vector gen_z to insert the trigger vector:
-                    flag_trigger= True
-                    loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
-                    gen_c = watermarking_dict['trigger_label'].expand_as(gen_c)
-                #----------------------------------#
                 sync = (round_idx == batch_size // (batch_gpu * num_gpus) - 1)
                 gain = phase.interval
                 loss.accumulate_gradients(phase=phase.name, real_img=real_img, real_c=real_c, gen_z=gen_z, gen_c=gen_c, sync=sync, gain=gain)
-            #------------------ W -------------#
-            flag_trigger = False
-            loss_kwargs.watermarking_dict['flag_trigger'] = flag_trigger
-            #----------------------------------#
+          
             # Update weights.
             phase.module.requires_grad_(False)
             with torch.autograd.profiler.record_function(phase.name + '_opt'):
@@ -405,20 +383,19 @@ def training_loop(
                 snapshot_data[name] = module
                 del module # conserve memory
             
-            
-            #------------------ W -------------#
+            # --------------- W --------------- #
             # Save watermarking dictionary if it exists for the evaluation part
             if loss_kwargs.watermarking_dict:
                 snapshot_data['watermarking_dict'] = loss_kwargs['watermarking_dict']
-            #----------------------------------#
+            # --------------------------------- #
 
             snapshot_pkl = os.path.join(run_dir, f'network-snapshot-{cur_nimg//1000:06d}.pkl')
             if rank == 0:
                 with open(snapshot_pkl, 'wb') as f:
                     pickle.dump(snapshot_data, f)
 
-        # Evaluate metrics.
-        #------------------ W -------------#
+        # --------------- W --------------- #
+        # Evaluate metrics
         if (snapshot_data is not None) and (len(metrics) > 0):
             if rank == 0:
                 print('Evaluating metrics...')
@@ -433,7 +410,7 @@ def training_loop(
                     metric_main.report_metric(result_dict, run_dir=run_dir, snapshot_pkl=snapshot_pkl)
                 stats_metrics.update(result_dict.results)
         del snapshot_data # conserve memory
-        #----------------------------------#
+        # --------------------------------- #
 
         # Collect statistics.
         for phase in phases:
@@ -473,12 +450,11 @@ def training_loop(
     # Done.
     if rank == 0:
         print()
-
-        #------------------ W -------------#
+        # --------------- W --------------- #
         if loss_kwargs.watermarking_dict and initial_images is not None:
             print('Generating watermark diff map...')
             final_images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
             save_watermark_diff_map(initial_images, final_images, run_dir, grid_size)
-        #----------------------------------#
+        # --------------------------------- #
         print('Exiting...')
 #----------------------------------------------------------------------------
