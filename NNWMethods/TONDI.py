@@ -19,6 +19,7 @@ from utils.utils_custom import _save_debug_image
 import os
 from utils.utils_custom.normalization import minmax_normalize, minmax_denormalize
 from pathlib import Path
+from datetime import datetime
 
 # ──────────────────────────────────────────────────────────────
 
@@ -136,9 +137,9 @@ class TONDI_tools():
     # ----------------------------------------------------------
     def extraction(self, gen_imgs, watermarking_dict):
 
-        # Save debug images
-        self._image_counter += 1
-        filename = f"gen_img_{self._image_counter}.png"
+         # Save debug images with descriptive timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Format: YYYYMMDD_HHMMSS_mmm
+        filename = f"gen_img_{timestamp}.png"
         _save_debug_image(gen_imgs[0], self.DEBUG_DIR_TRAINING, filename)
        
         # Compute Mark Loss

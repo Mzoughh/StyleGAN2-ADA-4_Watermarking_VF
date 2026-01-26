@@ -12,6 +12,6 @@
         "opaque": true,
         "position": "br"
     },
-    "kimg_per_tick" : 15
+    "kimg_per_tick" : 25
 }
 

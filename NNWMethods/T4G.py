@@ -28,6 +28,7 @@ from torchvision import transforms
 import os
 import math
 from pathlib import Path
+from datetime import datetime
 from utils.utils_custom import _save_debug_image
 
 #########
@@ -62,13 +63,12 @@ class Params():
 class T4G_tools():
 
     DEBUG_DIR_TRAINING = Path("images_debug_t4g/generated_images")
-    DEBUG_DIR_TRAINING_TRIGGER = Path("images_debug_t4g/generated_images/trigger")
+    DEBUG_DIR_TRAINING_TRIGGER = Path("images_debug_t4g/trigger_images")
     DEBUG_DIR_ATTACK = Path("images_multimedia_attack_t4g")
 
     def __init__(self,device) -> None:
         self.device = device
-        self._image_counter = 0  # Counter for save debug images
-        
+
         # INIT LOSS FOR PERCEPTIBILITY 
         ## WASTON VGG (NOT USE HERE)
         provider = LossProvider()
@@ -182,9 +182,9 @@ class T4G_tools():
     # ----------------------------------------------------------
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict, save=False):
         
-        # Save debug images
-        self._image_counter += 1
-        filename = f"gen_img_{self._image_counter}.png"
+        # Save debug images with descriptive timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Format: YYYYMMDD_HHMMSS_mmm
+        filename = f"gen_img_{timestamp}.png"
         _save_debug_image(gen_imgs, self.DEBUG_DIR_TRAINING, filename)
         _save_debug_image(gen_imgs_from_trigger, self.DEBUG_DIR_TRAINING_TRIGGER, filename)
 

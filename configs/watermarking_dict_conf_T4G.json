@@ -7,6 +7,6 @@
     "watermark_weights": [0.1, 10],
     "tools": "T4G_tools",
     "ckpt_path_whitened": "./utils/weights/hidden_replicate.pth", 
-    "kimg_per_tick" : 15
+    "kimg_per_tick" : 25
 }
 

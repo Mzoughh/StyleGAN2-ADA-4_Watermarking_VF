@@ -141,7 +141,6 @@ class StyleGAN2Loss(Loss):
 
                     watermarking_type = self.watermarking_dict.get('watermarking_type', None)
 
-                    #################################################
                     # BLACK BOX: NO BOX
                     if watermarking_type == 'black_box':
                             
@@ -223,7 +222,7 @@ class StyleGAN2Loss(Loss):
                             training_stats.report('Loss/G/vanilla', loss_Gmain.mean().mul(gain))
                         
                         # PERCEPTUAL LOSS
-                        loss_i = self.tools.perceptual_loss_for_imperceptibility(
+                        loss_i, _ = self.tools.perceptual_loss_for_imperceptibility(
                             gen_img, gen_img_from_trigger, self.watermarking_dict
                         )
                         loss_i_ponderate = self.watermark_weight[1] * loss_i
@@ -312,6 +311,7 @@ class StyleGAN2Loss(Loss):
                 training_stats.report('Loss/signs/fake', gen_logits.sign())
 
                 # --------------- W --------------- #
+                watermarking_type = self.watermarking_dict.get('watermarking_type', None)
                 if watermarking_type == 'trigger_set_T4G' : 
                     # MIXED ADVERSARIAL LOSS 
                     loss_Dgen_vanilla = torch.nn.functional.softplus(gen_logits)

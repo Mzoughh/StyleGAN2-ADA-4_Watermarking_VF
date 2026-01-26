@@ -81,7 +81,7 @@ def save_watermark_diff_map(initial_images, final_images, run_dir, grid_size):
 # --------------------------------- #
 
 
-def _save_debug_image(self, gen_img, output_dir, filename):
+def _save_debug_image(gen_img, output_dir, filename):
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     save_image(gen_img, str(output_dir / filename), normalize=True)

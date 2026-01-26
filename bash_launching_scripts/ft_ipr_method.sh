@@ -7,12 +7,14 @@
 # --- Default parameters  ---
 SNAP=1 
 OUTDIR="./IPR_128_128_AFHQ" 
-DATA="./dataset/afhq_128.zip" 
-RESUME="./vanilla_weights/afhq_128_128_16000.pkl" 
+DATA="./datasets/afhqcat_128.zip" 
+RESUME="./vanilla_weights/vanilla_afhq_128x128.pkl" 
 CFG="watermarking" # Configuration for watermarking
 GPUS=1 # Number of GPUs to use
 METRICS="IPR_extraction,fid50k_full" # Metric to evaluate of IPR method
 PATH_CONF="./configs/watermarking_dict_conf_IPR.json"  # Path configuration
+
+cd ..
 
 # --- SEPECIFIC ACCORDING THE ARCHITECTURE ---
 export CUDA_HOME=/home/mzoughebi/cuda-11.8

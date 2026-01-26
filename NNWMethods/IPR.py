@@ -21,6 +21,7 @@ from utils.utils_custom.normalization import minmax_normalize, minmax_denormaliz
 ## SPECIFIC FOR DEBUGGING
 import os
 import math
+from datetime import datetime
 from pathlib import Path
 from utils.utils_custom import _save_debug_image
 # ──────────────────────────────────────────────────────────────
@@ -32,12 +33,11 @@ from utils.utils_custom import _save_debug_image
 class IPR_tools():
 
     DEBUG_DIR_TRAINING = Path("images_debug_ipr/generated_images")
-    DEBUG_DIR_TRAINING_TRIGGER = Path("images_debug_ipr/generated_images/trigger")
+    DEBUG_DIR_TRAINING_TRIGGER = Path("images_debug_ipr/triggers_images")
 
     def __init__(self,device) -> None:
         self.device = device
         self.criterion_perceptual = SSIMLoss()
-        self._image_counter = 0  # Counter for save debug images
 
     # ----------------------------------------------------------
     # INITIALIZATION
@@ -78,14 +78,14 @@ class IPR_tools():
     # ----------------------------------------------------------
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict):
         
-        # Save debug images
-        self._image_counter += 1
-        filename = f"gen_img_{self._image_counter}.png"
+        # Save debug images with descriptive timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Format: YYYYMMDD_HHMMSS_mmm
+        filename = f"gen_img_{timestamp}.png"
         _save_debug_image(gen_imgs[0], self.DEBUG_DIR_TRAINING, filename)
         _save_debug_image(gen_imgs_from_trigger[0], self.DEBUG_DIR_TRAINING_TRIGGER, filename)
         
         # Compute perceptual loss
-        loss_i = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
+        loss_i, _ = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
         SSIM = 1 - loss_i.item()
         
         return SSIM, 0
@@ -114,7 +114,7 @@ class IPR_tools():
         loss_i = self.criterion_perceptual(gen_imgs_from_trigger, trigger_imgs)
         print(f"[TG LOSS IMPERCEPTIBILITY] Mean={loss_i.item():.6f}")
         
-        return loss_i
+        return loss_i, _
     
     # ----------------------------------------------------------
     # MARK LOSS (NOT IMPLEMENTED)

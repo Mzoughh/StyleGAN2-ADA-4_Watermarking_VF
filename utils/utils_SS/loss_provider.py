@@ -26,7 +26,7 @@ class LossProvider():
     def load_state_dict(self, filename):
         current_dir = os.path.dirname(__file__)
         project_root = os.path.dirname(current_dir)
-        path = os.path.join(project_root, 'utils', 'weights', filename)
+        path = os.path.join(project_root,'weights', filename)
         print('path :>>>>>', path)
         return torch.load(path, map_location='cpu')
     # --------------------------------- #
