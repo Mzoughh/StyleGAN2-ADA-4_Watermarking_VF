@@ -183,10 +183,11 @@ class T4G_tools():
     def extraction(self, gen_imgs, gen_imgs_from_trigger, watermarking_dict, save=False):
         
         # Save debug images with descriptive timestamp
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Format: YYYYMMDD_HHMMSS_mmm
-        filename = f"gen_img_{timestamp}.png"
-        _save_debug_image(gen_imgs, self.DEBUG_DIR_TRAINING, filename)
-        _save_debug_image(gen_imgs_from_trigger, self.DEBUG_DIR_TRAINING_TRIGGER, filename)
+        if save :
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Format: YYYYMMDD_HHMMSS_mmm
+            filename = f"gen_img_{timestamp}.png"
+            _save_debug_image(gen_imgs, self.DEBUG_DIR_TRAINING, filename)
+            _save_debug_image(gen_imgs_from_trigger, self.DEBUG_DIR_TRAINING_TRIGGER, filename)
 
         # Compute perceptual loss to extract SSIM
         _, loss_i_1 = self.perceptual_loss_for_imperceptibility(gen_imgs, gen_imgs_from_trigger, watermarking_dict)
