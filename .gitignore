@@ -4,6 +4,7 @@ IPR_128_128_AFHQ/
 datasets/
 images_debug_ipr/
 vanilla_weights/
+utils/weights/vgg16_weights.pth
 
 
 
