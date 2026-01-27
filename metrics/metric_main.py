@@ -173,9 +173,9 @@ def TONDI_extraction(opts):
     return dict(bit_acc = bit_acc_avg)
 
 @register_metric
-def TONDI_extraction(opts):
+def TONDI_extraction_with_attacks(opts):
     final_dict_with_metrics = tondi_extraction.compute_tondi_with_multimedia_attacks(opts)
-    return dict(final_dict = final_dict_with_metrics)
+    return final_dict_with_metrics
 # --------------------------------- #
 
 #----------------------------------------------------------------------------

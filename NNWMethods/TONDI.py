@@ -149,8 +149,8 @@ class TONDI_tools():
     
     def extraction_after_attack(self, gen_imgs, watermarking_dict, name):
         # Save debug images
-        filename = f"gen_img_{name}.png"
-        _save_debug_image(gen_imgs[0], self.DEBUG_DIR_ATTACK, filename)
+        #filename = f"gen_img_{name}.png"
+        #_save_debug_image(gen_imgs[0], self.DEBUG_DIR_ATTACK, filename)
         # Compute Mark Loss
         wm_loss, bit_accs_avg = self.mark_loss_for_insertion(gen_imgs, watermarking_dict)
         return bit_accs_avg, 0    

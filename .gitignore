@@ -6,6 +6,11 @@ images_debug_ipr/
 vanilla_weights/
 utils/weights/vgg16_weights.pth
 utils/weights/inception-2015-12-05.pt
+bash_launching_scripts_JZ/IPR-1847764.out
+bash_launching_scripts_JZ/T4G-1847768.out
+bash_launching_scripts_JZ/UCHI-1847025.out
+images_debug_t4g/
+training_run_experiences/
 
 
 
