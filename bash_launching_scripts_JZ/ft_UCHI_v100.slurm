@@ -28,11 +28,10 @@ export PYTHONUNBUFFERED=1
 # -----------------------------
 
 CODEDIR="$WORK/ENV_JEAN_ZAY/StyleGAN2-ADA-4_Watermarking_VF"
-WDATA="$WORK/ENV_JEAN_ZAY"
 SNAP=1                              
 OUTDIR="$CODEDIR/training_run_experiences/UCHI_128_128_FFHQ"
-DATA="$WDATA/ffhq_128.zip"
-RESUME="$WDATA/weights/ffhq_128_128_16000.pkl"
+DATA="$CODEDIR/datasets/ffhq128x128.zip"
+RESUME="$CODEDIR/vanilla_weights/vanilla_ffhq_128x128_e1600.pkl"
 CFG="watermarking"
 PATH_CONF="$CODEDIR/configs/watermarking_dict_conf_UCHI.json"
 GPUS=1

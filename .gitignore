@@ -5,6 +5,7 @@ datasets/
 images_debug_ipr/
 vanilla_weights/
 utils/weights/vgg16_weights.pth
+utils/weights/inception-2015-12-05.pt
 
 
 
