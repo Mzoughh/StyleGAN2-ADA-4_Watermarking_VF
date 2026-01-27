@@ -1,6 +1,5 @@
 __pycache__/
 .cache/
-utils/weights/
 IPR_128_128_AFHQ/
 datasets/
 images_debug_ipr/
